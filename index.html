@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RPG Pocket 2.9 - Scenarios & Treasure Audio</title>
+    <title>RPG Pocket 3.0 - Final Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rpg-awesome/0.2.0/css/rpg-awesome.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -207,8 +207,8 @@
 <div id="game-layout">
     <div id="welcome-modal">
         <div class="modal-content">
-            <p style="color: var(--gba-gold); font-weight: bold;">BEM-VINDO AO RPG POCKET 2.9!</p>
-            <p>NOVOS CENÁRIOS E EFEITO SONORO DE TESOURO INCLUÍDOS.</p>
+            <p style="color: var(--gba-gold); font-weight: bold;">BEM-VINDO AO RPG POCKET 3.0 FINAL!</p>
+            <p>PROBABILIDADES ATUALIZADAS E EXPERIÊNCIA COMPLETA.</p>
             <button onclick="dismissWelcome()">OK</button>
         </div>
     </div>
@@ -220,7 +220,7 @@
         
         <div class="splash-text-container">
             <h1 style="font-size: 22px; margin-bottom: 5px;">RPG POCKET</h1>
-            <h2 style="color: var(--gba-gold); font-size: 11px; letter-spacing: 2px; margin-bottom: 25px;">V2.9 ADVANCE</h2>
+            <h2 style="color: var(--gba-gold); font-size: 11px; letter-spacing: 2px; margin-bottom: 25px;">V3.0 FINAL</h2>
             <div class="blink-text">TOQUE PARA CONTINUAR</div>
         </div>
         
@@ -385,13 +385,16 @@
         ]
     };
 
+    // PISCINA DE BLOCOS ATUALIZADA (30 itens totais)
+    // -10% Poções (era 5, foi para 2)
+    // +10% Escudos (era 5, foi para 8)
     const tilePool = [
-        "⚔️","⚔️","⚔️","⚔️","⚔️","⚔️","⚔️","⚔️",
-        "🛡️","🛡️","🛡️","🛡️","🛡️",
-        "❤️","❤️","❤️","❤️","❤️",
-        "🪙","🪙","🪙","🪙","🪙",
-        "🧪","🧪","🧪","🧪","🧪",
-        "🪨","🪨"
+        "⚔️","⚔️","⚔️","⚔️","⚔️","⚔️","⚔️","⚔️", // 8 (26.6%)
+        "🛡️","🛡️","🛡️","🛡️","🛡️","🛡️","🛡️","🛡️", // 8 (26.6%)
+        "❤️","❤️","❤️","❤️","❤️",             // 5 (16.6%)
+        "🪙","🪙","🪙","🪙","🪙",             // 5 (16.6%)
+        "🧪","🧪",                            // 2 (6.6%)
+        "🪨","🪨"                             // 2 (6.6%)
     ]; 
 
     let player = { name: "", class: "knight", hp: 100, maxHp: 100, mp: 60, maxMp: 60, gold: 40, baseAtk: 8, baseDef: 1, potHp: 1, potMp: 1, avatarPath: "" };
@@ -505,7 +508,6 @@
         }
     }
 
-    // NOVO EFEITO SONORO PARA TESOURO
     function playTreasureSound() {
         if (!audioCtx) initAudioContext();
         if (!audioCtx) return;
@@ -518,7 +520,7 @@
             osc.frequency.setValueAtTime(f, now + (idx * 0.1));
             osc.connect(gain);
             gain.connect(audioCtx.destination);
-            let playVol = globalMusicVolume * 0.3; // Um pouco mais alto para destacar
+            let playVol = globalMusicVolume * 0.3; 
             gain.gain.setValueAtTime(playVol, now + (idx * 0.1));
             gain.gain.linearRampToValueAtTime(0.001, now + 0.2 + (idx * 0.1));
             osc.start(now + (idx * 0.1));
@@ -581,7 +583,6 @@
         const desc = document.getElementById("scene-description");
         desc.className = "scene-exploration";
 
-        // SORTEIO DE CENÁRIOS E TEXTOS RANDOMIZADOS
         const keys = Object.keys(cenariosData);
         const pickedCen = keys[Math.floor(Math.random() * keys.length)];
         document.getElementById("viewport-container").style.backgroundImage = `url('${pickedCen}')`;
@@ -753,6 +754,7 @@
         do {
             puzzleBoardData = [];
             for (let i = 0; i < 24; i++) { 
+                // Agora o tilePool já tem as porcentagens corrigidas (26% espada/escudo e 6% poção/pedra)
                 puzzleBoardData.push(tilePool[Math.floor(Math.random() * tilePool.length)]);
             }
         } while(!hasPossibleMoves()); 
