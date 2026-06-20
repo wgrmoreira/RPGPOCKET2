@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RPG Pocket 3.3 - True Turn Reshuffle Edition</title>
+    <title>RPG Pocket 2.0 - Final</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rpg-awesome/0.2.0/css/rpg-awesome.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -87,7 +87,7 @@
         .audio-controls { display: flex; gap: 6px; flex: 1; }
         .audio-controls button { flex: 1; margin: 0; padding: 10px 4px; font-size: 7px; background: linear-gradient(180deg, #64748b, #334155); border-color: #1e293b; box-shadow: 0 4px 0 #0f172a; }
 
-        input[type="text"] { background: #0f172a; color: var(--gba-gold); border: 3px solid var(--gba-border); border-radius: 8px; padding: 16px; font-size: 10px; text-align: center; width: 100%; text-transform: uppercase; outline: none; margin: 10px 0 15px 0; }
+        input[type="text"] { background: #0f172a; color: var(--gba-gold); border: 3px solid var(--gba-border); border-radius: 8px; padding: 16px; font-size: 10px; text-align: center; width: 100%; text-transform: uppercase; outline: none; margin: 10px 0 15px 0; transition: border-color 0.3s; }
         input::placeholder { color: #475569; }
 
         .bar-container { background: #0f172a; border: 2px solid var(--gba-border); border-radius: 10px; height: 12px; width: 100%; margin: 4px 0 8px 0; overflow: hidden; }
@@ -134,13 +134,17 @@
         .puzzle-stats-ticker { width: 100%; background: #1f2937; border-radius: 6px; padding: 6px 8px; font-size: 7px; display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap; color: #fff; border: 2px solid #374151; gap: 4px; }
         .puzzle-stats-ticker span { white-space: nowrap; }
 
-        .puzzle-grid-board { display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(4, 1fr); gap: 5px; width: 100%; height: 210px; background: #030712; padding: 6px; border-radius: 8px; border: 3px solid #1f2937; touch-action: none; position: relative; }
+        .puzzle-grid-board { display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(4, 1fr); gap: 5px; width: 100%; height: 210px; background: #030712; padding: 6px; border-radius: 8px; border: 3px solid #1f2937; touch-action: none; position: relative; overflow: hidden; }
         
         .puzzle-tile-block { border: 2px solid #374151; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 14px; cursor: pointer; user-select: none; transition: transform 0.15s; }
         .puzzle-tile-block.selected-tile { border-color: var(--gba-gold) !important; box-shadow: 0 0 8px var(--gba-gold); transform: scale(1.05); z-index: 5; }
 
         .puzzle-tile-block.tile-matched { background-color: #f59e0b !important; border-color: #fff !important; color: #fff !important; transform: scale(1.15); animation: flashMatch 0.25s infinite alternate; z-index: 10; }
         @keyframes flashMatch { 0% { filter: brightness(1); } 100% { filter: brightness(1.5); } }
+
+        /* Animação da Queda de Blocos (Gravidade) */
+        @keyframes fallDown { 0% { transform: translateY(-40px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        .falling { animation: fallDown 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
         .puzzle-floating-text { position: absolute; font-size: 11px; font-weight: bold; color: #fff; text-shadow: 2px 2px 0px #000; z-index: 50; pointer-events: none; animation: floatUpAndFade 0.8s forwards ease-out; }
         @keyframes floatUpAndFade { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-40px); opacity: 0; } }
@@ -160,8 +164,7 @@
 <div id="game-layout">
     <div id="welcome-modal">
         <div class="modal-content">
-            <p style="color: var(--gba-gold); font-weight: bold;">BEM-VINDO AO RPG POCKET 3.3 FINAL!</p>
-            <p>TURNOS REEMBARALHADOS, RAIOS MÁGICOS E ÁUDIO SEPARADO.</p>
+            <p style="color: var(--gba-gold); font-weight: bold;">BEM-VINDO AO RPG POCKET 2!</p>
             <button onclick="dismissWelcome()">OK</button>
         </div>
     </div>
@@ -170,7 +173,7 @@
         <div class="splash-logo-area"><img src="assets/img/esp_open.png" class="open-sword" alt="Espada" onerror="this.style.display='none'"></div>
         <div class="splash-text-container">
             <h1 style="font-size: 22px; margin-bottom: 5px;">RPG POCKET</h1>
-            <h2 style="color: var(--gba-gold); font-size: 11px; letter-spacing: 2px; margin-bottom: 25px;">V3.3 FINAL</h2>
+            <h2 style="color: var(--gba-gold); font-size: 11px; letter-spacing: 2px; margin-bottom: 25px;">V2.0 FINAL</h2>
             <div class="blink-text">TOQUE PARA CONTINUAR</div>
         </div>
         <div class="credits-text">Desenvolvido por<br>wgrmoreira, Miguel e Maria</div>
@@ -323,11 +326,12 @@
 
     let puzzleMoves = 5; let roundAtk = 0; let roundDef = 0;
     let puzzleBoardData = []; let selectedTileIndex = null;
+    let fallingIndices = new Set(); 
     let isMonsterTurn = false; let isProcessingAnimations = false; let gridLocked = false;
     let touchStartX = 0; let touchStartY = 0; let touchStartIdx = null;
 
     // ==========================================
-    // SINTETIZADOR BGM PROCEDURAL (CHIPTUNE!)
+    // SINTETIZADOR BGM PROCEDURAL E SFX
     // ==========================================
     let audioCtx = null;
     let bgmInterval = null;
@@ -350,7 +354,6 @@
         let newVol = globalMusicVolume + delta;
         newVol = Math.max(0, Math.min(1, newVol));
         globalMusicVolume = Math.round(newVol * 10) / 10;
-        
         let desc = document.getElementById("scene-description");
         if (desc) desc.innerText = `Volume da Música: ${Math.round(globalMusicVolume * 100)}%`;
     }
@@ -358,14 +361,10 @@
     function playBGMTrack(trackName) {
         if (!audioCtx) initAudioContext();
         if (currentBGMTrackName === trackName) return;
-        
-        currentBGMTrackName = trackName;
-        clearInterval(bgmInterval);
-        
+        currentBGMTrackName = trackName; clearInterval(bgmInterval);
         if (!trackName || !T[trackName]) return;
 
-        let track = T[trackName];
-        let stepCount = 0;
+        let track = T[trackName]; let stepCount = 0;
 
         bgmInterval = setInterval(() => {
             if(globalMusicVolume === 0) return; 
@@ -374,8 +373,7 @@
             
             if (freq > 0) {
                 let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
-                osc.type = track.type;
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                osc.type = track.type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
                 let playVol = globalMusicVolume * 0.2; 
                 osc.connect(gain); gain.connect(audioCtx.destination);
                 gain.gain.setValueAtTime(playVol, audioCtx.currentTime);
@@ -385,11 +383,9 @@
         }, track.speed);
     }
 
-    // Efeitos Sonoros são intocáveis pelo Vol global (Volume fixo)
     function playMatchAudio(comboSize, isCoin = false) {
         if (!audioCtx) initAudioContext();
-        let now = audioCtx.currentTime;
-        let sfxVol = 0.15; 
+        let now = audioCtx.currentTime; let sfxVol = 0.15; // Intocável
 
         if (isCoin) {
             for (let i = 0; i < 3; i++) {
@@ -422,20 +418,14 @@
 
     function playTreasureSound() {
         if (!audioCtx) initAudioContext();
-        if (!audioCtx) return;
-        let now = audioCtx.currentTime;
-        let freqs = [523.25, 659.25, 783.99, 1046.50]; 
+        let now = audioCtx.currentTime; let freqs = [523.25, 659.25, 783.99, 1046.50]; 
         freqs.forEach((f, idx) => {
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(f, now + (idx * 0.1));
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            gain.gain.setValueAtTime(0.3, now + (idx * 0.1)); 
+            let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+            osc.type = 'square'; osc.frequency.setValueAtTime(f, now + (idx * 0.1));
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            gain.gain.setValueAtTime(0.3, now + (idx * 0.1)); // SFX Vol fixo
             gain.gain.linearRampToValueAtTime(0.001, now + 0.2 + (idx * 0.1));
-            osc.start(now + (idx * 0.1));
-            osc.stop(now + 0.2 + (idx * 0.1));
+            osc.start(now + (idx * 0.1)); osc.stop(now + 0.2 + (idx * 0.1));
         });
     }
 
@@ -454,8 +444,16 @@
     function changeScreen(screenId) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(screenId).classList.add('active'); }
 
     function startGame() {
-        const input = document.getElementById("player-name-input").value;
-        player.name = input ? input.toUpperCase() : "HERÓI";
+        const inputEl = document.getElementById("player-name-input");
+        const input = inputEl.value.trim();
+        if (!input) {
+            inputEl.style.borderColor = "#ef4444";
+            inputEl.placeholder = "DIGITE UM NOME!";
+            setTimeout(() => inputEl.style.borderColor = "var(--gba-border)", 1500);
+            return;
+        }
+
+        player.name = input.toUpperCase();
         player.class = selectedClassSetup;
         player.avatarPath = `assets/img/${player.class === 'knight' ? 'cavaleiro.png' : player.class === 'mage' ? 'maga.png' : 'ladrao.png'}`;
         player.baseAtk = player.class === 'knight' ? 9 : 8;
@@ -477,7 +475,6 @@
 
         const desc = document.getElementById("scene-description");
         desc.className = "scene-exploration";
-
         const keys = Object.keys(cenariosData);
         const pickedCen = keys[Math.floor(Math.random() * keys.length)];
         document.getElementById("viewport-container").style.backgroundImage = `url('${pickedCen}')`;
@@ -517,22 +514,18 @@
         pouch.innerHTML = `<i class="ra ra-treasure-chest" style="font-size: 32px; color: var(--gba-gold); display: block; margin-bottom: 5px;"></i><div class="gold-pouch-text">TESOURO!<br><span style="color:#fbbf24;">+${baseGold}G</span></div>`;
         pouch.style.display = "block";
         
-        playTreasureSound();
-        updateUI();
-        setTimeout(nextTurnProgress, 2500);
+        playTreasureSound(); updateUI(); setTimeout(nextTurnProgress, 2500);
     }
 
     function handlePotionDrop(type) {
         document.getElementById("viewport-hero").style.display = "none";
         let imgSrc, textMsg;
         if (type === 'hp') {
-            player.potHp++;
-            imgSrc = 'assets/img/hp.png';
+            player.potHp++; imgSrc = 'assets/img/hp.png';
             textMsg = 'POÇÃO DE CURA!<br><span style="color:#22c55e;">+1 H</span>';
             document.getElementById("scene-description").innerText = "Você encontrou uma Poção de Cura!";
         } else {
-            player.potMp++;
-            imgSrc = 'assets/img/mp.png';
+            player.potMp++; imgSrc = 'assets/img/mp.png';
             textMsg = 'POÇÃO DE MANA!<br><span style="color:#3b82f6;">+1 M</span>';
             document.getElementById("scene-description").innerText = "Você encontrou uma Poção de Mana!";
         }
@@ -541,9 +534,7 @@
         pouch.innerHTML = `<img src="${imgSrc}" style="width:40px; height:auto; image-rendering:pixelated; margin-bottom:5px; display:block; margin-left:auto; margin-right:auto;" onerror="this.style.display='none'"><div class="gold-pouch-text">${textMsg}</div>`;
         pouch.style.display = "block";
         
-        playTreasureSound();
-        updateUI();
-        setTimeout(nextTurnProgress, 3000); 
+        playTreasureSound(); updateUI(); setTimeout(nextTurnProgress, 3000); 
     }
 
     function spawnEnemyContainer(categoria, rollValue = 0) {
@@ -592,10 +583,9 @@
         updateUI();
     }
 
-    /* SISTEMA DE COMBATE E MATCH-3 */
+    /* SISTEMA DE COMBATE (GRAVIDADE & MATCH-3) */
     function isAdjacent(idx1, idx2) {
-        let r1 = Math.floor(idx1 / 6), c1 = idx1 % 6;
-        let r2 = Math.floor(idx2 / 6), c2 = idx2 % 6;
+        let r1 = Math.floor(idx1 / 6), c1 = idx1 % 6; let r2 = Math.floor(idx2 / 6), c2 = idx2 % 6;
         return (Math.abs(r1 - r2) + Math.abs(c1 - c2)) === 1;
     }
 
@@ -615,79 +605,75 @@
     }
     function hasPossibleMoves() { return getValidMoves().length > 0; }
 
-    // O TABULEIRO É TOTALMENTE REEMBARALHADO A CADA NOVA VEZ (HERÓI E MONSTRO)
+    function applyGravity() {
+        fallingIndices.clear();
+        for (let c = 0; c < 6; c++) {
+            let writeRow = 3;
+            for (let r = 3; r >= 0; r--) {
+                let idx = r * 6 + c;
+                if (puzzleBoardData[idx] !== null && puzzleBoardData[idx] !== undefined) {
+                    if (writeRow !== r) {
+                        puzzleBoardData[writeRow * 6 + c] = puzzleBoardData[idx];
+                        puzzleBoardData[idx] = null;
+                        fallingIndices.add(writeRow * 6 + c);
+                    }
+                    writeRow--;
+                }
+            }
+            for (let r = writeRow; r >= 0; r--) {
+                let idx = r * 6 + c;
+                puzzleBoardData[idx] = tilePool[Math.floor(Math.random() * tilePool.length)];
+                fallingIndices.add(idx);
+            }
+        }
+    }
+
+    // O TABULEIRO É TOTALMENTE REEMBARALHADO A CADA NOVA VEZ
     function startTurnFlow(isMonster) {
-        isMonsterTurn = isMonster;
-        gridLocked = true;
-        puzzleMoves = 5;
-        roundAtk = 0;
-        if (!isMonster) roundDef = 0;
+        isMonsterTurn = isMonster; gridLocked = true; puzzleMoves = 5;
+        roundAtk = 0; if (!isMonster) roundDef = 0;
         
         let banner = document.getElementById("turn-banner");
         banner.innerText = isMonster ? "TURNO DO INIMIGO" : "SEU TURNO";
         banner.style.backgroundColor = isMonster ? "rgba(220, 38, 38, 0.95)" : "rgba(37, 99, 235, 0.95)";
         banner.style.display = "block";
         
-        generateRandomBoard();
-        renderPuzzleUI();
+        generateRandomBoard(); renderPuzzleUI();
         
-        let combosFinished = false;
-        let timeUp = false;
+        let combosFinished = false; let timeUp = false;
         
         isProcessingAnimations = true;
-        processBoardCombos(() => {
-            combosFinished = true;
-            checkUnlock();
-        });
-        
-        setTimeout(() => {
-            timeUp = true;
-            checkUnlock();
-        }, 2000);
+        processBoardCombos(() => { combosFinished = true; checkUnlock(); });
+        setTimeout(() => { timeUp = true; checkUnlock(); }, 2000);
         
         function checkUnlock() {
             if (combosFinished && timeUp) {
-                banner.style.display = "none";
-                isProcessingAnimations = false;
-                gridLocked = false;
-                renderPuzzleUI();
-                if(isMonsterTurn) executeMonsterTurnAI();
+                banner.style.display = "none"; isProcessingAnimations = false; gridLocked = false;
+                renderPuzzleUI(); if(isMonsterTurn) executeMonsterTurnAI();
             }
         }
     }
 
-    function initPuzzleCombatEngine() {
-        roundDef = 0;
-        startTurnFlow(false);
-    }
+    function initPuzzleCombatEngine() { roundDef = 0; startTurnFlow(false); }
 
     function generateRandomBoard() {
-        do {
-            puzzleBoardData = [];
-            for (let i = 0; i < 24; i++) puzzleBoardData.push(tilePool[Math.floor(Math.random() * tilePool.length)]);
-        } while(!hasPossibleMoves()); 
+        puzzleBoardData = [];
+        for (let i = 0; i < 24; i++) puzzleBoardData.push(tilePool[Math.floor(Math.random() * tilePool.length)]);
+        // Permite combos automáticos no sorteio
     }
 
     function spawnFloatingText(tileIndex, textValue, colorHex) {
-        const board = document.getElementById("combat-puzzle-board");
-        if (!board) return;
-        const tileEl = document.getElementById(`tile-${tileIndex}`);
-        if (!tileEl) return;
+        const board = document.getElementById("combat-puzzle-board"); if (!board) return;
+        const tileEl = document.getElementById(`tile-${tileIndex}`); if (!tileEl) return;
         const floatingNode = document.createElement("div");
-        floatingNode.className = "puzzle-floating-text";
-        floatingNode.innerText = textValue;
-        floatingNode.style.style = "pixelated";
-        floatingNode.style.color = colorHex;
-        floatingNode.style.left = `${tileEl.offsetLeft + (tileEl.offsetWidth / 4)}px`;
-        floatingNode.style.top = `${tileEl.offsetTop}px`;
-        board.appendChild(floatingNode);
-        setTimeout(() => floatingNode.remove(), 800);
+        floatingNode.className = "puzzle-floating-text"; floatingNode.innerText = textValue;
+        floatingNode.style.style = "pixelated"; floatingNode.style.color = colorHex;
+        floatingNode.style.left = `${tileEl.offsetLeft + (tileEl.offsetWidth / 4)}px`; floatingNode.style.top = `${tileEl.offsetTop}px`;
+        board.appendChild(floatingNode); setTimeout(() => floatingNode.remove(), 800);
     }
 
     function renderPuzzleUI() {
-        const boardElement = document.getElementById("combat-puzzle-board");
-        boardElement.innerHTML = "";
-        
+        const boardElement = document.getElementById("combat-puzzle-board"); boardElement.innerHTML = "";
         const panel = document.getElementById("ui-puzzle-panel");
         panel.className = isMonsterTurn ? "puzzle-combat-panel turn-monster" : "puzzle-combat-panel turn-hero";
         document.getElementById("puzzle-turn-owner").innerText = isMonsterTurn ? "TURNO: MONSTRO" : "TURNO: SEU";
@@ -695,9 +681,7 @@
         document.getElementById("puzzle-round-stats").innerText = isMonsterTurn ? `MONSTRO - ATK: ${roundAtk}` : `HERÓI - ATK: ${roundAtk} | DEF: ${roundDef}`;
 
         puzzleBoardData.forEach((tile, index) => {
-            const tileNode = document.createElement("div");
-            tileNode.className = "puzzle-tile-block";
-            tileNode.id = `tile-${index}`;
+            const tileNode = document.createElement("div"); tileNode.className = "puzzle-tile-block"; tileNode.id = `tile-${index}`;
             
             if(tile === "❤️") tileNode.style.backgroundColor = "#7f1d1d"; 
             else if(tile === "🛡️") tileNode.style.backgroundColor = "#4c1d95"; 
@@ -708,50 +692,31 @@
             else if(tile === "⚔️") tileNode.style.backgroundColor = "#334155"; 
 
             if (index === selectedTileIndex) tileNode.classList.add("selected-tile");
+            if (fallingIndices.has(index)) tileNode.classList.add("falling"); 
+            
             tileNode.innerText = tile;
             
             tileNode.onclick = () => { 
                 if (gridLocked || isProcessingAnimations || isMonsterTurn) return;
                 
                 if (puzzleBoardData[index] === "⚡") {
-                    if (player.mp >= 15) {
-                        player.mp -= 15;
-                        spawnFloatingText(index, "MAGIA!", "#a855f7");
-                        playMatchAudio(4); 
-                        let magicDmg = Math.ceil((player.baseAtk / 3) * 1.1); 
-                        roundAtk += magicDmg;
-                        puzzleBoardData[index] = tilePool[Math.floor(Math.random() * tilePool.length)];
-                        puzzleMoves--;
-                        updateUI();
-                        
-                        isProcessingAnimations = true;
-                        processBoardCombos(() => {
-                            isProcessingAnimations = false;
-                            if (puzzleMoves <= 0) executeHeroResolutionPhase();
-                            else renderPuzzleUI();
-                        });
-                    } else {
-                        spawnFloatingText(index, "SEM MP", "#94a3b8");
-                    }
+                    activateLightning(index);
                     return;
                 }
                 handleTileSelection(index); 
             };
 
             tileNode.addEventListener('touchstart', (e) => {
-                if (gridLocked || isMonsterTurn || !inCombat || isProcessingAnimations) return;
-                if (puzzleBoardData[index] === "⚡") return;
+                if (gridLocked || isMonsterTurn || !inCombat || isProcessingAnimations || puzzleBoardData[index] === "⚡") return;
                 touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; touchStartIdx = index;
             });
 
             tileNode.addEventListener('touchmove', (e) => {
                 if (touchStartIdx === null || isProcessingAnimations) return;
-                let diffX = e.touches[0].clientX - touchStartX;
-                let diffY = e.touches[0].clientY - touchStartY;
+                let diffX = e.touches[0].clientX - touchStartX; let diffY = e.touches[0].clientY - touchStartY;
                 
                 if (Math.abs(diffX) > 30 || Math.abs(diffY) > 30) {
-                    let targetIdx = -1;
-                    let c = touchStartIdx % 6; let r = Math.floor(touchStartIdx / 6);
+                    let targetIdx = -1; let c = touchStartIdx % 6; let r = Math.floor(touchStartIdx / 6);
                     if (Math.abs(diffX) > Math.abs(diffY)) {
                         if (diffX > 0 && c < 5) targetIdx = touchStartIdx + 1; 
                         if (diffX < 0 && c > 0) targetIdx = touchStartIdx - 1; 
@@ -763,16 +728,59 @@
                     touchStartIdx = null; 
                 }
             });
-            tileNode.addEventListener('touchend', () => { touchStartIdx = null; });
-            boardElement.appendChild(tileNode);
+            tileNode.addEventListener('touchend', () => { touchStartIdx = null; }); boardElement.appendChild(tileNode);
         });
     }
 
+    function activateLightning(idx) {
+        if (!isMonsterTurn && player.mp < 15) { spawnFloatingText(idx, "SEM MP", "#94a3b8"); return; }
+        if (!isMonsterTurn) player.mp -= 15;
+
+        puzzleMoves--;
+        spawnFloatingText(idx, "MAGIA!", "#a855f7");
+        playMatchAudio(4);
+
+        let magicDmg = Math.ceil((isMonsterTurn ? (2 + Math.floor(turn * 0.3)) : (player.baseAtk / 3)) * 1.1);
+        roundAtk += magicDmg;
+
+        let toExplode = [idx];
+        let r = Math.floor(idx / 6); let c = idx % 6;
+        if (r > 0) toExplode.push(idx - 6); 
+        if (r < 3) toExplode.push(idx + 6); 
+        if (c > 0) toExplode.push(idx - 1); 
+        if (c < 5) toExplode.push(idx + 1); 
+
+        toExplode.forEach(i => {
+            let t = puzzleBoardData[i];
+            if (t && t !== "⚡") {
+                if (t === "⚔️") { roundAtk += isMonsterTurn ? (2 + Math.floor(turn * 0.3)) : Math.floor(player.baseAtk / 3); spawnFloatingText(i, "ATK", "#ef4444"); }
+                if (t === "🛡️") { roundDef += 2; spawnFloatingText(i, "DEF", "#3b82f6"); }
+                if (t === "❤️") { if (!isMonsterTurn) player.hp = Math.min(player.maxHp, player.hp + 3); else enemy.hp = Math.min(enemy.maxHp, enemy.hp + 1); spawnFloatingText(i, "VIDA", "#22c55e"); }
+                if (t === "🪙" && !isMonsterTurn) { player.gold += 1; spawnFloatingText(i, "OURO", "#fbbf24"); }
+                if (t === "💧" && !isMonsterTurn) { player.mp = Math.min(player.maxMp, player.mp + 5); spawnFloatingText(i, "+MP", "#3b82f6"); }
+            }
+            let el = document.getElementById(`tile-${i}`);
+            if (el) el.classList.add("tile-matched");
+            puzzleBoardData[i] = null;
+        });
+
+        updateUI(); isProcessingAnimations = true;
+        setTimeout(() => {
+            applyGravity(); renderPuzzleUI();
+            setTimeout(() => {
+                fallingIndices.clear();
+                processBoardCombos(() => {
+                    isProcessingAnimations = false;
+                    if (puzzleMoves <= 0) { if (!isMonsterTurn) executeHeroResolutionPhase(); else executeMonsterResolutionPhase(); } 
+                    else { renderPuzzleUI(); if (isMonsterTurn) setTimeout(executeMonsterTurnAI_Step, 600); }
+                });
+            }, 300);
+        }, 250);
+    }
+
     function handleTileSelection(index) {
-        if (selectedTileIndex === null) {
-            selectedTileIndex = index;
-            renderPuzzleUI();
-        } else {
+        if (selectedTileIndex === null) { selectedTileIndex = index; renderPuzzleUI(); } 
+        else {
             let idx1 = selectedTileIndex; let idx2 = index; selectedTileIndex = null;
             if (isAdjacent(idx1, idx2) && puzzleBoardData[idx2] !== "⚡") executeTileSwap(idx1, idx2);
             else { selectedTileIndex = index; renderPuzzleUI(); }
@@ -780,37 +788,27 @@
     }
 
     function checkMoveValidity() {
-        for (let r = 0; r < 4; r++) { for (let c = 0; c < 4; c++) { let i = r * 6 + c; if (puzzleBoardData[i]!=="⚡" && puzzleBoardData[i] === puzzleBoardData[i+1] && puzzleBoardData[i] === puzzleBoardData[i+2]) return true; } }
-        for (let r = 0; r < 2; r++) { for (let c = 0; c < 6; c++) { let i = r * 6 + c; if (puzzleBoardData[i]!=="⚡" && puzzleBoardData[i] === puzzleBoardData[i+6] && puzzleBoardData[i] === puzzleBoardData[i+12]) return true; } }
-        for (let r = 0; r < 3; r++) { for (let c = 0; c < 5; c++) { let i = r * 6 + c; let t = puzzleBoardData[i]; if (t!=="⚡" && t === puzzleBoardData[i+1] && t === puzzleBoardData[i+6] && t === puzzleBoardData[i+7]) return true; } }
+        for (let r = 0; r < 4; r++) { for (let c = 0; c < 4; c++) { let i = r * 6 + c; let t = puzzleBoardData[i]; if (t!=="⚡" && t!=null && t === puzzleBoardData[i+1] && t === puzzleBoardData[i+2]) return true; } }
+        for (let r = 0; r < 2; r++) { for (let c = 0; c < 6; c++) { let i = r * 6 + c; let t = puzzleBoardData[i]; if (t!=="⚡" && t!=null && t === puzzleBoardData[i+6] && t === puzzleBoardData[i+12]) return true; } }
+        for (let r = 0; r < 3; r++) { for (let c = 0; c < 5; c++) { let i = r * 6 + c; let t = puzzleBoardData[i]; if (t!=="⚡" && t!=null && t === puzzleBoardData[i+1] && t === puzzleBoardData[i+6] && t === puzzleBoardData[i+7]) return true; } }
         return false;
     }
 
     function executeTileSwap(idx1, idx2) {
-        swapData(idx1, idx2);
-        isProcessingAnimations = true;
-        renderPuzzleUI(); 
+        swapData(idx1, idx2); isProcessingAnimations = true; renderPuzzleUI(); 
         
         setTimeout(() => {
             if (!checkMoveValidity()) {
-                document.getElementById("scene-description").innerText = "Movimento inválido! Turno passado ao inimigo.";
-                puzzleMoves = 0; renderPuzzleUI(); 
-                setTimeout(() => {
-                    isProcessingAnimations = false;
-                    if (!isMonsterTurn) executeHeroResolutionPhase();
-                    else executeMonsterResolutionPhase();
-                }, 1200);
+                // Reversão de movimento (Bouncing)
+                swapData(idx1, idx2); renderPuzzleUI(); isProcessingAnimations = false;
+                if (isMonsterTurn) setTimeout(executeMonsterTurnAI_Step, 400); 
                 return;
             }
             puzzleMoves--;
             processBoardCombos(() => {
                 isProcessingAnimations = false;
-                if (puzzleMoves <= 0) {
-                    if (!isMonsterTurn) executeHeroResolutionPhase();
-                    else executeMonsterResolutionPhase();
-                } else {
-                    renderPuzzleUI();
-                }
+                if (puzzleMoves <= 0) { if (!isMonsterTurn) executeHeroResolutionPhase(); else executeMonsterResolutionPhase(); } 
+                else { renderPuzzleUI(); if (isMonsterTurn) setTimeout(executeMonsterTurnAI_Step, 600); }
             });
         }, 200);
     }
@@ -823,7 +821,7 @@
         for (let r = 0; r < 4; r++) {
             for (let c = 0; c < 4; c++) {
                 let i = r * 6 + c; let t = puzzleBoardData[i];
-                if (t!=="⚡" && t === puzzleBoardData[i+1] && t === puzzleBoardData[i+2]) {
+                if (t!=="⚡" && t!=null && t === puzzleBoardData[i+1] && t === puzzleBoardData[i+2]) {
                     matched.add(i); matched.add(i+1); matched.add(i+2);
                 }
             }
@@ -831,7 +829,7 @@
         for (let r = 0; r < 2; r++) {
             for (let c = 0; c < 6; c++) {
                 let i = r * 6 + c; let t = puzzleBoardData[i];
-                if (t!=="⚡" && t === puzzleBoardData[i+6] && t === puzzleBoardData[i+12]) {
+                if (t!=="⚡" && t!=null && t === puzzleBoardData[i+6] && t === puzzleBoardData[i+12]) {
                     matched.add(i); matched.add(i+6); matched.add(i+12);
                 }
             }
@@ -839,9 +837,8 @@
         for (let r = 0; r < 3; r++) {
             for (let c = 0; c < 5; c++) {
                 let i = r * 6 + c; let t = puzzleBoardData[i];
-                if (t!=="⚡" && t === puzzleBoardData[i+1] && t === puzzleBoardData[i+6] && t === puzzleBoardData[i+7]) {
-                    matched.add(i); matched.add(i+1); matched.add(i+6); matched.add(i+7);
-                    audioTriggeredSize = 4;
+                if (t!=="⚡" && t!=null && t === puzzleBoardData[i+1] && t === puzzleBoardData[i+6] && t === puzzleBoardData[i+7]) {
+                    matched.add(i); matched.add(i+1); matched.add(i+6); matched.add(i+7); audioTriggeredSize = 4;
                     if (["⚔️", "❤️", "🛡️", "💧"].includes(t)) squareAnchors.add(i);
                 }
             }
@@ -856,7 +853,6 @@
                 
                 let type = puzzleBoardData[idx];
                 if (type === "🪙") coinMatchedCount++;
-
                 if (type === "⚔️") spawnFloatingText(idx, "ATK", "#ef4444");
                 if (type === "🛡️") spawnFloatingText(idx, "DEF", "#3b82f6");
                 if (type === "🪙") spawnFloatingText(idx, "OURO", "#fbbf24");
@@ -870,72 +866,68 @@
             setTimeout(() => {
                 matched.forEach(idx => {
                     let type = puzzleBoardData[idx];
-                    
                     if (type === "⚔️") roundAtk += isMonsterTurn ? (2 + Math.floor(turn * 0.3)) : Math.floor(player.baseAtk / 3); 
                     if (type === "🛡️") roundDef += 2;
                     if (type === "❤️") { if (!isMonsterTurn) player.hp = Math.min(player.maxHp, player.hp + 3); else enemy.hp = Math.min(enemy.maxHp, enemy.hp + 1); }
                     if (type === "🪙" && !isMonsterTurn) player.gold += 1;
                     if (type === "💧" && !isMonsterTurn) player.mp = Math.min(player.maxMp, player.mp + 5); 
-
-                    if (squareAnchors.has(idx)) {
-                        puzzleBoardData[idx] = "⚡";
-                    } else {
-                        puzzleBoardData[idx] = tilePool[Math.floor(Math.random() * tilePool.length)];
-                    }
+                    puzzleBoardData[idx] = null; 
                 });
                 
-                document.getElementById("puzzle-round-stats").innerText = isMonsterTurn ? `MONSTRO - ATK: ${roundAtk}` : `HERÓI - ATK: ${roundAtk} | DEF: ${roundDef}`;
+                squareAnchors.forEach(idx => { puzzleBoardData[idx] = "⚡"; });
+                applyGravity();
                 
-                processBoardCombos(onComplete);
+                document.getElementById("puzzle-round-stats").innerText = isMonsterTurn ? `MONSTRO - ATK: ${roundAtk}` : `HERÓI - ATK: ${roundAtk} | DEF: ${roundDef}`;
+                renderPuzzleUI();
+                
+                setTimeout(() => {
+                    fallingIndices.clear();
+                    processBoardCombos(onComplete); // Cascatas Livres em loop
+                }, 300);
             }, 450);
         } else {
-            if (!hasPossibleMoves()) {
-                puzzleMoves = 0; document.getElementById("scene-description").innerText = "Sem combinações possíveis! Vez encerrada.";
-                generateRandomBoard(); renderPuzzleUI();
+            if (!hasPossibleMoves() && puzzleMoves > 0) {
+                puzzleMoves = 0; document.getElementById("scene-description").innerText = "Sem movimentos possíveis! Fim de turno.";
             }
             if (onComplete) onComplete();
         }
     }
 
     function executeHeroResolutionPhase() {
-        let dmg = Math.max(1, roundAtk);
-        enemy.hp -= dmg;
-        document.getElementById("scene-description").innerText = `Fim do seu turno! Você causou ${dmg} de dano!`;
-        updateUI();
-
+        let dmg = Math.max(1, roundAtk); enemy.hp -= dmg;
+        document.getElementById("scene-description").innerText = `Fim do seu turno! Você causou ${dmg} de dano!`; updateUI();
         if (enemy.hp <= 0) handleVictoryResolution();
-        else {
-            setTimeout(() => { startTurnFlow(true); }, 1000);
-        }
+        else setTimeout(() => { startTurnFlow(true); }, 1500);
     }
 
     function executeMonsterTurnAI() {
-        if (!inCombat) return;
-        let movesCounter = 0;
-        
-        function monsterStep() {
-            if (movesCounter < 5 && inCombat) {
-                let validMoves = getValidMoves();
-                if (validMoves.length > 0) {
-                    let pick = validMoves[Math.floor(Math.random() * validMoves.length)];
-                    let rIdx = pick[0]; let nextIdx = pick[1];
-                    let t1 = document.getElementById(`tile-${rIdx}`); let t2 = document.getElementById(`tile-${nextIdx}`);
-                    if(t1) t1.classList.add("selected-tile"); if(t2) t2.classList.add("selected-tile");
+        if (!inCombat || !isMonsterTurn) return;
+        executeMonsterTurnAI_Step();
+    }
 
-                    setTimeout(() => {
-                        executeTileSwap(rIdx, nextIdx);
-                        movesCounter++; setTimeout(monsterStep, 900); 
-                    }, 400); 
+    function executeMonsterTurnAI_Step() {
+        if (!inCombat || !isMonsterTurn || puzzleMoves <= 0 || isProcessingAnimations) return;
 
-                } else {
-                    puzzleMoves = 0; document.getElementById("scene-description").innerText = "O Monstro não encontrou jogadas e passou a vez!";
-                    generateRandomBoard(); executeMonsterResolutionPhase();
-                }
-            } else {
-                executeMonsterResolutionPhase();
-            }
+        let lightningIdx = puzzleBoardData.indexOf("⚡");
+        if (lightningIdx !== -1) {
+            let t = document.getElementById(`tile-${lightningIdx}`);
+            if(t) t.classList.add("selected-tile");
+            setTimeout(() => { activateLightning(lightningIdx); }, 400);
+            return;
         }
-        monsterStep();
+
+        let validMoves = getValidMoves();
+        if (validMoves.length > 0) {
+            let pick = validMoves[Math.floor(Math.random() * validMoves.length)];
+            let rIdx = pick[0]; let nextIdx = pick[1];
+            let t1 = document.getElementById(`tile-${rIdx}`); let t2 = document.getElementById(`tile-${nextIdx}`);
+            if(t1) t1.classList.add("selected-tile"); if(t2) t2.classList.add("selected-tile");
+
+            setTimeout(() => { executeTileSwap(rIdx, nextIdx); }, 400); 
+        } else {
+            puzzleMoves = 0; document.getElementById("scene-description").innerText = "O Monstro não encontrou jogadas e passou a vez!";
+            executeMonsterResolutionPhase();
+        }
     }
 
     function executeMonsterResolutionPhase() {
@@ -943,7 +935,7 @@
         let rawMonsterAtk = roundAtk + baseScale; 
         if (enemy.type === "raro") rawMonsterAtk = Math.floor(rawMonsterAtk * 1.3);
         if (enemy.type === "lendario") rawMonsterAtk = Math.floor(rawMonsterAtk * 1.8);
-        rawMonsterAtk = Math.ceil(rawMonsterAtk * 1.15); 
+        rawMonsterAtk = Math.ceil(rawMonsterAtk * 1.15); // +15% Geral
 
         let totalPlayerDef = player.baseDef + roundDef;
         let monsterDmg = Math.max(3 + Math.floor(turn * 0.3), rawMonsterAtk - totalPlayerDef);
@@ -955,7 +947,7 @@
         if (player.hp <= 0) {
             player.hp = 0; endGame(false);
         } else {
-            setTimeout(() => { startTurnFlow(false); }, 1000);
+            setTimeout(() => { startTurnFlow(false); }, 1500);
         }
     }
 
