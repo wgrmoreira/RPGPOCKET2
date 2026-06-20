@@ -1,2214 +1,1182 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>RPG Pocket 2.1 - Balance & FX Edition</title>
-
-    <!-- Bibliotecas de Ícones Gratuitas (Font Awesome & RPG Awesome) -->
-
+    <title>RPG Pocket 2.9 - Scenarios & Treasure Audio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rpg-awesome/0.2.0/css/rpg-awesome.min.css">
-
-    <!-- Fonte Pixelada Estilo GBA/Cores -->
-
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
     
-
     <style>
-
         :root {
-
-            /* Paleta Vibrante de 16-bits do Gameboy Advance */
-
             --gba-bg-dark: rgba(18, 24, 38, 0.95); 
-
             --gba-ui-box: #242e42;      
-
             --gba-text-light: #e2e8f0;  
-
             --gba-text-dark: #0f172a;   
-
             --gba-gold: #fbbf24;        
-
             --gba-border: #475569;      
-
             
-
-            /* Cores dos Turnos */
-
             --color-turn-hero: #2563eb;
-
             --color-turn-monster: #dc2626;
 
-
-
-            /* Gradientes das Barras */
-
             --bg-hp-grad: linear-gradient(90deg, #ef4444, #22c55e);
-
             --bg-mp-grad: linear-gradient(90deg, #3b82f6, #06b6d4);
-
             --bg-enemy-grad: linear-gradient(90deg, #a855f7, #ec4899);
-
         }
-
-
 
         * {
-
             font-family: 'Press Start 2P', monospace;
-
             box-sizing: border-box;
-
         }
-
-
 
         body {
-
             background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url('assets/img/open.png') no-repeat center center fixed;
-
             background-size: cover;
-
             color: var(--gba-text-light);
-
             display: flex;
-
             justify-content: center;
-
             align-items: center;
-
             height: 100vh;
-
             width: 100vw;
-
             margin: 0;
-
             padding: 10px;
-
             overflow: hidden; 
-
         }
-
-
 
         #game-layout {
-
             display: flex;
-
             flex-direction: column;
-
             width: 100%;
-
             max-width: 450px;
-
             height: 100%;
-
             max-height: 850px; 
-
             position: relative;
-
         }
-
-
 
         .game-card {
-
             background: var(--gba-bg-dark);
-
             border: 4px solid var(--gba-border);
-
             border-radius: 12px;
-
             padding: 12px;
-
             box-shadow: inset -4px -4px 0px rgba(0,0,0,0.4), 0 12px 36px rgba(0,0,0,0.8);
-
             backdrop-filter: blur(4px);
-
             width: 100%;
-
             height: 100%;
-
             overflow-y: auto; 
-
         }
-
-
 
         /* TELA DE ABERTURA (SPLASH) */
+        #screen-splash { background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5)), url('assets/img/open.png') no-repeat center center; background-size: cover; cursor: pointer; display: flex; flex-direction: column; align-items: center; height: 100%; width: 100%; position: relative; }
+        .splash-logo-area { margin-top: 80px; text-align: center; display: flex; justify-content: center; align-items: center; width: 100%; height: 90px; }
+        .splash-logo-area img.open-sword { width: 85px; height: auto; image-rendering: pixelated; transform-origin: bottom center; animation: swordSwing 2s infinite ease-in-out; }
+        @keyframes swordSwing { 0% { transform: rotate(-12deg); } 50% { transform: rotate(12deg); } 100% { transform: rotate(-12deg); } }
+        
+        .splash-text-container { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .blink-text { font-size: 9px; color: var(--gba-text-light); text-shadow: 2px 2px 0px #000; text-align: center; letter-spacing: 1px; animation: pulseFade 1.8s infinite ease-in-out; }
+        @keyframes pulseFade { 0% { opacity: 0.1; } 50% { opacity: 1; } 100% { opacity: 0.1; } }
 
-        #screen-splash {
-
-            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5)), url('assets/img/open.png') no-repeat center center;
-
-            background-size: cover;
-
-            cursor: pointer;
-
-            display: flex;
-
-            flex-direction: column;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            height: 100%;
-
-            width: 100%;
-
-        }
-
-
-
-        .splash-logo-area {
-
-            margin-top: 65px; 
-
-            text-align: center;
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
-            width: 100%;
-
-            height: 90px;
-
-        }
-
-
-
-        .splash-logo-area img.open-sword {
-
-            width: 85px; 
-
-            height: auto;
-
-            image-rendering: pixelated;
-
-            transform-origin: bottom center;
-
-            animation: swordSwing 2s infinite ease-in-out;
-
-        }
-
-
-
-        @keyframes swordSwing {
-
-            0% { transform: rotate(-12deg); }
-
-            50% { transform: rotate(12deg); }
-
-            100% { transform: rotate(-12deg); }
-
-        }
-
-
-
-        .blink-text {
-
-            font-size: 9px;
-
-            color: var(--gba-text-light);
-
-            text-shadow: 2px 2px 0px #000;
-
-            text-align: center;
-
-            margin-bottom: 50px;
-
-            letter-spacing: 1px;
-
-            animation: pulseFade 1.8s infinite ease-in-out;
-
-        }
-
-
-
-        @keyframes pulseFade {
-
-            0% { opacity: 0.1; }
-
-            50% { opacity: 1; }
-
-            100% { opacity: 0.1; }
-
-        }
-
-
+        .credits-text { font-size: 6px; color: #cbd5e1; margin-bottom: 15px; text-shadow: 1px 1px 0 #000; text-align: center; line-height: 1.5; }
 
         /* MODAL DE BOAS-VINDAS */
-
-        #welcome-modal {
-
-            position: absolute;
-
-            top: 0; left: 0; width: 100%; height: 100%;
-
-            background: rgba(0, 0, 0, 0.65); 
-
-            z-index: 100;
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
-            padding: 20px;
-
-            border-radius: 12px;
-
-        }
-
-        .modal-content {
-
-            background: var(--gba-ui-box);
-
-            border: 4px solid var(--gba-gold);
-
-            border-radius: 12px;
-
-            padding: 25px;
-
-            text-align: center;
-
-            font-size: 10px;
-
-            line-height: 2;
-
-            color: var(--gba-text-light);
-
-            box-shadow: 0 0 25px var(--gba-gold);
-
-        }
-
-        .modal-content button {
-
-            font-size: 14px; 
-
-            padding: 16px 30px;
-
-            font-weight: bold;
-
-        }
-
-
+        #welcome-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); z-index: 100; display: flex; justify-content: center; align-items: center; padding: 20px; border-radius: 12px; }
+        .modal-content { background: var(--gba-ui-box); border: 4px solid var(--gba-gold); border-radius: 12px; padding: 25px; text-align: center; font-size: 10px; line-height: 2; color: var(--gba-text-light); box-shadow: 0 0 25px var(--gba-gold); }
+        .modal-content button { font-size: 14px; padding: 16px 30px; font-weight: bold; }
 
         .screen { display: none !important; }
-
         .screen.active { display: flex !important; flex-direction: column; }
-
         #screen-main.active, #screen-shop.active { display: block !important; } 
-
         
-
         h1 { text-align: center; color: var(--gba-gold); margin-top: 0; font-size: 18px; line-height: 1.5; text-shadow: 3px 3px 0px #000; }
-
         h2, h3 { text-align: center; color: var(--gba-text-light); margin-top: 0; font-size: 10px; line-height: 1.5; }
-
         hr { border: 0; height: 4px; background: var(--gba-border); margin: 8px 0; box-shadow: 0 2px 0 #000; }
-
         
-
-        .stats-grid { 
-
-            display: grid; 
-
-            grid-template-columns: 1.3fr 0.85fr 0.85fr; 
-
-            background: #1e293b; 
-
-            padding: 10px; 
-
-            border: 3px solid var(--gba-border); 
-
-            border-radius: 8px;
-
-            gap: 6px;
-
-            align-items: center;
-
-        }
-
+        .stats-grid { display: grid; grid-template-columns: 1.3fr 0.85fr 0.85fr; background: #1e293b; padding: 10px; border: 3px solid var(--gba-border); border-radius: 8px; gap: 6px; align-items: center; }
         .stat-box { font-size: 8px; line-height: 1.6; }
-
         
-
-        .hero-header-line {
-
-            display: flex;
-
-            align-items: center;
-
-            flex-wrap: wrap;
-
-            gap: 8px;
-
-        }
-
+        .hero-header-line { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
         .hero-title-area { font-size: 10px; color: var(--gba-gold); text-shadow: 1px 1px 0 #000; display: inline-block; }
-
         .class-tag { font-size: 6px; color: #fff; background: #ef4444; padding: 4px 6px; display: inline-block; border-radius: 3px; font-weight: bold; margin-top: 0; }
-
         .large-stat-text { font-size: 8px; color: var(--gba-text-light); }
-
-        
-
         .inventory-potions-list { display: flex; flex-direction: column; gap: 4px; margin-top: 5px; }
 
-
-
         /* SELEÇÃO DE CLASSE */
-
-        #screen-start.game-card {
-
-            background: linear-gradient(rgba(10, 15, 30, 0.88), rgba(10, 15, 30, 0.88)), url('assets/img/open.png') no-repeat center center;
-
-            background-size: cover;
-
-            display: flex;
-
-            flex-direction: column;
-
-            justify-content: flex-start; 
-
-            gap: 5px;
-
-            padding: 12px;
-
-        }
-
+        #screen-start.game-card { background: linear-gradient(rgba(10, 15, 30, 0.88), rgba(10, 15, 30, 0.88)), url('assets/img/open.png') no-repeat center center; background-size: cover; display: flex; flex-direction: column; justify-content: flex-start; gap: 5px; padding: 12px; }
         .class-select-container { display: flex; flex-direction: column; gap: 8px; margin: 4px 0; }
-
         .class-option { display: flex; align-items: center; gap: 14px; background: rgba(30, 41, 59, 0.85); border: 3px solid var(--gba-border); border-radius: 12px; padding: 10px; cursor: pointer; transition: all 0.2s ease; }
-
         .class-option.selected { background: rgba(15, 23, 42, 0.95); border-color: var(--gba-gold); box-shadow: 0 0 16px rgba(251,191,36,0.7); }
-
         .class-avatar-frame { width: 105px; height: 105px; background-color: #ffffff; border: 2px solid var(--gba-border); border-radius: 10px; display: flex; justify-content: center; align-items: center; overflow: hidden; flex-shrink: 0; }
-
         .class-avatar-frame img { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
-
         .class-details { font-size: 8px; line-height: 1.7; color: var(--gba-text-light); }
-
         .class-details strong { font-size: 12px; color: var(--gba-gold); text-shadow: 1px 1px 0px #000; display: inline-block; margin-bottom: 4px; }
+        
+        .start-actions-row { display: flex; width: 100%; margin-top: 4px; gap: 6px; }
+        .start-actions-row button.btn-start-adventure { flex: 2; background: linear-gradient(180deg, #10b981, #047857); border-color: #065f46; box-shadow: 0 4px 0 #022c22; margin: 0; }
 
-        .start-actions-row { display: flex; width: 100%; margin-top: 4px; }
+        .audio-controls { display: flex; gap: 6px; flex: 1; }
+        .audio-controls button { flex: 1; margin: 0; padding: 10px 4px; font-size: 7px; background: linear-gradient(180deg, #64748b, #334155); border-color: #1e293b; box-shadow: 0 4px 0 #0f172a; }
 
-        .start-actions-row button.btn-start-adventure { flex: 1; background: linear-gradient(180deg, #10b981, #047857); border-color: #065f46; box-shadow: 0 4px 0 #022c22; margin: 0; }
-
-
-
-        input[type="text"] { 
-
-            background: #0f172a; 
-
-            color: var(--gba-gold); 
-
-            border: 3px solid var(--gba-border); 
-
-            border-radius: 8px; 
-
-            padding: 16px; 
-
-            font-size: 10px; 
-
-            text-align: center; 
-
-            width: 100%; 
-
-            text-transform: uppercase; 
-
-            outline: none; 
-
-            margin: 10px 0 15px 0; 
-
-        }
-
+        input[type="text"] { background: #0f172a; color: var(--gba-gold); border: 3px solid var(--gba-border); border-radius: 8px; padding: 16px; font-size: 10px; text-align: center; width: 100%; text-transform: uppercase; outline: none; margin: 10px 0 15px 0; }
         input::placeholder { color: #475569; }
 
-
-
         .bar-container { background: #0f172a; border: 2px solid var(--gba-border); border-radius: 10px; height: 12px; width: 100%; margin: 4px 0 8px 0; overflow: hidden; }
-
         .bar-fill { height: 100%; width: 100%; border-radius: 10px; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-
         .bar-hp { background: var(--bg-hp-grad); }
-
         .bar-mp { background: var(--bg-mp-grad); }
-
         .bar-enemy { background: var(--bg-enemy-grad); }
 
-
-
         /* VIEWPORT CONTAINER */
-
-        #viewport-container {
-
-            width: 100%;
-
-            height: 240px;
-
-            border: 4px solid var(--gba-border);
-
-            border-radius: 12px;
-
-            position: relative;
-
-            background-size: cover;
-
-            background-position: center;
-
-            overflow: hidden;
-
-            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-
-            margin: 10px 0;
-
-            background-color: #020617;
-
-        }
-
+        #viewport-container { width: 100%; height: 240px; border: 4px solid var(--gba-border); border-radius: 12px; position: relative; background-size: cover; background-position: center; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.6); margin: 10px 0; background-color: #020617; }
         #viewport-hero { position: absolute; bottom: 10px; left: 45px; width: 32.5%; height: auto; image-rendering: pixelated; z-index: 5; }
-
         #viewport-target { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 35%; height: auto; image-rendering: pixelated; z-index: 6; }
-
+        
         #viewport-gold-pouch { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(15, 23, 42, 0.9); border: 2px solid var(--gba-gold); border-radius: 8px; padding: 10px; text-align: center; width: 50%; z-index: 7; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.7); }
-
-        #viewport-gold-pouch i { font-size: 32px; color: var(--gba-gold); display: block; margin-bottom: 5px; }
-
         .gold-pouch-text { font-size: 8px; color: #fff; line-height: 1.4; }
 
-
+        #scene-description { position: absolute; left: 5%; width: 90%; font-size: 8px; line-height: 1.5; color: var(--gba-gold); text-align: center; margin: 0; z-index: 20; background: rgba(15, 23, 42, 0.85); border: 2px solid var(--gba-border); border-radius: 6px; padding: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); text-shadow: 1px 1px 0 #000; transition: top 0.3s ease; }
+        #scene-description.scene-exploration { top: 8px; }
+        #scene-description.scene-combat { top: 48px; }
 
         .combat-arena-hud { position: absolute; top: 8px; left: 5%; width: 90%; background: rgba(15, 23, 42, 0.85); border: 2px solid var(--gba-gold); border-radius: 6px; padding: 6px 10px; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-
         .combat-hud-row { display: flex; justify-content: space-between; align-items: center; font-size: 8px; }
 
-
-
         button { background: linear-gradient(180deg, #3b82f6, #1d4ed8); color: #fff; border: 3px solid #1e40af; border-radius: 8px; padding: 14px; cursor: pointer; font-size: 8px; text-transform: uppercase; margin: 4px 2px; box-shadow: 0 4px 0 #1e3a8a; transition: all 0.1s; text-shadow: 1px 1px 0 #000; -webkit-tap-highlight-color: transparent; }
-
         button:active { transform: translateY(3px); box-shadow: 0 1px 0 #1e3a8a; }
-
         button:disabled { background: #475569 !important; color: #94a3b8 !important; border-color: #334155 !important; box-shadow: none; cursor: not-allowed; transform: none; text-shadow: none; }
-
         
-
         .explore-actions-row { display: flex; gap: 6px; justify-content: space-between; margin-top: 10px; width: 100%; }
-
         .explore-actions-row button { margin: 0; padding: 12px 4px; font-size: 7px; flex: 1; text-align: center; background: linear-gradient(180deg, #4b5563, #1f2937); border-color: #111827; box-shadow: 0 4px 0 #111827; }
 
-
-
         .dice-engine-box { display: flex; flex-direction: column; align-items: center; background: #1e293b; border: 3px solid var(--gba-border); border-radius: 8px; padding: 10px; margin-top: 10px; }
-
         .d20-display { font-size: 24px; color: var(--gba-gold); text-shadow: 2px 2px 0 #000; margin-bottom: 8px; font-weight: bold; }
-
         .btn-roll-dice { width: 100%; background: linear-gradient(180deg, #a855f7, #7c3aed); border-color: #5b21b6; box-shadow: 0 4px 0 #4c1d95; margin: 0; }
 
-        #scene-description { font-size: 8px; line-height: 1.8; min-height: 40px; color: var(--gba-gold); text-align: center; margin: 4px 0; }
-
-
-
         /* TABLEIRO MATCH-3 6X4 COORDENADO */
-
-        .puzzle-combat-panel {
-
-            display: flex;
-
-            flex-direction: column;
-
-            align-items: center;
-
-            gap: 6px;
-
-            background: #111827;
-
-            border: 4px solid var(--gba-border);
-
-            border-radius: 12px;
-
-            padding: 8px;
-
-            margin-top: 4px;
-
-            position: relative; /* Habilita o rastreio absoluto de partículas texto */
-
-        }
-
-        
-
+        .puzzle-combat-panel { display: flex; flex-direction: column; align-items: center; gap: 6px; background: #111827; border: 4px solid var(--gba-border); border-radius: 12px; padding: 8px; margin-top: 4px; position: relative; }
         .puzzle-combat-panel.turn-hero { border-color: var(--color-turn-hero) !important; box-shadow: 0 0 12px var(--color-turn-hero); }
-
         .puzzle-combat-panel.turn-monster { border-color: var(--color-turn-monster) !important; box-shadow: 0 0 12px var(--color-turn-monster); animation: pulseRedBorder 1.5s infinite alternate; }
+        @keyframes pulseRedBorder { 0% { box-shadow: 0 0 4px var(--color-turn-monster); } 100% { box-shadow: 0 0 16px var(--color-turn-monster); } }
 
-        
+        .puzzle-stats-ticker { width: 100%; background: #1f2937; border-radius: 6px; padding: 6px 8px; font-size: 7px; display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap; color: #fff; border: 2px solid #374151; gap: 4px; }
+        .puzzle-stats-ticker span { white-space: nowrap; }
 
-        @keyframes pulseRedBorder {
+        .puzzle-grid-board { display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(4, 1fr); gap: 5px; width: 100%; height: 210px; background: #030712; padding: 6px; border-radius: 8px; border: 3px solid #1f2937; touch-action: none; position: relative; }
+        .puzzle-tile-block { background: #1f2937; border: 2px solid #374151; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 14px; cursor: pointer; user-select: none; transition: background 0.15s, transform 0.15s; }
+        .puzzle-tile-block.selected-tile { border-color: var(--gba-gold); background: #374151; box-shadow: 0 0 8px var(--gba-gold); transform: scale(1.05); z-index: 5;}
 
-            0% { box-shadow: 0 0 4px var(--color-turn-monster); }
-
-            100% { box-shadow: 0 0 16px var(--color-turn-monster); }
-
-        }
-
-
-
-        .puzzle-stats-ticker {
-
-            width: 100%;
-
-            background: #1f2937;
-
-            border-radius: 6px;
-
-            padding: 6px;
-
-            font-size: 7px;
-
-            display: flex;
-
-            justify-content: space-between;
-
-            color: #fff;
-
-            border: 2px solid #374151;
-
-        }
-
-        .puzzle-grid-board {
-
-            display: grid;
-
-            grid-template-columns: repeat(6, 1fr); 
-
-            grid-template-rows: repeat(4, 1fr);    
-
-            gap: 5px;
-
-            width: 100%;
-
-            height: 210px; 
-
-            background: #030712;
-
-            padding: 6px;
-
-            border-radius: 8px;
-
-            border: 3px solid #1f2937;
-
-            touch-action: none; 
-
-            position: relative;
-
-        }
-
-        .puzzle-tile-block {
-
-            background: #1f2937;
-
-            border: 2px solid #374151;
-
-            border-radius: 6px;
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
-            font-size: 14px; 
-
-            cursor: pointer;
-
-            user-select: none;
-
-            transition: background 0.1s, transform 0.1s;
-
-        }
-
-        .puzzle-tile-block.selected-tile { border-color: var(--gba-gold); background: #374151; }
-
-
-
-        .puzzle-tile-block.tile-matched {
-
-            background: #f59e0b !important;
-
-            border-color: #fff !important;
-
-            color: #fff !important;
-
-            transform: scale(1.15);
-
-            animation: flashMatch 0.25s infinite alternate;
-
-            z-index: 10;
-
-        }
-
+        .puzzle-tile-block.tile-matched { background: #f59e0b !important; border-color: #fff !important; color: #fff !important; transform: scale(1.15); animation: flashMatch 0.25s infinite alternate; z-index: 10; }
         @keyframes flashMatch { 0% { background: #f59e0b; } 100% { background: #fff7ed; } }
 
-
-
-        /* NOVO: CSS DOS TEXTOS FLUTUANTES (ATK, DEF, GOLD) COM ELEMENTOS RETRÔ */
-
-        .puzzle-floating-text {
-
-            position: absolute;
-
-            font-size: 11px;
-
-            font-weight: bold;
-
-            color: #fff;
-
-            text-shadow: 2px 2px 0px #000;
-
-            z-index: 50;
-
-            pointer-events: none;
-
-            animation: floatUpAndFade 0.8s forwards ease-out;
-
-        }
-
-        @keyframes floatUpAndFade {
-
-            0% { transform: translateY(0); opacity: 1; }
-
-            100% { transform: translateY(-40px); opacity: 0; }
-
-        }
-
-
+        .puzzle-floating-text { position: absolute; font-size: 11px; font-weight: bold; color: #fff; text-shadow: 2px 2px 0px #000; z-index: 50; pointer-events: none; animation: floatUpAndFade 0.8s forwards ease-out; }
+        @keyframes floatUpAndFade { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-40px); opacity: 0; } }
 
         /* TELA DA LOJA */
-
         .shop-header-status { display: flex; justify-content: space-between; font-size: 8px; margin-bottom: 12px; background: #1e293b; padding: 8px; border: 2px solid var(--gba-border); border-radius: 6px; }
-
         .shop-item-card { display: flex; justify-content: space-between; align-items: center; background: #1f2937; border: 2px solid var(--gba-border); border-radius: 8px; padding: 8px; margin-bottom: 6px; }
-
         .shop-item-info { font-size: 8px; line-height: 1.5; }
-
         .shop-item-info div { color: #94a3b8; font-size: 6px; margin-top: 2px; }
-
         .shop-item-card button { margin: 0; padding: 10px 16px; min-width: 75px; background: linear-gradient(180deg, #10b981, #059669); border-color: #047857; box-shadow: 0 3px 0 #064e3b; }
 
+        /* TELA FINAL COM IMAGENS INTEGRAIS */
+        #screen-end {
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        #end-stats-box {
+            background: rgba(15, 23, 42, 0.9);
+            border: 3px solid var(--gba-gold);
+            border-radius: 12px;
+            padding: 20px;
+            color: #fff;
+            font-size: 10px;
+            line-height: 2.2;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            text-shadow: 1px 1px 0 #000;
+        }
     </style>
-
 </head>
-
-<body>
-
-
+<body onclick="initAudioContext()">
 
 <div id="game-layout">
-
-    <!-- MODAL BOAS-VINDAS -->
-
     <div id="welcome-modal">
-
         <div class="modal-content">
-
-            <p style="color: var(--gba-gold); font-weight: bold;">BEM-VINDO AO RPG POCKET 2.1!</p>
-
-            <p>SISTEMA BALANCEADO DE COMBATE E EFEITOS ATIVADOS.</p>
-
+            <p style="color: var(--gba-gold); font-weight: bold;">BEM-VINDO AO RPG POCKET 2.9!</p>
+            <p>NOVOS CENÁRIOS E EFEITO SONORO DE TESOURO INCLUÍDOS.</p>
             <button onclick="dismissWelcome()">OK</button>
-
         </div>
-
     </div>
-
-
-
-    <!-- TELA 1: SPLASH -->
 
     <div id="screen-splash" class="screen active" onclick="goToClassSelection()">
-
         <div class="splash-logo-area">
-
-            <img src="assets/img/esp_open.png" class="open-sword" alt="Espada de Abertura">
-
+            <img src="assets/img/esp_open.png" class="open-sword" alt="Espada" onerror="this.style.display='none'">
         </div>
-
-        <div style="text-align: center;">
-
+        
+        <div class="splash-text-container">
             <h1 style="font-size: 22px; margin-bottom: 5px;">RPG POCKET</h1>
-
-            <h2 style="color: var(--gba-gold); font-size: 11px; letter-spacing: 2px;">V2.1 ADVANCE</h2>
-
+            <h2 style="color: var(--gba-gold); font-size: 11px; letter-spacing: 2px; margin-bottom: 25px;">V2.9 ADVANCE</h2>
+            <div class="blink-text">TOQUE PARA CONTINUAR</div>
         </div>
-
-        <div class="blink-text">TOQUE PARA CONTINUAR</div>
-
+        
+        <div class="credits-text">Desenvolvido por<br>wgrmoreira, Miguel e Maria</div>
     </div>
-
-
-
-    <!-- TELA 2: SELEÇÃO DE CLASSE -->
 
     <div id="screen-start" class="screen game-card">
-
-        <div>
-
-            <input type="text" id="player-name-input" placeholder="NOME DO HERÓI" maxlength="12">
-
-        </div>
-
+        <div><input type="text" id="player-name-input" placeholder="NOME DO HERÓI" maxlength="12"></div>
         <div class="class-select-container">
-
             <div class="class-option selected" id="opt-knight" onclick="selectClass('knight')">
-
-                <div class="class-avatar-frame"><img src="assets/img/cavaleiro.png" alt="Cavaleiro"></div>
-
+                <div class="class-avatar-frame"><img src="assets/img/cavaleiro.png" alt="Cavaleiro" onerror="this.style.display='none'"></div>
                 <div class="class-details"><strong>CAVALEIRO</strong><br>Força bruta.<br><span style="color:#34d399">Atk +1 | Def +1</span></div>
-
             </div>
-
             <div class="class-option" id="opt-mage" onclick="selectClass('mage')">
-
-                <div class="class-avatar-frame"><img src="assets/img/maga.png" alt="Maga"></div>
-
+                <div class="class-avatar-frame"><img src="assets/img/maga.png" alt="Maga" onerror="this.style.display='none'"></div>
                 <div class="class-details"><strong>MAGA</strong><br>Alquimista.<br><span style="color:#34d399">Mana por 12g | Def +1</span></div>
-
             </div>
-
             <div class="class-option" id="opt-thief" onclick="selectClass('thief')">
-
-                <div class="class-avatar-frame"><img src="assets/img/ladrao.png" alt="Ladrão"></div>
-
+                <div class="class-avatar-frame"><img src="assets/img/ladrao.png" alt="Ladrão" onerror="this.style.display='none'"></div>
                 <div class="class-details"><strong>LADRÃO</strong><br>Sortudo.<br><span style="color:#34d399">+8% ouro | Def +1</span></div>
-
             </div>
-
         </div>
-
         <div class="start-actions-row">
-
             <button class="btn-start-adventure" onclick="startGame()">INICIAR AVENTURA</button>
-
+            <div class="audio-controls">
+                <button onclick="adjustMusicVolume(-0.1)">V-</button>
+                <button onclick="adjustMusicVolume(0.1)">V+</button>
+            </div>
         </div>
-
     </div>
-
-
-
-    <!-- TELA 3: PRINCIPAL DE JOGO -->
 
     <div id="screen-main" class="screen game-card">
-
         <h2>ESTÁGIO <span id="ui-turn">1</span> / 30</h2>
-
         
-
         <div class="stats-grid">
-
             <div class="stat-box">
-
-                <div class="hero-header-line">
-
-                    <span class="hero-title-area" id="ui-name">HERÓI</span>
-
-                    <span class="class-tag" id="ui-class-tag">CLASSE</span>
-
-                </div>
-
+                <div class="hero-header-line"><span class="hero-title-area" id="ui-name">HERÓI</span><span class="class-tag" id="ui-class-tag">CLASSE</span></div>
                 <div style="margin-top:8px; font-size: 7px;">HP:<span id="txt-hp">100/100</span></div>
-
                 <div class="bar-container"><div id="bar-hp" class="bar-fill bar-hp"></div></div>
-
                 <div style="font-size: 7px;">MP:<span id="txt-mp">60/60</span></div>
-
                 <div class="bar-container"><div id="bar-mp" class="bar-fill bar-mp"></div></div>
-
             </div>
-
             <div class="stat-box" style="text-align: center; border-left: 2px solid var(--gba-border); border-right: 2px solid var(--gba-border);">
-
                 <strong style="color: var(--gba-gold);">STATUS</strong><br><br>
-
                 <span class="large-stat-text"><i class="ra ra-sword" style="color:#ef4444"></i> ATK:+<span id="ui-atk">0</span></span><br><br>
-
                 <span class="large-stat-text"><i class="ra ra-shield" style="color:#3b82f6"></i> DEF:+<span id="ui-def">0</span></span>
-
             </div>
-
             <div class="stat-box" style="text-align: right;">
-
                 <strong style="color: var(--gba-gold);">BOLSA</strong><br><br>
-
                 <span class="large-stat-text" style="display:block; margin-bottom: 8px; color: var(--gba-gold);"><i class="ra ra-gold-bar"></i> <span id="ui-gold">40</span>G</span>
-
                 <div class="inventory-potions-list large-stat-text">
-
                     <div><i class="ra ra-health" style="color:#22c55e"></i> H: <span id="ui-pot-hp">1</span></div>
-
                     <div><i class="ra ra-potion" style="color:#3b82f6"></i> M: <span id="ui-pot-mp">1</span></div>
-
                 </div>
-
             </div>
-
         </div>
-
         
-
         <div id="viewport-container">
-
             <div class="combat-arena-hud" id="hud-enemy" style="display:none;">
-
                 <div class="combat-hud-row">
-
                     <div id="enemy-name" style="font-weight:bold; color:#f43f5e">INIMIGO</div>
-
                     <div style="color:#f43f5e">HP: <span id="txt-enemy-hp">30/30</span></div>
-
                 </div>
-
                 <div class="bar-container" style="margin: 4px 0 0 0; height: 8px;"><div id="bar-enemy" class="bar-fill bar-enemy"></div></div>
-
             </div>
 
+            <p id="scene-description" class="scene-exploration">O jogo se inicia.</p>
 
-
-            <img id="viewport-hero" src="" alt="Hero">
-
-            <img id="viewport-target" src="" alt="Target" style="display:none;">
-
+            <img id="viewport-hero" src="" alt="Hero" onerror="this.style.display='none'">
+            <img id="viewport-target" src="" alt="Target" style="display:none;" onerror="this.style.display='none'">
             
-
-            <div id="viewport-gold-pouch">
-
-                <i class="ra ra-treasure-chest"></i>
-
-                <div class="gold-pouch-text" id="txt-gold-reward">TESOURO!<br>+0G</div>
-
-            </div>
-
+            <div id="viewport-gold-pouch"></div>
         </div>
-
-
-
-        <p id="scene-description">O jogo se inicia.</p>
 
         <hr>
-
-
 
         <div id="action-panel">
-
-            <!-- EXPLORAÇÃO -->
-
             <div id="panel-explore">
-
                 <div class="dice-engine-box">
-
                     <div class="d20-display" id="txt-d20-result">D20: --</div>
-
                     <button class="btn-roll-dice" id="btn-roll" onclick="rollD20Engine()">ROLAR DADO D20</button>
-
                 </div>
-
                 <div class="explore-actions-row">
-
                     <button onclick="usePotion('hp')"><i class="ra ra-health icon-lg" style="color:#22c55e"></i> CURA</button>
-
                     <button onclick="usePotion('mp')"><i class="ra ra-potion icon-lg" style="color:#3b82f6"></i> MANA</button>
-
                     <button onclick="openShop()" style="background: linear-gradient(180deg, #d97706, #b45309);"><i class="ra ra-pouch icon-lg" style="color:var(--gba-gold)"></i> LOJA</button>
-
                 </div>
-
+                <div class="explore-actions-row" style="margin-top: 6px;">
+                    <div class="audio-controls" style="width: 100%;">
+                        <button onclick="adjustMusicVolume(-0.1)"><i class="fa fa-volume-down"></i> VOL -</button>
+                        <button onclick="adjustMusicVolume(0.1)"><i class="fa fa-volume-up"></i> VOL +</button>
+                    </div>
+                </div>
             </div>
-
             
-
-            <!-- GRADE PUZZLE INTEGRADA 6X4 -->
-
             <div id="panel-combat" style="display:none;">
-
                 <div class="puzzle-combat-panel" id="ui-puzzle-panel">
-
                     <div class="puzzle-stats-ticker">
-
                         <span id="puzzle-turn-owner" style="color:var(--gba-gold)">TURNO: SEU</span>
-
                         <span id="puzzle-moves-left">MOVS: 5</span>
-
                         <span id="puzzle-round-stats">ATK: 0 | DEF: 0</span>
-
                     </div>
-
-                    <div class="puzzle-grid-board" id="combat-puzzle-board">
-
-                        <!-- Procedural 6x4 -->
-
-                    </div>
-
+                    <div class="puzzle-grid-board" id="combat-puzzle-board"></div>
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
-
-
-    <!-- TELA DA LOJA -->
 
     <div id="screen-shop" class="screen game-card">
-
-        <h1>MERCADOR</h1>
-
-        <hr>
-
+        <h1>MERCADOR</h1><hr>
         <div class="shop-header-status">
-
             <div><i class="ra ra-gold-bar" style="color:var(--gba-gold)"></i> OURO: <strong id="shop-ui-gold" style="color:var(--gba-gold)">0G</strong></div>
-
             <div><i class="ra ra-health" style="color:#22c55e"></i> H: <strong id="shop-ui-pothp">0</strong> | <i class="ra ra-potion" style="color:#3b82f6"></i> M: <strong id="shop-ui-potmp">0</strong></div>
-
         </div>
-
         <div id="shop-catalog">
-
-            <div class="shop-item-card">
-
-                <div class="shop-item-info"><strong>P. DE CURA</strong><div>RESTAURA +15 HP</div></div>
-
-                <button onclick="buyItem('pot_hp')">15G</button>
-
-            </div>
-
-            <div class="shop-item-card">
-
-                <div class="shop-item-info"><strong>P. DE MANA</strong><div>RESTAURA +15 MP</div></div>
-
-                <button id="btn-shop-potmp" onclick="buyItem('pot_mp')">15G</button>
-
-            </div>
-
-            <div class="shop-item-card">
-
-                <div class="shop-item-info"><strong>ESPADA AÇO</strong><div>+2 ATK</div></div>
-
-                <button id="btn-shop-weapon" onclick="buyItem('weapon')">79G</button>
-
-            </div>
-
-            <div class="shop-item-card">
-
-                <div class="shop-item-info"><strong>ARMADURA</strong><div>+2 DEF</div></div>
-
-                <button id="btn-shop-armor" onclick="buyItem('armor')">79G</button>
-
-            </div>
-
+            <div class="shop-item-card"><div class="shop-item-info"><strong>P. DE CURA</strong><div>RESTAURA +15 HP</div></div><button onclick="buyItem('pot_hp')">15G</button></div>
+            <div class="shop-item-card"><div class="shop-item-info"><strong>P. DE MANA</strong><div>RESTAURA +15 MP</div></div><button id="btn-shop-potmp" onclick="buyItem('pot_mp')">15G</button></div>
+            <div class="shop-item-card"><div class="shop-item-info"><strong>ESPADA AÇO</strong><div>+2 ATK</div></div><button id="btn-shop-weapon" onclick="buyItem('weapon')">79G</button></div>
+            <div class="shop-item-card"><div class="shop-item-info"><strong>ARMADURA</strong><div>+2 DEF</div></div><button id="btn-shop-armor" onclick="buyItem('armor')">79G</button></div>
         </div>
-
-        <hr>
-
-        <button onclick="closeShop()" style="width:100%;">VOLTAR</button>
-
+        <hr><button onclick="closeShop()" style="width:100%;">VOLTAR</button>
     </div>
 
-
-
-    <!-- TELA FINAL -->
-
-    <div id="screen-end" class="screen game-card" style="text-align:center;">
-
-        <h1 id="end-title">FIM DE JOGO</h1>
-
-        <p id="end-message" style="font-size: 8px; line-height: 1.8; color: #cbd5e1;"></p>
-
+    <div id="screen-end" class="screen game-card">
         <div class="stats-summary" id="end-stats-box"></div>
-
-        <button onclick="location.reload()" style="width: 100%;">JOGAR NOVAMENTE</button>
-
+        <button onclick="location.reload()" style="width: 100%; max-width: 300px; font-size: 10px; padding: 20px;">JOGAR NOVAMENTE</button>
     </div>
-
 </div>
 
-
-
 <script>
-
+    // DADOS DE CENÁRIOS ATUALIZADOS COM ARRAY DE TEXTOS E NOVOS CENÁRIOS
     const cenariosData = {
-
-        "assets/img/cen_estrada1.png": ["Você percorre uma estrada sinuosa e deserta."],
-
-        "assets/img/cen_floresta_sombria.png": ["Você escuta sussurros assustadores vindo da floresta."],
-
-        "assets/img/cen_floresta2.png": ["Uma névoa espessa de fumaça encobre o topo das árvores."],
-
-        "assets/img/cen_floresta1.png": ["Você desbravando e descobre que nem toda floresta é boa."]
-
+        "assets/img/cen_estrada1.png": [
+            "Você percorre uma estrada sinuosa e deserta.",
+            "O som dos seus passos ecoa na estrada vazia.",
+            "Uma longa caminhada aguarda por este caminho."
+        ],
+        "assets/img/cen_floresta_sombria.png": [
+            "Você escuta sussurros assustadores vindo da floresta.",
+            "Olhos vermelhos brilham na escuridão entre as árvores.",
+            "Os galhos retorcidos parecem querer agarrar você."
+        ],
+        "assets/img/cen_floresta2.png": [
+            "Uma névoa espessa de fumaça encobre o topo das árvores.",
+            "O cheiro de lenha queimada domina este trecho da floresta.",
+            "A visibilidade é baixa nesta mata densa."
+        ],
+        "assets/img/cen_floresta1.png": [
+            "Você vai desbravando e descobre que nem toda floresta é boa.",
+            "Folhas caem suavemente num ambiente aparentemente tranquilo.",
+            "Você avança com cautela por entre os troncos robustos."
+        ],
+        "assets/img/cen_gelo.png": [
+            "O vento gélido corta seu rosto na montanha de gelo.",
+            "Picos nevados se erguem como garras ameaçadoras.",
+            "O frio intenso dificulta seus passos na neve fofa."
+        ],
+        "assets/img/cen_caverna.png": [
+            "O eco dos seus passos ressoa na caverna úmida.",
+            "Estalactites brilham fracamente na escuridão.",
+            "O cheiro de mofo e perigo empesteia o ar denso."
+        ]
     };
 
+    const tilePool = [
+        "⚔️","⚔️","⚔️","⚔️","⚔️","⚔️","⚔️","⚔️",
+        "🛡️","🛡️","🛡️","🛡️","🛡️",
+        "❤️","❤️","❤️","❤️","❤️",
+        "🪙","🪙","🪙","🪙","🪙",
+        "🧪","🧪","🧪","🧪","🧪",
+        "🪨","🪨"
+    ]; 
 
-
-    const tileTypes = ["⚔️", "🛡️", "❤️", "🪙", "🪨"];
-
-
-
-    let player = {
-
-        name: "", class: "knight", hp: 100, maxHp: 100, mp: 60, maxMp: 60,
-
-        gold: 40, baseAtk: 8, baseDef: 0, potHp: 1, potMp: 1, avatarPath: ""
-
-    };
-
-
-
+    let player = { name: "", class: "knight", hp: 100, maxHp: 100, mp: 60, maxMp: 60, gold: 40, baseAtk: 8, baseDef: 1, potHp: 1, potMp: 1, avatarPath: "" };
     let stats = { normalKills: 0, bossKills: 0 };
-
     let enemy = null; let turn = 1; let inCombat = false;
-
     let selectedClassSetup = "knight"; let welcomeDismissed = false;
 
-
-
-    // Engrenagem Match-3 de 6x4 colunas/linhas
-
-    let puzzleMoves = 5;
-
-    let roundAtk = 0;
-
-    let roundDef = 0;
-
-    let puzzleBoardData = [];
-
-    let selectedTileIndex = null;
-
-    let isMonsterTurn = false;
-
-    let isProcessingAnimations = false;
-
-
-
+    let puzzleMoves = 5; let roundAtk = 0; let roundDef = 0;
+    let puzzleBoardData = []; let selectedTileIndex = null;
+    let isMonsterTurn = false; let isProcessingAnimations = false;
     let touchStartX = 0; let touchStartY = 0; let touchStartIdx = null;
 
-
-
     // ==========================================
-
-    // SINTETIZADOR DE ÁUDIO REFORMULADO (GBA FX)
-
+    // SINTETIZADOR BGM PROCEDURAL (CHIPTUNE!)
     // ==========================================
-
     let audioCtx = null;
+    let bgmInterval = null;
+    let currentBGMTrackName = null;
+    let globalMusicVolume = 0.1; 
 
-    function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    const T = {
+        'splash': { notes: [523.25, 659.25, 783.99, 1046.50], speed: 180, type: 'square' },
+        'select': { notes: [261.63, 0, 329.63, 0, 392.00, 0], speed: 250, type: 'triangle' },
+        'explore': { notes: [220.00, 0, 261.63, 0], speed: 600, type: 'sine' },
+        'combat': { notes: [110.00, 116.54, 110.00, 98.00], speed: 130, type: 'sawtooth' }
+    };
 
+    function initAudioContext() { 
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
+        if(audioCtx.state === 'suspended') audioCtx.resume(); 
+    }
 
+    function adjustMusicVolume(delta) {
+        let newVol = globalMusicVolume + delta;
+        newVol = Math.max(0, Math.min(1, newVol));
+        globalMusicVolume = Math.round(newVol * 10) / 10;
+        
+        let desc = document.getElementById("scene-description");
+        if (desc) desc.innerText = `Volume da Música: ${Math.round(globalMusicVolume * 100)}%`;
+    }
+
+    function playBGMTrack(trackName) {
+        if (!audioCtx) initAudioContext();
+        if (currentBGMTrackName === trackName) return;
+        
+        currentBGMTrackName = trackName;
+        clearInterval(bgmInterval);
+        
+        if (!trackName || !T[trackName]) return;
+
+        let track = T[trackName];
+        let stepCount = 0;
+
+        bgmInterval = setInterval(() => {
+            if(globalMusicVolume === 0) return; 
+            
+            let freq = track.notes[stepCount % track.notes.length];
+            stepCount++;
+            
+            if (freq > 0) {
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                
+                osc.type = track.type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                
+                let playVol = globalMusicVolume * 0.2; 
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                gain.gain.setValueAtTime(playVol, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (track.speed / 1000));
+                
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + (track.speed / 1000));
+            }
+        }, track.speed);
+    }
 
     function playMatchAudio(comboSize, isCoin = false) {
-
-        initAudio();
-
-        if (!audioCtx) return;
-
+        if (!audioCtx) initAudioContext();
         let now = audioCtx.currentTime;
 
-
-
         if (isCoin) {
-
             for (let i = 0; i < 3; i++) {
-
-                let osc = audioCtx.createOscillator();
-
-                let gain = audioCtx.createGain();
-
-                osc.type = 'sine';
-
-                osc.frequency.setValueAtTime(987.77 + (i * 200), now + (i * 0.06));
-
+                let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+                osc.type = 'sine'; osc.frequency.setValueAtTime(987.77 + (i * 200), now + (i * 0.06));
                 osc.connect(gain); gain.connect(audioCtx.destination);
-
-                gain.gain.setValueAtTime(0.12, now + (i * 0.06));
-
-                gain.gain.linearRampToValueAtTime(0.001, now + 0.2 + (i * 0.06));
-
+                gain.gain.setValueAtTime(0.12, now + (i * 0.06)); gain.gain.linearRampToValueAtTime(0.001, now + 0.2 + (i * 0.06));
                 osc.start(now + (i * 0.06)); osc.stop(now + 0.2 + (i * 0.06));
-
             }
-
             return;
-
         }
 
-
-
-        if (comboSize >= 4) {
-
+        if (comboSize >= 4) { 
             let freqs = [523.25, 659.25, 783.99, 1046.50]; 
-
             freqs.forEach((f, idx) => {
-
-                let osc = audioCtx.createOscillator();
-
-                let gain = audioCtx.createGain();
-
-                osc.type = 'triangle';
-
-                osc.frequency.setValueAtTime(f, now + (idx * 0.08));
-
+                let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(f, now + (idx * 0.08));
                 osc.connect(gain); gain.connect(audioCtx.destination);
-
-                gain.gain.setValueAtTime(0.15, now + (idx * 0.08));
-
-                gain.gain.linearRampToValueAtTime(0.001, now + 0.3 + (idx * 0.08));
-
+                gain.gain.setValueAtTime(0.15, now + (idx * 0.08)); gain.gain.linearRampToValueAtTime(0.001, now + 0.3 + (idx * 0.08));
                 osc.start(now + (idx * 0.08)); osc.stop(now + 0.3 + (idx * 0.08));
-
             });
-
-        } else {
-
-            let osc = audioCtx.createOscillator();
-
-            let gain = audioCtx.createGain();
-
-            osc.type = 'sine';
-
-            osc.frequency.setValueAtTime(587.33, now); 
-
-            osc.frequency.exponentialRampToValueAtTime(880, now + 0.1);
-
+        } else { 
+            let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+            osc.type = 'sine'; osc.frequency.setValueAtTime(587.33, now); osc.frequency.exponentialRampToValueAtTime(880, now + 0.1);
             osc.connect(gain); gain.connect(audioCtx.destination);
-
-            gain.gain.setValueAtTime(0.15, now);
-
-            gain.gain.linearRampToValueAtTime(0.001, now + 0.15);
-
+            gain.gain.setValueAtTime(0.15, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.15);
             osc.start(now); osc.stop(now + 0.15);
-
         }
-
     }
 
+    // NOVO EFEITO SONORO PARA TESOURO
+    function playTreasureSound() {
+        if (!audioCtx) initAudioContext();
+        if (!audioCtx) return;
+        let now = audioCtx.currentTime;
+        let freqs = [523.25, 659.25, 783.99, 1046.50]; 
+        freqs.forEach((f, idx) => {
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(f, now + (idx * 0.1));
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            let playVol = globalMusicVolume * 0.3; // Um pouco mais alto para destacar
+            gain.gain.setValueAtTime(playVol, now + (idx * 0.1));
+            gain.gain.linearRampToValueAtTime(0.001, now + 0.2 + (idx * 0.1));
+            osc.start(now + (idx * 0.1));
+            osc.stop(now + 0.2 + (idx * 0.1));
+        });
+    }
 
+    // ==========================================
+    // LOGICA DE INTERFACE E JOGO
+    // ==========================================
 
     function selectClass(className) {
-
         selectedClassSetup = className;
-
         document.querySelectorAll('.class-option').forEach(opt => opt.classList.remove('selected'));
-
         document.getElementById(`opt-${className}`).classList.add('selected');
-
     }
 
+    function dismissWelcome() { 
+        initAudioContext(); 
+        document.getElementById("welcome-modal").style.display = "none"; 
+        welcomeDismissed = true; 
+        playBGMTrack('splash');
+    }
 
-
-    function dismissWelcome() { document.getElementById("welcome-modal").style.display = "none"; welcomeDismissed = true; }
-
-    function goToClassSelection() { if (welcomeDismissed) changeScreen("screen-start"); }
-
-    function changeScreen(screenId) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(screenId).classList.add('active'); }
-
-
+    function goToClassSelection() { 
+        if (welcomeDismissed) {
+            changeScreen("screen-start"); 
+            playBGMTrack('select');
+        }
+    }
+    
+    function changeScreen(screenId) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(screenId).classList.add('active'); 
+    }
 
     function startGame() {
-
         const input = document.getElementById("player-name-input").value;
-
         player.name = input ? input.toUpperCase() : "HERÓI";
-
         player.class = selectedClassSetup;
-
         player.avatarPath = `assets/img/${player.class === 'knight' ? 'cavaleiro.png' : player.class === 'mage' ? 'maga.png' : 'ladrao.png'}`;
-
+        
         player.baseAtk = player.class === 'knight' ? 9 : 8;
-
         player.baseDef = 1;
 
-
-
         changeScreen("screen-main");
-
+        playBGMTrack('explore');
         updateCenarioExploracao();
-
         updateUI();
-
     }
-
-
 
     function updateCenarioExploracao() {
-
         inCombat = false; enemy = null; isMonsterTurn = false;
-
         document.getElementById("hud-enemy").style.display = "none";
-
         document.getElementById("viewport-target").style.display = "none";
-
         document.getElementById("viewport-gold-pouch").style.display = "none";
-
         document.getElementById("viewport-hero").style.display = "block";
-
         document.getElementById("viewport-hero").src = player.avatarPath;
 
+        const desc = document.getElementById("scene-description");
+        desc.className = "scene-exploration";
 
-
+        // SORTEIO DE CENÁRIOS E TEXTOS RANDOMIZADOS
         const keys = Object.keys(cenariosData);
-
         const pickedCen = keys[Math.floor(Math.random() * keys.length)];
-
         document.getElementById("viewport-container").style.backgroundImage = `url('${pickedCen}')`;
-
-        document.getElementById("scene-description").innerText = cenariosData[pickedCen][0];
-
+        
+        const textsForCen = cenariosData[pickedCen];
+        const pickedText = textsForCen[Math.floor(Math.random() * textsForCen.length)];
+        desc.innerText = pickedText;
+        
         document.getElementById("btn-roll").disabled = false;
-
     }
 
-
-
     function rollD20Engine() {
-
         document.getElementById("btn-roll").disabled = true;
-
         let roll = Math.floor(Math.random() * 20) + 1;
-
         document.getElementById("txt-d20-result").innerText = `D20: ${roll}`;
-
-
 
         if (turn === 30) { triggerBossBattle(); return; }
 
-
-
-        if (roll >= 1 && roll <= 11) spawnEnemyContainer("Normais", roll);
-
-        else if (roll >= 12 && roll <= 17) handleGoldDrop(roll);
-
-        else if (roll === 18) { player.potMp++; document.getElementById("scene-description").innerText = "Ganhou uma Poção de Mana!"; setTimeout(nextTurnProgress, 2000); }
-
-        else if (roll >= 19) { player.potHp++; document.getElementById("scene-description").innerText = "Ganhou uma Poção de Cura!"; setTimeout(nextTurnProgress, 2000); }
-
+        if (roll >= 1 && roll <= 10) spawnEnemyContainer("Normais", roll);
+        else if (roll === 11) spawnEnemyContainer("Raro", roll);
+        else if (roll >= 12 && roll <= 16) handleGoldDrop(roll);
+        else if (roll >= 17 && roll <= 18) handlePotionDrop('mp');
+        else if (roll >= 19 && roll <= 20) handlePotionDrop('hp');
         updateUI();
-
     }
-
-
 
     function handleGoldDrop(roll) {
-
         document.getElementById("viewport-hero").style.display = "none";
-
         document.getElementById("viewport-container").style.backgroundImage = "url('assets/img/ouro.png')";
-
         
-
         let baseGold = Math.floor((roll - 10) * 4 + (turn * 0.5));
-
         if(player.class === 'thief') baseGold = Math.ceil(baseGold * 1.08);
-
         player.gold += baseGold;
 
+        const desc = document.getElementById("scene-description");
+        desc.className = "scene-exploration";
+        desc.innerText = `Você encontrou +${baseGold}G!`;
 
-
-        document.getElementById("txt-gold-reward").innerHTML = `TESOURO!<br><span style="color:#fbbf24;">+${baseGold}G</span>`;
-
-        document.getElementById("viewport-gold-pouch").style.display = "block";
-
-        document.getElementById("scene-description").innerText = `Você encontrou +${baseGold}G!`;
-
+        const pouch = document.getElementById("viewport-gold-pouch");
+        pouch.innerHTML = `<i class="ra ra-treasure-chest" style="font-size: 32px; color: var(--gba-gold); display: block; margin-bottom: 5px;"></i><div class="gold-pouch-text">TESOURO!<br><span style="color:#fbbf24;">+${baseGold}G</span></div>`;
+        pouch.style.display = "block";
+        
+        playTreasureSound();
         updateUI();
-
         setTimeout(nextTurnProgress, 2500);
-
     }
 
+    function handlePotionDrop(type) {
+        document.getElementById("viewport-hero").style.display = "none";
+        
+        let imgSrc, textMsg;
+        if (type === 'hp') {
+            player.potHp++;
+            imgSrc = 'assets/img/hp.png';
+            textMsg = 'POÇÃO DE CURA!<br><span style="color:#22c55e;">+1 H</span>';
+            document.getElementById("scene-description").innerText = "Você encontrou uma Poção de Cura!";
+        } else {
+            player.potMp++;
+            imgSrc = 'assets/img/mp.png';
+            textMsg = 'POÇÃO DE MANA!<br><span style="color:#3b82f6;">+1 M</span>';
+            document.getElementById("scene-description").innerText = "Você encontrou uma Poção de Mana!";
+        }
 
+        const pouch = document.getElementById("viewport-gold-pouch");
+        pouch.innerHTML = `<img src="${imgSrc}" style="width:40px; height:auto; image-rendering:pixelated; margin-bottom:5px; display:block; margin-left:auto; margin-right:auto;" onerror="this.style.display='none'"><div class="gold-pouch-text">${textMsg}</div>`;
+        pouch.style.display = "block";
+        
+        playTreasureSound();
+        updateUI();
+        setTimeout(nextTurnProgress, 3000); 
+    }
 
     function spawnEnemyContainer(categoria, rollValue = 0) {
-
         inCombat = true;
+        playBGMTrack('combat'); 
 
         document.getElementById("viewport-hero").style.display = "none";
-
         document.getElementById("viewport-container").style.backgroundImage = "url('assets/img/duel.png')";
-
         document.getElementById("hud-enemy").style.display = "block";
-
         
-
         const targetImg = document.getElementById("viewport-target");
-
         targetImg.style.display = "block";
 
-
-
         if (categoria === "Normais") {
-
-            const pool = [
-
-                { name: "Orc", img: "orc1.png" }, { name: "Orc Xamã", img: "orc2.png" },
-
-                { name: "Esqueleto", img: "esq1.png" }, { name: "Goblin Guerreiro", img: "gobl1.png" }
-
-            ];
-
+            const pool = [ { name: "Orc", img: "orc1.png" }, { name: "Orc Xamã", img: "orc2.png" }, { name: "Esqueleto", img: "esq1.png" }, { name: "Goblin", img: "gobl1.png" } ];
             let picked = pool[Math.floor(Math.random() * pool.length)];
-
-            
-
-            let calculatedHp = Math.round(30 + (turn * 2.5));
-
+            let calculatedHp = Math.ceil(Math.round(35 + (turn * 3.5)) * 1.15);
             enemy = { name: picked.name, hp: calculatedHp, maxHp: calculatedHp, img: picked.img, type: "normal" };
-
         } else {
-
-            let calculatedHp = Math.round(55 + (turn * 3.5));
-
+            let calculatedHp = Math.ceil(Math.round(60 + (turn * 5)) * 1.15); 
             enemy = { name: "Lobo Alfa", img: "lob1.png", hp: calculatedHp, maxHp: calculatedHp, type: "raro" };
-
         }
-
-
 
         targetImg.src = `assets/img/${enemy.img}`;
-
-        document.getElementById("scene-description").innerText = `Duelo Iniciado contra ${enemy.name}!`;
-
+        const desc = document.getElementById("scene-description");
+        desc.className = "scene-combat";
+        desc.innerText = `Duelo Iniciado contra ${enemy.name}!`;
+        
         initPuzzleCombatEngine();
-
         updateUI();
-
     }
-
-
 
     function triggerBossBattle() {
-
         inCombat = true;
+        playBGMTrack('combat'); 
 
         document.getElementById("viewport-hero").style.display = "none";
-
         document.getElementById("viewport-container").style.backgroundImage = "url('assets/img/duel.png')";
-
         document.getElementById("hud-enemy").style.display = "block";
-
         document.getElementById("viewport-target").style.display = "block";
-
         document.getElementById("viewport-target").src = "assets/img/dra1.png";
 
-
-
-        enemy = { name: "Dragão Da Praga", hp: 160, maxHp: 150, type: "lendario" };
-
-        document.getElementById("scene-description").innerText = `Chefe Lendário Final! Defenda-se!`;
-
+        let bossHp = Math.ceil(180 * 1.15);
+        enemy = { name: "Dragão Da Praga", hp: bossHp, maxHp: bossHp, type: "lendario" };
+        const desc = document.getElementById("scene-description");
+        desc.className = "scene-combat";
+        desc.innerText = `Chefe Lendário Final! Defenda-se!`;
+        
         initPuzzleCombatEngine();
-
         updateUI();
-
     }
 
+    /* SISTEMA DE COMBATE E MATCH-3 */
+    function isAdjacent(idx1, idx2) {
+        let r1 = Math.floor(idx1 / 6), c1 = idx1 % 6;
+        let r2 = Math.floor(idx2 / 6), c2 = idx2 % 6;
+        return (Math.abs(r1 - r2) + Math.abs(c1 - c2)) === 1;
+    }
 
+    function swapData(i, j) { let t = puzzleBoardData[i]; puzzleBoardData[i] = puzzleBoardData[j]; puzzleBoardData[j] = t; }
+    
+    function getValidMoves() {
+        let moves = [];
+        for (let r = 0; r < 4; r++) {
+            for (let c = 0; c < 6; c++) {
+                let i = r * 6 + c;
+                if (c < 5) { swapData(i, i+1); if (checkMoveValidity()) moves.push([i, i+1]); swapData(i, i+1); }
+                if (r < 3) { swapData(i, i+6); if (checkMoveValidity()) moves.push([i, i+6]); swapData(i, i+6); }
+            }
+        }
+        return moves;
+    }
+    
+    function hasPossibleMoves() { return getValidMoves().length > 0; }
 
     function initPuzzleCombatEngine() {
-
         puzzleMoves = 5; roundAtk = 0; roundDef = 0; isMonsterTurn = false;
-
         generateRandomBoard();
-
         renderPuzzleUI();
-
+        
+        isProcessingAnimations = true;
+        processBoardCombos(() => {
+            isProcessingAnimations = false;
+            renderPuzzleUI();
+        });
     }
-
-
 
     function shuffleBoard() {
-
         generateRandomBoard();
-
         renderPuzzleUI();
-
+        isProcessingAnimations = true;
+        processBoardCombos(() => {
+            isProcessingAnimations = false;
+            renderPuzzleUI();
+        });
     }
-
-
 
     function generateRandomBoard() {
-
-        puzzleBoardData = [];
-
-        for (let i = 0; i < 24; i++) { 
-
-            puzzleBoardData.push(tileTypes[Math.floor(Math.random() * tileTypes.length)]);
-
-        }
-
+        do {
+            puzzleBoardData = [];
+            for (let i = 0; i < 24; i++) { 
+                puzzleBoardData.push(tilePool[Math.floor(Math.random() * tilePool.length)]);
+            }
+        } while(!hasPossibleMoves()); 
     }
-
-
-
-    // NOVO: GERADOR DE TEXTO FLUTUANTE PIXELADO (ATK, DEF, GOLD) NO TABULEIRO
 
     function spawnFloatingText(tileIndex, textValue, colorHex) {
-
         const board = document.getElementById("combat-puzzle-board");
-
         if (!board) return;
-
-
-
         const tileEl = document.getElementById(`tile-${tileIndex}`);
-
         if (!tileEl) return;
 
-
-
         const floatingNode = document.createElement("div");
-
         floatingNode.className = "puzzle-floating-text";
-
         floatingNode.innerText = textValue;
-
         floatingNode.style.style = "pixelated";
-
         floatingNode.style.color = colorHex;
-
-
-
-        // Captura a posição exata da célula na grade para soltar o texto por cima
-
         floatingNode.style.left = `${tileEl.offsetLeft + (tileEl.offsetWidth / 4)}px`;
-
         floatingNode.style.top = `${tileEl.offsetTop}px`;
 
-
-
         board.appendChild(floatingNode);
-
         setTimeout(() => floatingNode.remove(), 800);
-
     }
-
-
 
     function renderPuzzleUI() {
-
         const boardElement = document.getElementById("combat-puzzle-board");
-
         boardElement.innerHTML = "";
-
         
-
         const panel = document.getElementById("ui-puzzle-panel");
-
         if (isMonsterTurn) {
-
             panel.className = "puzzle-combat-panel turn-monster";
-
             document.getElementById("puzzle-turn-owner").innerText = "TURNO: MONSTRO";
-
         } else {
-
             panel.className = "puzzle-combat-panel turn-hero";
-
             document.getElementById("puzzle-turn-owner").innerText = "TURNO: SEU";
-
         }
-
-
 
         document.getElementById("puzzle-moves-left").innerText = `MOVS: ${puzzleMoves}`;
-
-        document.getElementById("puzzle-round-stats").innerText = isMonsterTurn ? `MONSTRO - ATK: ${roundAtk} | DEF: ${roundDef}` : `HERÓI - ATK: ${roundAtk} | DEF: ${roundDef}`;
-
-
+        document.getElementById("puzzle-round-stats").innerText = isMonsterTurn ? `MONSTRO - ATK: ${roundAtk}` : `HERÓI - ATK: ${roundAtk} | DEF: ${roundDef}`;
 
         puzzleBoardData.forEach((tile, index) => {
-
             const tileNode = document.createElement("div");
-
             tileNode.className = "puzzle-tile-block";
-
             tileNode.id = `tile-${index}`;
-
             if (index === selectedTileIndex) tileNode.classList.add("selected-tile");
-
             tileNode.innerText = tile;
-
             
-
             tileNode.onclick = () => { if (!isProcessingAnimations) handleTileSelection(index); };
 
-
-
             tileNode.addEventListener('touchstart', (e) => {
-
                 if (isMonsterTurn || !inCombat || isProcessingAnimations) return;
-
                 touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; touchStartIdx = index;
-
             });
-
-
 
             tileNode.addEventListener('touchmove', (e) => {
-
                 if (touchStartIdx === null || isProcessingAnimations) return;
-
                 let diffX = e.touches[0].clientX - touchStartX;
-
                 let diffY = e.touches[0].clientY - touchStartY;
-
                 
-
                 if (Math.abs(diffX) > 30 || Math.abs(diffY) > 30) {
-
                     let targetIdx = -1;
-
                     let c = touchStartIdx % 6; let r = Math.floor(touchStartIdx / 6);
 
-
-
                     if (Math.abs(diffX) > Math.abs(diffY)) {
-
                         if (diffX > 0 && c < 5) targetIdx = touchStartIdx + 1; 
-
                         if (diffX < 0 && c > 0) targetIdx = touchStartIdx - 1; 
-
                     } else {
-
                         if (diffY > 0 && r < 3) targetIdx = touchStartIdx + 6; 
-
                         if (diffY < 0 && r > 0) targetIdx = touchStartIdx - 6; 
-
                     }
-
-
 
                     if (targetIdx !== -1) executeTileSwap(touchStartIdx, targetIdx);
-
                     touchStartIdx = null; 
-
                 }
-
             });
-
-
 
             tileNode.addEventListener('touchend', () => { touchStartIdx = null; });
-
             boardElement.appendChild(tileNode);
-
         });
-
     }
-
-
 
     function handleTileSelection(index) {
-
         if (isMonsterTurn || !inCombat || isProcessingAnimations) return;
-
         if (selectedTileIndex === null) {
-
             selectedTileIndex = index;
-
             renderPuzzleUI();
-
         } else {
-
             let idx1 = selectedTileIndex; let idx2 = index; selectedTileIndex = null;
-
             if (isAdjacent(idx1, idx2)) executeTileSwap(idx1, idx2);
-
-            else renderPuzzleUI();
-
-        }
-
-    }
-
-
-
-    function executeTileSwap(idx1, idx2) {
-
-        let temp = puzzleBoardData[idx1];
-
-        puzzleBoardData[idx1] = puzzleBoardData[idx2];
-
-        puzzleBoardData[idx2] = temp;
-
-
-
-        isProcessingAnimations = true;
-
-        
-
-        // NOVO MECANISMO: Checa se a jogada gerou combo válido de antemão
-
-        let hasCombo = checkMoveValidity();
-
-
-
-        if (!hasCombo) {
-
-            // Regra Estrita: Se o movimento não pontuar ou destruir pedras, zera rodada
-
-            document.getElementById("scene-description").innerText = "Movimento inválido! Turno desperdiçado.";
-
-            puzzleMoves = 0; 
-
-            setTimeout(() => {
-
-                isProcessingAnimations = false;
-
-                if (!isMonsterTurn) executeHeroResolutionPhase();
-
-                else executeMonsterResolutionPhase();
-
-            }, 1200);
-
-            return;
-
-        }
-
-
-
-        puzzleMoves--;
-
-        processBoardCombos(() => {
-
-            isProcessingAnimations = false;
-
-            if (puzzleMoves <= 0) {
-
-                if (!isMonsterTurn) executeHeroResolutionPhase();
-
-                else executeMonsterResolutionPhase();
-
-            } else {
-
+            else {
+                selectedTileIndex = index;
                 renderPuzzleUI();
-
             }
-
-        });
-
+        }
     }
-
-
-
-    // Função auxiliar para analisar se existe qualquer match imediato na grade
 
     function checkMoveValidity() {
-
-        // Horizontais
-
-        for (let r = 0; r < 4; r++) {
-
-            for (let c = 0; c < 4; c++) {
-
-                let i = r * 6 + c;
-
-                if (puzzleBoardData[i] === puzzleBoardData[i+1] && puzzleBoardData[i] === puzzleBoardData[i+2]) return true;
-
-            }
-
-        }
-
-        // Verticais
-
-        for (let r = 0; r < 2; r++) {
-
-            for (let c = 0; c < 6; c++) {
-
-                let i = r * 6 + c;
-
-                if (puzzleBoardData[i] === puzzleBoardData[i+6] && puzzleBoardData[i] === puzzleBoardData[i+12]) return true;
-
-            }
-
-        }
-
-        // Quadrados 2x2
-
-        for (let r = 0; r < 3; r++) {
-
-            for (let c = 0; c < 5; c++) {
-
-                let i = r * 6 + c;
-
-                let t = puzzleBoardData[i];
-
-                if (t === puzzleBoardData[i+1] && t === puzzleBoardData[i+6] && t === puzzleBoardData[i+7]) return true;
-
-            }
-
-        }
-
+        for (let r = 0; r < 4; r++) { for (let c = 0; c < 4; c++) { let i = r * 6 + c; if (puzzleBoardData[i] === puzzleBoardData[i+1] && puzzleBoardData[i] === puzzleBoardData[i+2]) return true; } }
+        for (let r = 0; r < 2; r++) { for (let c = 0; c < 6; c++) { let i = r * 6 + c; if (puzzleBoardData[i] === puzzleBoardData[i+6] && puzzleBoardData[i] === puzzleBoardData[i+12]) return true; } }
+        for (let r = 0; r < 3; r++) { for (let c = 0; c < 5; c++) { let i = r * 6 + c; let t = puzzleBoardData[i]; if (t === puzzleBoardData[i+1] && t === puzzleBoardData[i+6] && t === puzzleBoardData[i+7]) return true; } }
         return false;
-
     }
 
+    function executeTileSwap(idx1, idx2) {
+        let temp = puzzleBoardData[idx1];
+        puzzleBoardData[idx1] = puzzleBoardData[idx2];
+        puzzleBoardData[idx2] = temp;
 
+        isProcessingAnimations = true;
+        let hasCombo = checkMoveValidity();
+
+        if (!hasCombo) {
+            document.getElementById("scene-description").innerText = "Movimento inválido! Turno passado ao inimigo.";
+            puzzleMoves = 0; 
+            renderPuzzleUI(); 
+            setTimeout(() => {
+                isProcessingAnimations = false;
+                if (!isMonsterTurn) executeHeroResolutionPhase();
+                else executeMonsterResolutionPhase();
+            }, 1200);
+            return;
+        }
+
+        puzzleMoves--;
+        processBoardCombos(() => {
+            isProcessingAnimations = false;
+            if (puzzleMoves <= 0) {
+                if (!isMonsterTurn) executeHeroResolutionPhase();
+                else executeMonsterResolutionPhase();
+            } else {
+                renderPuzzleUI();
+            }
+        });
+    }
 
     function processBoardCombos(onComplete) {
-
         let matched = new Set();
-
         let audioTriggeredSize = 3;
-
         let coinMatchedCount = 0;
 
-
-
         for (let r = 0; r < 4; r++) {
-
             for (let c = 0; c < 4; c++) {
-
                 let i = r * 6 + c;
-
                 if (puzzleBoardData[i] === puzzleBoardData[i+1] && puzzleBoardData[i] === puzzleBoardData[i+2]) {
-
                     matched.add(i); matched.add(i+1); matched.add(i+2);
-
                 }
-
             }
-
         }
-
         for (let r = 0; r < 2; r++) {
-
             for (let c = 0; c < 6; c++) {
-
                 let i = r * 6 + c;
-
                 if (puzzleBoardData[i] === puzzleBoardData[i+6] && puzzleBoardData[i] === puzzleBoardData[i+12]) {
-
                     matched.add(i); matched.add(i+6); matched.add(i+12);
-
                 }
-
             }
-
         }
-
         for (let r = 0; r < 3; r++) {
-
             for (let c = 0; c < 5; c++) {
-
                 let i = r * 6 + c;
-
                 let t = puzzleBoardData[i];
-
                 if (t === puzzleBoardData[i+1] && t === puzzleBoardData[i+6] && t === puzzleBoardData[i+7]) {
-
                     matched.add(i); matched.add(i+1); matched.add(i+6); matched.add(i+7);
-
                     audioTriggeredSize = 4;
-
                 }
-
             }
-
         }
-
-
 
         if (matched.size > 0) {
-
             if (matched.size >= 4) audioTriggeredSize = 4;
 
-
-
             matched.forEach(idx => {
-
                 const element = document.getElementById(`tile-${idx}`);
-
                 if (element) element.classList.add("tile-matched");
-
-                if (puzzleBoardData[idx] === "🪙") coinMatchedCount++;
-
-
-
-                // NOVO: Gatilho de Text Flutuante Dinâmico Contextualizado
-
+                
                 let type = puzzleBoardData[idx];
+                if (type === "🪙") coinMatchedCount++;
 
                 if (type === "⚔️") spawnFloatingText(idx, "ATK", "#ef4444");
-
                 if (type === "🛡️") spawnFloatingText(idx, "DEF", "#3b82f6");
-
-                if (type === "🪙") spawnFloatingText(idx, "GOLD", "#fbbf24");
-
+                if (type === "🪙") spawnFloatingText(idx, "OURO", "#fbbf24");
+                if (type === "❤️") spawnFloatingText(idx, "VIDA", "#22c55e");
+                if (type === "🪨") spawnFloatingText(idx, "FALHOU", "#94a3b8");
+                
+                if (type === "🧪") {
+                    if (!isMonsterTurn) {
+                        if (player.mp >= 5) spawnFloatingText(idx, "MAGIA", "#3b82f6");
+                        else spawnFloatingText(idx, "SEM MP", "#94a3b8");
+                    } else {
+                        spawnFloatingText(idx, "MAGIA", "#3b82f6");
+                    }
+                }
             });
 
-
-
-            if (coinMatchedCount >= 3) {
-
-                playMatchAudio(3, true);
-
-            } else {
-
-                playMatchAudio(audioTriggeredSize, false);
-
-            }
-
-
+            if (coinMatchedCount >= 3) playMatchAudio(3, true);
+            else playMatchAudio(audioTriggeredSize, false);
 
             setTimeout(() => {
-
                 matched.forEach(idx => {
-
                     let type = puzzleBoardData[idx];
-
-                    if (type === "⚔️") roundAtk += isMonsterTurn ? (5 + Math.floor(turn * 0.5)) : (player.baseAtk - 5); 
-
+                    
+                    if (type === "⚔️") roundAtk += isMonsterTurn ? (2 + Math.floor(turn * 0.3)) : Math.floor(player.baseAtk / 3); 
                     if (type === "🛡️") roundDef += 2;
-
                     if (type === "❤️") { 
-
                         if (!isMonsterTurn) player.hp = Math.min(player.maxHp, player.hp + 3); 
-
                         else enemy.hp = Math.min(enemy.maxHp, enemy.hp + 1); 
-
+                    }
+                    if (type === "🪙" && !isMonsterTurn) player.gold += 1;
+                    
+                    if (type === "🧪") {
+                        if (!isMonsterTurn) {
+                            if (player.mp >= 5) {
+                                player.mp -= 5;
+                                let normalDmg = Math.floor(player.baseAtk / 3);
+                                roundAtk += Math.ceil(normalDmg * 1.1);
+                            }
+                        } else {
+                            let normalMonsterDmg = (2 + Math.floor(turn * 0.3));
+                            roundAtk += Math.ceil(normalMonsterDmg * 1.1);
+                        }
                     }
 
-                    if (type === "🪙" && !isMonsterTurn) player.gold += 1;
-
-                    
-
-                    puzzleBoardData[idx] = tileTypes[Math.floor(Math.random() * tileTypes.length)];
-
+                    puzzleBoardData[idx] = tilePool[Math.floor(Math.random() * tilePool.length)];
                 });
-
+                
+                document.getElementById("puzzle-round-stats").innerText = isMonsterTurn ? `MONSTRO - ATK: ${roundAtk}` : `HERÓI - ATK: ${roundAtk} | DEF: ${roundDef}`;
+                
                 processBoardCombos(onComplete);
-
             }, 450);
-
         } else {
-
+            if (!hasPossibleMoves()) {
+                puzzleMoves = 0;
+                document.getElementById("scene-description").innerText = "Sem combinações possíveis! Vez encerrada.";
+                generateRandomBoard(); 
+                renderPuzzleUI();
+            }
             if (onComplete) onComplete();
-
         }
-
     }
-
-
 
     function executeHeroResolutionPhase() {
-
         let dmg = Math.max(1, roundAtk);
-
         enemy.hp -= dmg;
-
         document.getElementById("scene-description").innerText = `Fim do seu turno! Você causou ${dmg} de dano!`;
-
         updateUI();
-
-
 
         if (enemy.hp <= 0) {
-
             handleVictoryResolution();
-
         } else {
-
             isMonsterTurn = true;
-
-            puzzleMoves = 5; roundAtk = 0; roundDef = 0;
-
+            puzzleMoves = 5; 
+            roundAtk = 0; 
             setTimeout(() => {
-
-                shuffleBoard(); 
-
                 executeMonsterTurnAI();
-
             }, 1000);
-
         }
-
     }
-
-
 
     function executeMonsterTurnAI() {
-
         if (!inCombat) return;
-
         let movesCounter = 0;
-
+        
         function monsterStep() {
-
             if (movesCounter < 5 && inCombat) {
-
-                let rIdx = Math.floor(Math.random() * 20);
-
-                let nextIdx = rIdx + (Math.random() > 0.5 ? 1 : 6);
-
-                if (nextIdx < 24 && isAdjacent(rIdx, nextIdx)) {
-
-                    let t = puzzleBoardData[rIdx];
-
-                    puzzleBoardData[rIdx] = puzzleBoardData[nextIdx];
-
-                    puzzleBoardData[nextIdx] = t;
-
-                    puzzleMoves--;
-
+                let validMoves = getValidMoves();
+                
+                if (validMoves.length > 0) {
+                    let pick = validMoves[Math.floor(Math.random() * validMoves.length)];
+                    let rIdx = pick[0];
+                    let nextIdx = pick[1];
                     
+                    let t1 = document.getElementById(`tile-${rIdx}`);
+                    let t2 = document.getElementById(`tile-${nextIdx}`);
+                    if(t1) t1.classList.add("selected-tile");
+                    if(t2) t2.classList.add("selected-tile");
 
-                    isProcessingAnimations = true;
-
-                    processBoardCombos(() => {
-
-                        isProcessingAnimations = false;
-
-                        renderPuzzleUI(); movesCounter++;
-
-                        setTimeout(monsterStep, 700);
-
-                    });
+                    setTimeout(() => {
+                        swapData(rIdx, nextIdx);
+                        puzzleMoves--;
+                        
+                        isProcessingAnimations = true;
+                        processBoardCombos(() => {
+                            isProcessingAnimations = false;
+                            renderPuzzleUI(); movesCounter++;
+                            setTimeout(monsterStep, 600); 
+                        });
+                    }, 400); 
 
                 } else {
-
-                    monsterStep();
-
+                    puzzleMoves = 0;
+                    document.getElementById("scene-description").innerText = "O Monstro não encontrou jogadas e passou a vez!";
+                    generateRandomBoard();
+                    executeMonsterResolutionPhase();
                 }
-
             } else {
-
                 executeMonsterResolutionPhase();
-
             }
-
         }
-
         monsterStep();
-
     }
-
-
 
     function executeMonsterResolutionPhase() {
+        let baseScale = Math.floor(turn * 1.8) + 8; 
+        let rawMonsterAtk = roundAtk + baseScale; 
+        
+        if (enemy.type === "raro") rawMonsterAtk = Math.floor(rawMonsterAtk * 1.3);
+        if (enemy.type === "lendario") rawMonsterAtk = Math.floor(rawMonsterAtk * 1.8);
 
-        let rawMonsterAtk = roundAtk + Math.floor(turn * 0.9) + 4; 
+        rawMonsterAtk = Math.ceil(rawMonsterAtk * 1.15);
 
-        let monsterDmg = Math.max(2, rawMonsterAtk - (player.baseDef + roundDef));
-
+        let totalPlayerDef = player.baseDef + roundDef;
+        let monsterDmg = Math.max(3 + Math.floor(turn * 0.3), rawMonsterAtk - totalPlayerDef);
+        
         player.hp -= monsterDmg;
-
-        document.getElementById("scene-description").innerText = `O Monstro atacou e causou -${monsterDmg} de HP!`;
-
+        document.getElementById("scene-description").innerText = `O ${enemy.name} atacou e causou -${monsterDmg} de HP!`;
         updateUI();
 
-
-
         if (player.hp <= 0) {
-
             player.hp = 0; endGame(false);
-
         } else {
-
             isMonsterTurn = false;
-
-            puzzleMoves = 5; roundAtk = 0; roundDef = 0;
-
-            setTimeout(() => {
-
-                shuffleBoard(); 
-
-            }, 1000);
-
+            puzzleMoves = 5; 
+            roundAtk = 0; 
+            roundDef = 0; 
         }
-
     }
 
-
-
     function handleVictoryResolution() {
-
         inCombat = false;
-
         if(enemy.type === "lendario") stats.bossKills++;
-
         else stats.normalKills++;
-
-
 
         let drop = 10 + Math.floor(turn * 1.2); player.gold += drop;
 
-
-
         document.getElementById("viewport-target").style.display = "none";
-
         document.getElementById("viewport-container").style.backgroundImage = "url('assets/img/win.png')";
-
         document.getElementById("viewport-hero").style.display = "block";
-
         document.getElementById("scene-description").innerText = `VITÓRIA! Ouro coletado: +${drop}G`;
+        
+        playBGMTrack('explore'); 
 
-        setTimeout(nextTurnProgress, 2500);
-
+        setTimeout(nextTurnProgress, 5000);
     }
-
-
 
     function nextTurnProgress() {
-
         if (turn >= 30) { endGame(true); return; }
-
         turn++;
-
         document.getElementById("txt-d20-result").innerText = "D20: --";
-
         updateCenarioExploracao();
-
         updateUI();
-
     }
-
-
 
     function usePotion(type) {
-
         if (inCombat) return; 
-
         if (type === 'hp' && player.potHp > 0) { player.hp = Math.min(player.maxHp, player.hp + 20); player.potHp--; }
-
         else if (type === 'mp' && player.potMp > 0) { player.mp = Math.min(player.maxMp, player.mp + 20); player.potMp--; }
-
         updateUI();
-
     }
-
-
 
     function openShop() { if (inCombat) return; changeScreen("screen-shop"); }
-
     function closeShop() { changeScreen("screen-main"); updateUI(); }
 
-
-
     function buyItem(itemType) {
+        let mpPrice = player.class === 'mage' ? 12 : 15;
 
         if (itemType === 'pot_hp' && player.gold >= 15) { player.gold -= 15; player.potHp++; } 
-
-        else if (itemType === 'pot_mp' && player.gold >= 15) { player.gold -= 15; player.potMp++; }
-
+        else if (itemType === 'pot_mp' && player.gold >= mpPrice) { player.gold -= mpPrice; player.potMp++; }
         else if (itemType === 'weapon' && player.gold >= 79) { player.gold -= 79; player.baseAtk += 2; }
-
         else if (itemType === 'armor' && player.gold >= 79) { player.gold -= 79; player.baseDef += 2; }
-
-        openShop();
-
+        updateUI();
     }
-
-
 
     function updateUI() {
-
         document.getElementById("ui-turn").innerText = turn;
-
         document.getElementById("ui-name").innerText = player.name;
-
         
-
         let classNamesMap = { knight: "CAVALEIRO", mage: "MAGA", thief: "LADRÃO" };
-
         document.getElementById("ui-class-tag").innerText = classNamesMap[player.class];
-
         
-
         document.getElementById("ui-atk").innerText = player.baseAtk - 8;
-
         document.getElementById("ui-def").innerText = player.baseDef;
-
         document.getElementById("ui-gold").innerText = player.gold;
-
         document.getElementById("ui-pot-hp").innerText = player.potHp;
-
         document.getElementById("ui-pot-mp").innerText = player.potMp;
-
         
+        let mpPrice = player.class === 'mage' ? 12 : 15;
+        document.getElementById("btn-shop-potmp").innerText = `${mpPrice}G`;
 
         document.getElementById("shop-ui-gold").innerText = `${player.gold}G`;
-
         document.getElementById("shop-ui-pothp").innerText = player.potHp;
-
         document.getElementById("shop-ui-potmp").innerText = player.potMp;
 
-
-
         document.getElementById("txt-hp").innerText = `${player.hp}/${player.maxHp}`;
-
         document.getElementById("bar-hp").style.width = `${(player.hp / player.maxHp) * 100}%`;
-
         document.getElementById("txt-mp").innerText = `${player.mp}/${player.maxMp}`;
-
         document.getElementById("bar-mp").style.width = `${(player.mp / player.maxMp) * 100}%`;
 
-
-
         if (inCombat && enemy) {
-
             document.getElementById("panel-explore").style.display = "none";
-
             document.getElementById("panel-combat").style.display = "block";
-
             document.getElementById("enemy-name").innerText = enemy.name;
-
             document.getElementById("txt-enemy-hp").innerText = `${enemy.hp}/${enemy.maxHp}`;
-
             document.getElementById("bar-enemy").style.width = `${(enemy.hp / enemy.maxHp) * 100}%`;
-
         } else {
-
             document.getElementById("panel-explore").style.display = "block";
-
             document.getElementById("panel-combat").style.display = "none";
-
         }
-
     }
-
-
 
     function endGame(victory) {
-
         changeScreen("screen-end");
+        
+        if(victory) {
+            document.getElementById("screen-end").style.backgroundImage = "url('assets/img/fim1.png')";
+        } else {
+            document.getElementById("screen-end").style.backgroundImage = "url('assets/img/fim2.png')";
+        }
 
-        document.getElementById("end-title").innerText = victory ? "VITÓRIA REAL!" : "GAME OVER";
-
-        document.getElementById("end-message").innerText = victory ? "Incrível! Você superou o balanceamento e conquistou a masmorra!" : "Seu herói sucumbiu ao desafio extremo da masmorra.";
-
-        document.getElementById("end-stats-box").innerHTML = `Estágio Alcançado: ${turn}/30<br>Ouro total guardado: ${player.gold}G`;
-
+        document.getElementById("end-stats-box").innerHTML = `
+            ESTÁGIO ALCANÇADO: ${turn} / 30<br><br>
+            OURO TOTAL GUARDADO: ${player.gold}G<br><br>
+            INIMIGOS DERROTADOS: ${stats.normalKills + stats.bossKills}
+        `;
+        playBGMTrack(null); 
     }
-
 </script>
 
 </body>
-
-</html> 
-
+</html>
