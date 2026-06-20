@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RPG Pocket 2.0 - Final</title>
+    <title>RPG Pocket 4.1 - Ultimate Balance</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rpg-awesome/0.2.0/css/rpg-awesome.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -173,7 +173,7 @@
         <div class="splash-logo-area"><img src="assets/img/esp_open.png" class="open-sword" alt="Espada" onerror="this.style.display='none'"></div>
         <div class="splash-text-container">
             <h1 style="font-size: 22px; margin-bottom: 5px;">RPG POCKET</h1>
-            <h2 style="color: var(--gba-gold); font-size: 11px; letter-spacing: 2px; margin-bottom: 25px;">V2.0 FINAL</h2>
+            <h2 style="color: var(--gba-gold); font-size: 11px; letter-spacing: 2px; margin-bottom: 25px;">V4.1 MASTER</h2>
             <div class="blink-text">TOQUE PARA CONTINUAR</div>
         </div>
         <div class="credits-text">Desenvolvido por<br>wgrmoreira, Miguel e Maria</div>
@@ -287,9 +287,9 @@
         </div>
         <div id="shop-catalog">
             <div class="shop-item-card"><div class="shop-item-info"><strong>P. DE CURA</strong><div>RESTAURA +15 HP</div></div><button onclick="buyItem('pot_hp')">20G</button></div>
-            <div class="shop-item-card"><div class="shop-item-info"><strong>P. DE MANA</strong><div>RESTAURA +15 MP</div></div><button id="btn-shop-potmp" onclick="buyItem('pot_mp')">20G</button></div>
-            <div class="shop-item-card"><div class="shop-item-info"><strong>ESPADA AÇO</strong><div>+2 ATK</div></div><button id="btn-shop-weapon" onclick="buyItem('weapon')">79G</button></div>
-            <div class="shop-item-card"><div class="shop-item-info"><strong>ARMADURA</strong><div>+2 DEF</div></div><button id="btn-shop-armor" onclick="buyItem('armor')">79G</button></div>
+            <div class="shop-item-card"><div class="shop-item-info"><strong>P. DE MANA</strong><div>RESTAURA +8 MP</div></div><button id="btn-shop-potmp" onclick="buyItem('pot_mp')">20G</button></div>
+            <div class="shop-item-card"><div class="shop-item-info"><strong>ESPADA AÇO</strong><div>+2 ATK</div></div><button id="btn-shop-weapon" onclick="buyItem('weapon')"><span id="txt-price-weapon">90</span>G</button></div>
+            <div class="shop-item-card"><div class="shop-item-info"><strong>ARMADURA</strong><div>+2 DEF</div></div><button id="btn-shop-armor" onclick="buyItem('armor')"><span id="txt-price-armor">90</span>G</button></div>
         </div>
         <hr><button onclick="closeShop()" style="width:100%;">VOLTAR</button>
     </div>
@@ -320,6 +320,7 @@
     ]; 
 
     let player = { name: "", class: "knight", hp: 100, maxHp: 100, mp: 60, maxMp: 60, gold: 40, baseAtk: 8, baseDef: 1, potHp: 1, potMp: 1, avatarPath: "" };
+    let shopPrices = { weapon: 90, armor: 90 };
     let stats = { normalKills: 0, bossKills: 0 };
     let enemy = null; let turn = 1; let inCombat = false;
     let selectedClassSetup = "knight"; let welcomeDismissed = false;
@@ -659,7 +660,6 @@
     function generateRandomBoard() {
         puzzleBoardData = [];
         for (let i = 0; i < 24; i++) puzzleBoardData.push(tilePool[Math.floor(Math.random() * tilePool.length)]);
-        // Permite combos automáticos no sorteio
     }
 
     function spawnFloatingText(tileIndex, textValue, colorHex) {
@@ -750,6 +750,7 @@
         if (c > 0) toExplode.push(idx - 1); 
         if (c < 5) toExplode.push(idx + 1); 
 
+        let expPotionCount = 0;
         toExplode.forEach(i => {
             let t = puzzleBoardData[i];
             if (t && t !== "⚡") {
@@ -757,12 +758,17 @@
                 if (t === "🛡️") { roundDef += 2; spawnFloatingText(i, "DEF", "#3b82f6"); }
                 if (t === "❤️") { if (!isMonsterTurn) player.hp = Math.min(player.maxHp, player.hp + 3); else enemy.hp = Math.min(enemy.maxHp, enemy.hp + 1); spawnFloatingText(i, "VIDA", "#22c55e"); }
                 if (t === "🪙" && !isMonsterTurn) { player.gold += 1; spawnFloatingText(i, "OURO", "#fbbf24"); }
-                if (t === "💧" && !isMonsterTurn) { player.mp = Math.min(player.maxMp, player.mp + 5); spawnFloatingText(i, "+MP", "#3b82f6"); }
+                if (t === "💧" && !isMonsterTurn) { expPotionCount++; spawnFloatingText(i, "+MP", "#3b82f6"); }
+                if (t === "🪨") { spawnFloatingText(i, "FALHOU", "#94a3b8"); }
             }
             let el = document.getElementById(`tile-${i}`);
             if (el) el.classList.add("tile-matched");
             puzzleBoardData[i] = null;
         });
+
+        if (!isMonsterTurn && expPotionCount > 0) {
+            player.mp = Math.min(player.maxMp, player.mp + Math.min(expPotionCount, 4));
+        }
 
         updateUI(); isProcessingAnimations = true;
         setTimeout(() => {
@@ -799,9 +805,16 @@
         
         setTimeout(() => {
             if (!checkMoveValidity()) {
-                // Reversão de movimento (Bouncing)
                 swapData(idx1, idx2); renderPuzzleUI(); isProcessingAnimations = false;
-                if (isMonsterTurn) setTimeout(executeMonsterTurnAI_Step, 400); 
+                
+                document.getElementById("scene-description").innerText = "Movimento inválido! Turno passado ao inimigo.";
+                puzzleMoves = 0;
+                
+                if (!isMonsterTurn) {
+                    setTimeout(() => executeHeroResolutionPhase(), 1200);
+                } else {
+                    setTimeout(() => executeMonsterTurnAI_Step(), 400); 
+                }
                 return;
             }
             puzzleMoves--;
@@ -816,6 +829,7 @@
     function processBoardCombos(onComplete) {
         let matched = new Set();
         let audioTriggeredSize = 3; let coinMatchedCount = 0;
+        let potionCount = 0; let potionAnchor = -1;
         let squareAnchors = new Set();
 
         for (let r = 0; r < 4; r++) {
@@ -853,6 +867,8 @@
                 
                 let type = puzzleBoardData[idx];
                 if (type === "🪙") coinMatchedCount++;
+                if (type === "💧") potionCount++;
+                
                 if (type === "⚔️") spawnFloatingText(idx, "ATK", "#ef4444");
                 if (type === "🛡️") spawnFloatingText(idx, "DEF", "#3b82f6");
                 if (type === "🪙") spawnFloatingText(idx, "OURO", "#fbbf24");
@@ -870,9 +886,14 @@
                     if (type === "🛡️") roundDef += 2;
                     if (type === "❤️") { if (!isMonsterTurn) player.hp = Math.min(player.maxHp, player.hp + 3); else enemy.hp = Math.min(enemy.maxHp, enemy.hp + 1); }
                     if (type === "🪙" && !isMonsterTurn) player.gold += 1;
-                    if (type === "💧" && !isMonsterTurn) player.mp = Math.min(player.maxMp, player.mp + 5); 
+                    
                     puzzleBoardData[idx] = null; 
                 });
+                
+                if (!isMonsterTurn && potionCount > 0) {
+                    let mpGain = potionCount >= 4 ? 4 : 3;
+                    player.mp = Math.min(player.maxMp, player.mp + mpGain);
+                }
                 
                 squareAnchors.forEach(idx => { puzzleBoardData[idx] = "⚡"; });
                 applyGravity();
@@ -882,12 +903,21 @@
                 
                 setTimeout(() => {
                     fallingIndices.clear();
-                    processBoardCombos(onComplete); // Cascatas Livres em loop
+                    processBoardCombos(onComplete); 
                 }, 300);
             }, 450);
         } else {
             if (!hasPossibleMoves() && puzzleMoves > 0) {
-                puzzleMoves = 0; document.getElementById("scene-description").innerText = "Sem movimentos possíveis! Fim de turno.";
+                document.getElementById("scene-description").innerText = "Sem movimentos! Reembaralhando o tabuleiro...";
+                isProcessingAnimations = true; 
+                setTimeout(() => {
+                    generateRandomBoard();
+                    renderPuzzleUI();
+                    setTimeout(() => {
+                        processBoardCombos(onComplete); 
+                    }, 400);
+                }, 1000);
+                return;
             }
             if (onComplete) onComplete();
         }
@@ -935,7 +965,7 @@
         let rawMonsterAtk = roundAtk + baseScale; 
         if (enemy.type === "raro") rawMonsterAtk = Math.floor(rawMonsterAtk * 1.3);
         if (enemy.type === "lendario") rawMonsterAtk = Math.floor(rawMonsterAtk * 1.8);
-        rawMonsterAtk = Math.ceil(rawMonsterAtk * 1.15); // +15% Geral
+        rawMonsterAtk = Math.ceil(rawMonsterAtk * 1.30); // +30% Global 
 
         let totalPlayerDef = player.baseDef + roundDef;
         let monsterDmg = Math.max(3 + Math.floor(turn * 0.3), rawMonsterAtk - totalPlayerDef);
@@ -974,7 +1004,7 @@
     function usePotion(type) {
         if (inCombat) return; 
         if (type === 'hp' && player.potHp > 0) { player.hp = Math.min(player.maxHp, player.hp + 20); player.potHp--; }
-        else if (type === 'mp' && player.potMp > 0) { player.mp = Math.min(player.maxMp, player.mp + 20); player.potMp--; }
+        else if (type === 'mp' && player.potMp > 0) { player.mp = Math.min(player.maxMp, player.mp + 8); player.potMp--; }
         updateUI();
     }
 
@@ -986,8 +1016,12 @@
 
         if (itemType === 'pot_hp' && player.gold >= 20) { player.gold -= 20; player.potHp++; } 
         else if (itemType === 'pot_mp' && player.gold >= mpPrice) { player.gold -= mpPrice; player.potMp++; }
-        else if (itemType === 'weapon' && player.gold >= 79) { player.gold -= 79; player.baseAtk += 2; }
-        else if (itemType === 'armor' && player.gold >= 79) { player.gold -= 79; player.baseDef += 2; }
+        else if (itemType === 'weapon' && player.gold >= shopPrices.weapon) { 
+            player.gold -= shopPrices.weapon; player.baseAtk += 2; shopPrices.weapon = 120;
+        }
+        else if (itemType === 'armor' && player.gold >= shopPrices.armor) { 
+            player.gold -= shopPrices.armor; player.baseDef += 2; shopPrices.armor = 120;
+        }
         updateUI();
     }
 
@@ -1005,6 +1039,9 @@
         
         let mpPrice = player.class === 'mage' ? 15 : 20;
         document.getElementById("btn-shop-potmp").innerText = `${mpPrice}G`;
+        document.getElementById("btn-shop-weapon").innerText = `${shopPrices.weapon}G`;
+        document.getElementById("btn-shop-armor").innerText = `${shopPrices.armor}G`;
+        
         document.getElementById("shop-ui-gold").innerText = `${player.gold}G`;
         document.getElementById("shop-ui-pothp").innerText = player.potHp;
         document.getElementById("shop-ui-potmp").innerText = player.potMp;
