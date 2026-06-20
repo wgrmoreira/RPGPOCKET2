@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RPG Pocket 3.1 - Colorful Blocks Final Edition</title>
+    <title>RPG Pocket 3.3 - True Turn Reshuffle Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rpg-awesome/0.2.0/css/rpg-awesome.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -160,8 +160,8 @@
 <div id="game-layout">
     <div id="welcome-modal">
         <div class="modal-content">
-            <p style="color: var(--gba-gold); font-weight: bold;">BEM-VINDO AO RPG POCKET 3.1 FINAL!</p>
-            <p>TURNOS ANIMADOS, BLOCOS COLORIDOS E UI LIMPA.</p>
+            <p style="color: var(--gba-gold); font-weight: bold;">BEM-VINDO AO RPG POCKET 3.3 FINAL!</p>
+            <p>TURNOS REEMBARALHADOS, RAIOS MÁGICOS E ÁUDIO SEPARADO.</p>
             <button onclick="dismissWelcome()">OK</button>
         </div>
     </div>
@@ -170,7 +170,7 @@
         <div class="splash-logo-area"><img src="assets/img/esp_open.png" class="open-sword" alt="Espada" onerror="this.style.display='none'"></div>
         <div class="splash-text-container">
             <h1 style="font-size: 22px; margin-bottom: 5px;">RPG POCKET</h1>
-            <h2 style="color: var(--gba-gold); font-size: 11px; letter-spacing: 2px; margin-bottom: 25px;">V3.1 FINAL</h2>
+            <h2 style="color: var(--gba-gold); font-size: 11px; letter-spacing: 2px; margin-bottom: 25px;">V3.3 FINAL</h2>
             <div class="blink-text">TOQUE PARA CONTINUAR</div>
         </div>
         <div class="credits-text">Desenvolvido por<br>wgrmoreira, Miguel e Maria</div>
@@ -312,7 +312,7 @@
         "🛡️","🛡️","🛡️","🛡️","🛡️","🛡️","🛡️","🛡️", // 8 Escudos (26.6%)
         "❤️","❤️","❤️","❤️","❤️",             // 5 Corações (16.6%)
         "🪙","🪙","🪙","🪙","🪙",             // 5 Moedas (16.6%)
-        "💧","💧",                            // 2 Poções de Mana (6.6%)
+        "💧","💧",                            // 2 Poções (6.6%)
         "🪨","🪨"                             // 2 Pedras (6.6%)
     ]; 
 
@@ -369,42 +369,34 @@
 
         bgmInterval = setInterval(() => {
             if(globalMusicVolume === 0) return; 
-            
             let freq = track.notes[stepCount % track.notes.length];
             stepCount++;
             
             if (freq > 0) {
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                
+                let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
                 osc.type = track.type;
                 osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                
                 let playVol = globalMusicVolume * 0.2; 
-                
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
+                osc.connect(gain); gain.connect(audioCtx.destination);
                 gain.gain.setValueAtTime(playVol, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (track.speed / 1000));
-                
-                osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + (track.speed / 1000));
+                osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + (track.speed / 1000));
             }
         }, track.speed);
     }
 
+    // Efeitos Sonoros são intocáveis pelo Vol global (Volume fixo)
     function playMatchAudio(comboSize, isCoin = false) {
         if (!audioCtx) initAudioContext();
         let now = audioCtx.currentTime;
-        let playVol = 0.15; // SFX intocável pelo controle de música
+        let sfxVol = 0.15; 
 
         if (isCoin) {
             for (let i = 0; i < 3; i++) {
                 let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
                 osc.type = 'sine'; osc.frequency.setValueAtTime(987.77 + (i * 200), now + (i * 0.06));
                 osc.connect(gain); gain.connect(audioCtx.destination);
-                gain.gain.setValueAtTime(playVol, now + (i * 0.06)); gain.gain.linearRampToValueAtTime(0.001, now + 0.2 + (i * 0.06));
+                gain.gain.setValueAtTime(sfxVol, now + (i * 0.06)); gain.gain.linearRampToValueAtTime(0.001, now + 0.2 + (i * 0.06));
                 osc.start(now + (i * 0.06)); osc.stop(now + 0.2 + (i * 0.06));
             }
             return;
@@ -416,14 +408,14 @@
                 let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
                 osc.type = 'triangle'; osc.frequency.setValueAtTime(f, now + (idx * 0.08));
                 osc.connect(gain); gain.connect(audioCtx.destination);
-                gain.gain.setValueAtTime(playVol, now + (idx * 0.08)); gain.gain.linearRampToValueAtTime(0.001, now + 0.3 + (idx * 0.08));
+                gain.gain.setValueAtTime(sfxVol, now + (idx * 0.08)); gain.gain.linearRampToValueAtTime(0.001, now + 0.3 + (idx * 0.08));
                 osc.start(now + (idx * 0.08)); osc.stop(now + 0.3 + (idx * 0.08));
             });
         } else { 
             let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
             osc.type = 'sine'; osc.frequency.setValueAtTime(587.33, now); osc.frequency.exponentialRampToValueAtTime(880, now + 0.1);
             osc.connect(gain); gain.connect(audioCtx.destination);
-            gain.gain.setValueAtTime(playVol, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.15);
+            gain.gain.setValueAtTime(sfxVol, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.15);
             osc.start(now); osc.stop(now + 0.15);
         }
     }
@@ -440,7 +432,7 @@
             osc.frequency.setValueAtTime(f, now + (idx * 0.1));
             osc.connect(gain);
             gain.connect(audioCtx.destination);
-            gain.gain.setValueAtTime(0.3, now + (idx * 0.1)); // SFX Intocável
+            gain.gain.setValueAtTime(0.3, now + (idx * 0.1)); 
             gain.gain.linearRampToValueAtTime(0.001, now + 0.2 + (idx * 0.1));
             osc.start(now + (idx * 0.1));
             osc.stop(now + 0.2 + (idx * 0.1));
@@ -614,7 +606,7 @@
         for (let r = 0; r < 4; r++) {
             for (let c = 0; c < 6; c++) {
                 let i = r * 6 + c;
-                if (puzzleBoardData[i] === "⚡") continue; // Raio não gera combos arrastando
+                if (puzzleBoardData[i] === "⚡") continue; 
                 if (c < 5 && puzzleBoardData[i+1] !== "⚡") { swapData(i, i+1); if (checkMoveValidity()) moves.push([i, i+1]); swapData(i, i+1); }
                 if (r < 3 && puzzleBoardData[i+6] !== "⚡") { swapData(i, i+6); if (checkMoveValidity()) moves.push([i, i+6]); swapData(i, i+6); }
             }
@@ -623,44 +615,50 @@
     }
     function hasPossibleMoves() { return getValidMoves().length > 0; }
 
+    // O TABULEIRO É TOTALMENTE REEMBARALHADO A CADA NOVA VEZ (HERÓI E MONSTRO)
     function startTurnFlow(isMonster) {
         isMonsterTurn = isMonster;
         gridLocked = true;
-        renderPuzzleUI(); 
+        puzzleMoves = 5;
+        roundAtk = 0;
+        if (!isMonster) roundDef = 0;
         
         let banner = document.getElementById("turn-banner");
         banner.innerText = isMonster ? "TURNO DO INIMIGO" : "SEU TURNO";
-        banner.style.backgroundColor = isMonster ? "rgba(220, 38, 38, 0.9)" : "rgba(37, 99, 235, 0.9)";
-        banner.style.border = "3px solid #fff";
+        banner.style.backgroundColor = isMonster ? "rgba(220, 38, 38, 0.95)" : "rgba(37, 99, 235, 0.95)";
         banner.style.display = "block";
         
+        generateRandomBoard();
+        renderPuzzleUI();
+        
+        let combosFinished = false;
+        let timeUp = false;
+        
+        isProcessingAnimations = true;
+        processBoardCombos(() => {
+            combosFinished = true;
+            checkUnlock();
+        });
+        
         setTimeout(() => {
-            banner.style.display = "none";
-            gridLocked = false;
-            if(isMonster) executeMonsterTurnAI();
+            timeUp = true;
+            checkUnlock();
         }, 2000);
+        
+        function checkUnlock() {
+            if (combosFinished && timeUp) {
+                banner.style.display = "none";
+                isProcessingAnimations = false;
+                gridLocked = false;
+                renderPuzzleUI();
+                if(isMonsterTurn) executeMonsterTurnAI();
+            }
+        }
     }
 
     function initPuzzleCombatEngine() {
-        puzzleMoves = 5; roundAtk = 0; roundDef = 0;
-        generateRandomBoard();
-        renderPuzzleUI();
-        
-        isProcessingAnimations = true;
-        processBoardCombos(() => {
-            isProcessingAnimations = false;
-            startTurnFlow(false);
-        });
-    }
-
-    function shuffleBoard() {
-        generateRandomBoard();
-        renderPuzzleUI();
-        isProcessingAnimations = true;
-        processBoardCombos(() => {
-            isProcessingAnimations = false;
-            renderPuzzleUI();
-        });
+        roundDef = 0;
+        startTurnFlow(false);
     }
 
     function generateRandomBoard() {
@@ -701,19 +699,17 @@
             tileNode.className = "puzzle-tile-block";
             tileNode.id = `tile-${index}`;
             
-            // CORES DE FUNDO DOS BLOCOS (Substituindo classes dinamicamente)
-            if(tile === "❤️") tileNode.style.backgroundColor = "#7f1d1d"; // Vermelho escuro
-            else if(tile === "🛡️") tileNode.style.backgroundColor = "#4c1d95"; // Roxo escuro
-            else if(tile === "💧") tileNode.style.backgroundColor = "#1e3a8a"; // Azul escuro
-            else if(tile === "🪙") tileNode.style.backgroundColor = "#14532d"; // Verde escuro
-            else if(tile === "🪨") tileNode.style.backgroundColor = "#78350f"; // Marrom
-            else if(tile === "⚡") tileNode.style.backgroundColor = "#000000"; // Preto
-            else if(tile === "⚔️") tileNode.style.backgroundColor = "#334155"; // Cinza (Espada)
+            if(tile === "❤️") tileNode.style.backgroundColor = "#7f1d1d"; 
+            else if(tile === "🛡️") tileNode.style.backgroundColor = "#4c1d95"; 
+            else if(tile === "💧") tileNode.style.backgroundColor = "#1e3a8a"; 
+            else if(tile === "🪙") tileNode.style.backgroundColor = "#14532d"; 
+            else if(tile === "🪨") tileNode.style.backgroundColor = "#78350f"; 
+            else if(tile === "⚡") tileNode.style.backgroundColor = "#000000"; 
+            else if(tile === "⚔️") tileNode.style.backgroundColor = "#334155"; 
 
             if (index === selectedTileIndex) tileNode.classList.add("selected-tile");
             tileNode.innerText = tile;
             
-            // Clicar no Bloco Mágico ⚡
             tileNode.onclick = () => { 
                 if (gridLocked || isProcessingAnimations || isMonsterTurn) return;
                 
@@ -727,8 +723,13 @@
                         puzzleBoardData[index] = tilePool[Math.floor(Math.random() * tilePool.length)];
                         puzzleMoves--;
                         updateUI();
-                        renderPuzzleUI();
-                        if (puzzleMoves <= 0) setTimeout(executeHeroResolutionPhase, 800);
+                        
+                        isProcessingAnimations = true;
+                        processBoardCombos(() => {
+                            isProcessingAnimations = false;
+                            if (puzzleMoves <= 0) executeHeroResolutionPhase();
+                            else renderPuzzleUI();
+                        });
                     } else {
                         spawnFloatingText(index, "SEM MP", "#94a3b8");
                     }
@@ -788,7 +789,7 @@
     function executeTileSwap(idx1, idx2) {
         swapData(idx1, idx2);
         isProcessingAnimations = true;
-        renderPuzzleUI(); // Mostra visualmente a inversão por 200ms antes de iluminar e estourar
+        renderPuzzleUI(); 
         
         setTimeout(() => {
             if (!checkMoveValidity()) {
@@ -817,7 +818,7 @@
     function processBoardCombos(onComplete) {
         let matched = new Set();
         let audioTriggeredSize = 3; let coinMatchedCount = 0;
-        let potionCount = 0; let potionAnchor = -1;
+        let squareAnchors = new Set();
 
         for (let r = 0; r < 4; r++) {
             for (let c = 0; c < 4; c++) {
@@ -841,6 +842,7 @@
                 if (t!=="⚡" && t === puzzleBoardData[i+1] && t === puzzleBoardData[i+6] && t === puzzleBoardData[i+7]) {
                     matched.add(i); matched.add(i+1); matched.add(i+6); matched.add(i+7);
                     audioTriggeredSize = 4;
+                    if (["⚔️", "❤️", "🛡️", "💧"].includes(t)) squareAnchors.add(i);
                 }
             }
         }
@@ -850,11 +852,10 @@
 
             matched.forEach(idx => {
                 let element = document.getElementById(`tile-${idx}`);
-                if (element) element.classList.add("tile-matched"); // Ilumina somente a sequência real
+                if (element) element.classList.add("tile-matched"); 
                 
                 let type = puzzleBoardData[idx];
                 if (type === "🪙") coinMatchedCount++;
-                if (type === "💧") { potionCount++; if(potionAnchor===-1) potionAnchor=idx; }
 
                 if (type === "⚔️") spawnFloatingText(idx, "ATK", "#ef4444");
                 if (type === "🛡️") spawnFloatingText(idx, "DEF", "#3b82f6");
@@ -876,8 +877,7 @@
                     if (type === "🪙" && !isMonsterTurn) player.gold += 1;
                     if (type === "💧" && !isMonsterTurn) player.mp = Math.min(player.maxMp, player.mp + 5); 
 
-                    // Gera o bloco de raio ⚡ se 4 ou mais poções foram batidas pelo herói
-                    if (potionCount >= 4 && idx === potionAnchor && !isMonsterTurn) {
+                    if (squareAnchors.has(idx)) {
                         puzzleBoardData[idx] = "⚡";
                     } else {
                         puzzleBoardData[idx] = tilePool[Math.floor(Math.random() * tilePool.length)];
@@ -885,6 +885,7 @@
                 });
                 
                 document.getElementById("puzzle-round-stats").innerText = isMonsterTurn ? `MONSTRO - ATK: ${roundAtk}` : `HERÓI - ATK: ${roundAtk} | DEF: ${roundDef}`;
+                
                 processBoardCombos(onComplete);
             }, 450);
         } else {
@@ -904,7 +905,6 @@
 
         if (enemy.hp <= 0) handleVictoryResolution();
         else {
-            puzzleMoves = 5; roundAtk = 0; 
             setTimeout(() => { startTurnFlow(true); }, 1000);
         }
     }
@@ -943,7 +943,7 @@
         let rawMonsterAtk = roundAtk + baseScale; 
         if (enemy.type === "raro") rawMonsterAtk = Math.floor(rawMonsterAtk * 1.3);
         if (enemy.type === "lendario") rawMonsterAtk = Math.floor(rawMonsterAtk * 1.8);
-        rawMonsterAtk = Math.ceil(rawMonsterAtk * 1.15); // +15% Geral
+        rawMonsterAtk = Math.ceil(rawMonsterAtk * 1.15); 
 
         let totalPlayerDef = player.baseDef + roundDef;
         let monsterDmg = Math.max(3 + Math.floor(turn * 0.3), rawMonsterAtk - totalPlayerDef);
@@ -955,7 +955,6 @@
         if (player.hp <= 0) {
             player.hp = 0; endGame(false);
         } else {
-            puzzleMoves = 5; roundAtk = 0; roundDef = 0; 
             setTimeout(() => { startTurnFlow(false); }, 1000);
         }
     }
