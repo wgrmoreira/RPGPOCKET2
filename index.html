@@ -52,8 +52,10 @@
         .credits-text { font-size: 6px; color: #cbd5e1; margin-bottom: 15px; text-shadow: 1px 1px 0 #000; text-align: center; line-height: 1.5; }
 
         #welcome-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); z-index: 100; display: flex; justify-content: center; align-items: center; padding: 20px; border-radius: 12px; }
-        .modal-content { background: var(--gba-ui-box); border: 4px solid var(--gba-gold); border-radius: 12px; padding: 25px; text-align: center; font-size: 10px; line-height: 2; color: var(--gba-text-light); box-shadow: 0 0 25px var(--gba-gold); }
-        .modal-content button { font-size: 14px; padding: 16px 30px; font-weight: bold; }
+        .modal-content { background: var(--gba-ui-box); border: 4px solid var(--gba-gold); border-radius: 12px; padding: 20px; text-align: center; font-size: 10px; line-height: 2; color: var(--gba-text-light); box-shadow: 0 0 25px var(--gba-gold); width: 100%; max-width: 320px; }
+        .modal-content button { font-size: 14px; padding: 14px 30px; font-weight: bold; margin-top: 10px; }
+        
+        .metatesters-list { font-size: 6px; line-height: 1.6; color: #94a3b8; margin: 15px 0; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; border: 1px solid var(--gba-border); }
 
         .screen { display: none !important; }
         .screen.active { display: flex !important; flex-direction: column; }
@@ -142,9 +144,8 @@
         .puzzle-tile-block.tile-matched { background-color: #f59e0b !important; border-color: #fff !important; color: #fff !important; transform: scale(1.15); animation: flashMatch 0.25s infinite alternate; z-index: 10; }
         @keyframes flashMatch { 0% { filter: brightness(1); } 100% { filter: brightness(1.5); } }
 
-        /* Animação da Queda de Blocos (Gravidade) */
-        @keyframes fallDown { 0% { transform: translateY(-40px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
         .falling { animation: fallDown 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes fallDown { 0% { transform: translateY(-40px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
 
         .puzzle-floating-text { position: absolute; font-size: 11px; font-weight: bold; color: #fff; text-shadow: 2px 2px 0px #000; z-index: 50; pointer-events: none; animation: floatUpAndFade 0.8s forwards ease-out; }
         @keyframes floatUpAndFade { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-40px); opacity: 0; } }
@@ -164,7 +165,18 @@
 <div id="game-layout">
     <div id="welcome-modal">
         <div class="modal-content">
-            <p style="color: var(--gba-gold); font-weight: bold;">BEM-VINDO AO RPG POCKET 2!</p>
+            <p style="color: var(--gba-gold); font-weight: bold; font-size: 14px;">BEM-VINDO AO RPG POCKET 2!</p>
+            <p style="font-size: 7px; color: #cbd5e1; margin-top: -10px;">Salvamento automático ativado.</p>
+            
+            <div class="metatesters-list">
+                <strong style="color: var(--gba-gold); font-size: 7px;">Agradecimentos aos MetaTesters:</strong><br><br>
+                Grupo Metafofos | Odissey | Master<br>
+                Morg | Veruska | Rizzek | CAP<br>
+                Coronel | Maria Helena<br>
+                Miguel Furtado<br><br>
+                <span style="color: #cbd5e1;">e muitos outros...</span>
+            </div>
+
             <button onclick="dismissWelcome()">OK</button>
         </div>
     </div>
@@ -197,6 +209,11 @@
         </div>
         <div class="start-actions-row">
             <button class="btn-start-adventure" onclick="startGame()">INICIAR AVENTURA</button>
+        </div>
+        <div class="start-actions-row" id="btn-load-container" style="display:none; margin-top: 6px;">
+            <button onclick="loadGame()" style="background: linear-gradient(180deg, #d97706, #b45309); border-color: #78350f; box-shadow: 0 4px 0 #451a03;">CONTINUAR JOGO SALVO</button>
+        </div>
+        <div class="start-actions-row" style="margin-top: 6px;">
             <div class="audio-controls">
                 <button onclick="adjustMusicVolume(-0.1)">V-</button>
                 <button onclick="adjustMusicVolume(0.1)">V+</button>
@@ -424,10 +441,30 @@
             let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
             osc.type = 'square'; osc.frequency.setValueAtTime(f, now + (idx * 0.1));
             osc.connect(gain); gain.connect(audioCtx.destination);
-            gain.gain.setValueAtTime(0.3, now + (idx * 0.1)); // SFX Vol fixo
+            gain.gain.setValueAtTime(0.3, now + (idx * 0.1)); 
             gain.gain.linearRampToValueAtTime(0.001, now + 0.2 + (idx * 0.1));
             osc.start(now + (idx * 0.1)); osc.stop(now + 0.2 + (idx * 0.1));
         });
+    }
+
+    // ==========================================
+    // SISTEMA DE SALVAMENTO (LOCALSTORAGE)
+    // ==========================================
+    function saveGame() {
+        const data = { player, stats, turn, shopPrices };
+        localStorage.setItem('rpgPocketSave', JSON.stringify(data));
+    }
+
+    function loadGame() {
+        const dataStr = localStorage.getItem('rpgPocketSave');
+        if (dataStr) {
+            const data = JSON.parse(dataStr);
+            player = data.player; stats = data.stats; turn = data.turn; shopPrices = data.shopPrices;
+            changeScreen("screen-main");
+            playBGMTrack('explore');
+            updateCenarioExploracao();
+            updateUI();
+        }
     }
 
     // ==========================================
@@ -440,9 +477,27 @@
         document.getElementById(`opt-${className}`).classList.add('selected');
     }
 
-    function dismissWelcome() { initAudioContext(); document.getElementById("welcome-modal").style.display = "none"; welcomeDismissed = true; playBGMTrack('splash'); }
-    function goToClassSelection() { if (welcomeDismissed) { changeScreen("screen-start"); playBGMTrack('select'); } }
-    function changeScreen(screenId) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(screenId).classList.add('active'); }
+    function dismissWelcome() { 
+        initAudioContext(); 
+        document.getElementById("welcome-modal").style.display = "none"; 
+        welcomeDismissed = true; 
+        playBGMTrack('splash'); 
+    }
+
+    function goToClassSelection() { 
+        if (welcomeDismissed) { 
+            changeScreen("screen-start"); 
+            playBGMTrack('select'); 
+            if (localStorage.getItem('rpgPocketSave')) {
+                document.getElementById('btn-load-container').style.display = 'flex';
+            }
+        } 
+    }
+
+    function changeScreen(screenId) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(screenId).classList.add('active'); 
+    }
 
     function startGame() {
         const inputEl = document.getElementById("player-name-input");
@@ -551,10 +606,10 @@
         if (categoria === "Normais") {
             const pool = [ { name: "Orc", img: "orc1.png" }, { name: "Orc Xamã", img: "orc2.png" }, { name: "Esqueleto", img: "esq1.png" }, { name: "Goblin", img: "gobl1.png" } ];
             let picked = pool[Math.floor(Math.random() * pool.length)];
-            let calculatedHp = Math.ceil(Math.round(35 + (turn * 3.5)) * 1.15);
+            let calculatedHp = Math.ceil(Math.round(35 + (turn * 3.5)) * 1.20);
             enemy = { name: picked.name, hp: calculatedHp, maxHp: calculatedHp, img: picked.img, type: "normal" };
         } else {
-            let calculatedHp = Math.ceil(Math.round(60 + (turn * 5)) * 1.15); 
+            let calculatedHp = Math.ceil(Math.round(60 + (turn * 5)) * 1.20); 
             enemy = { name: "Lobo Alfa", img: "lob1.png", hp: calculatedHp, maxHp: calculatedHp, type: "raro" };
         }
 
@@ -575,7 +630,7 @@
         document.getElementById("viewport-target").style.display = "block";
         document.getElementById("viewport-target").src = "assets/img/dra1.png";
 
-        let bossHp = Math.ceil(180 * 1.15);
+        let bossHp = Math.ceil(180 * 1.20);
         enemy = { name: "Dragão Da Praga", hp: bossHp, maxHp: bossHp, type: "lendario" };
         document.getElementById("scene-description").className = "scene-combat";
         document.getElementById("scene-description").innerText = `Chefe Lendário Final! Defenda-se!`;
@@ -629,7 +684,6 @@
         }
     }
 
-    // O TABULEIRO É TOTALMENTE REEMBARALHADO A CADA NOVA VEZ
     function startTurnFlow(isMonster) {
         isMonsterTurn = isMonster; gridLocked = true; puzzleMoves = 5;
         roundAtk = 0; if (!isMonster) roundDef = 0;
@@ -658,8 +712,10 @@
     function initPuzzleCombatEngine() { roundDef = 0; startTurnFlow(false); }
 
     function generateRandomBoard() {
-        puzzleBoardData = [];
-        for (let i = 0; i < 24; i++) puzzleBoardData.push(tilePool[Math.floor(Math.random() * tilePool.length)]);
+        do {
+            puzzleBoardData = [];
+            for (let i = 0; i < 24; i++) puzzleBoardData.push(tilePool[Math.floor(Math.random() * tilePool.length)]);
+        } while(!hasPossibleMoves()); 
     }
 
     function spawnFloatingText(tileIndex, textValue, colorHex) {
@@ -867,7 +923,7 @@
                 
                 let type = puzzleBoardData[idx];
                 if (type === "🪙") coinMatchedCount++;
-                if (type === "💧") potionCount++;
+                if (type === "💧") { potionCount++; if(potionAnchor===-1) potionAnchor=idx; }
                 
                 if (type === "⚔️") spawnFloatingText(idx, "ATK", "#ef4444");
                 if (type === "🛡️") spawnFloatingText(idx, "DEF", "#3b82f6");
@@ -965,7 +1021,7 @@
         let rawMonsterAtk = roundAtk + baseScale; 
         if (enemy.type === "raro") rawMonsterAtk = Math.floor(rawMonsterAtk * 1.3);
         if (enemy.type === "lendario") rawMonsterAtk = Math.floor(rawMonsterAtk * 1.8);
-        rawMonsterAtk = Math.ceil(rawMonsterAtk * 1.30); // +30% Global 
+        rawMonsterAtk = Math.ceil(rawMonsterAtk * 1.20); 
 
         let totalPlayerDef = player.baseDef + roundDef;
         let monsterDmg = Math.max(3 + Math.floor(turn * 0.3), rawMonsterAtk - totalPlayerDef);
@@ -999,6 +1055,7 @@
         if (turn >= 30) { endGame(true); return; }
         turn++; document.getElementById("txt-d20-result").innerText = "D20: --";
         updateCenarioExploracao(); updateUI();
+        saveGame(); 
     }
 
     function usePotion(type) {
@@ -1009,7 +1066,7 @@
     }
 
     function openShop() { if (inCombat) return; changeScreen("screen-shop"); }
-    function closeShop() { changeScreen("screen-main"); updateUI(); }
+    function closeShop() { changeScreen("screen-main"); updateUI(); saveGame(); }
 
     function buyItem(itemType) {
         let mpPrice = player.class === 'mage' ? 15 : 20;
@@ -1073,7 +1130,8 @@
             OURO TOTAL GUARDADO: ${player.gold}G<br><br>
             INIMIGOS DERROTADOS: ${stats.normalKills + stats.bossKills}
         `;
-        playBGMTrack(null); 
+        playBGMTrack(null);
+        localStorage.removeItem('rpgPocketSave'); 
     }
 </script>
 
