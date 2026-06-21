@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RPG Pocket 4.1 - Ultimate Balance</title>
+    <title>RPG Pocket 4.2 - The Masterpiece Patch</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rpg-awesome/0.2.0/css/rpg-awesome.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -51,9 +51,10 @@
         @keyframes pulseFade { 0% { opacity: 0.1; } 50% { opacity: 1; } 100% { opacity: 0.1; } }
         .credits-text { font-size: 6px; color: #cbd5e1; margin-bottom: 15px; text-shadow: 1px 1px 0 #000; text-align: center; line-height: 1.5; }
 
-        #welcome-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); z-index: 100; display: flex; justify-content: center; align-items: center; padding: 20px; border-radius: 12px; }
-        .modal-content { background: var(--gba-ui-box); border: 4px solid var(--gba-gold); border-radius: 12px; padding: 20px; text-align: center; font-size: 10px; line-height: 2; color: var(--gba-text-light); box-shadow: 0 0 25px var(--gba-gold); width: 100%; max-width: 320px; }
+        #welcome-modal, #instructions-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); z-index: 100; display: flex; justify-content: center; align-items: center; padding: 20px; border-radius: 12px; }
+        .modal-content { background: var(--gba-ui-box); border: 4px solid var(--gba-gold); border-radius: 12px; padding: 20px; text-align: center; font-size: 10px; line-height: 2; color: var(--gba-text-light); box-shadow: 0 0 25px var(--gba-gold); width: 100%; max-width: 320px; position: relative; }
         .modal-content button { font-size: 14px; padding: 14px 30px; font-weight: bold; margin-top: 10px; }
+        .btn-help { position: absolute; top: 10px; right: 10px; font-size: 14px; padding: 6px 12px; margin: 0 !important; }
         
         .metatesters-list { font-size: 6px; line-height: 1.6; color: #94a3b8; margin: 15px 0; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; border: 1px solid var(--gba-border); }
 
@@ -165,19 +166,37 @@
 <div id="game-layout">
     <div id="welcome-modal">
         <div class="modal-content">
+            <button class="btn-help" onclick="showInstructions()">?</button>
             <p style="color: var(--gba-gold); font-weight: bold; font-size: 14px;">BEM-VINDO AO RPG POCKET 2!</p>
             <p style="font-size: 7px; color: #cbd5e1; margin-top: -10px;">Salvamento automático ativado.</p>
             
             <div class="metatesters-list">
                 <strong style="color: var(--gba-gold); font-size: 7px;">Agradecimentos aos MetaTesters:</strong><br><br>
-                Grupo Metafofos | Odissey | Master<br>
+                Grupo Metafofos | Odyssey | Master<br>
                 Morg | Veruska | Rizzek | CAP<br>
                 Coronel | Maria Helena<br>
-                Miguel Furtado<br><br>
+                Miguel Furtado | Lutika | Guilherme<br>
+                Drih | Cleber | Amanda<br><br>
                 <span style="color: #cbd5e1;">e muitos outros...</span>
             </div>
 
-            <button onclick="dismissWelcome()">OK</button>
+            <button onclick="dismissWelcome()" style="width: 100%;">OK</button>
+        </div>
+    </div>
+
+    <div id="instructions-modal" style="display: none;">
+        <div class="modal-content" style="text-align: left;">
+            <h2 style="color: var(--gba-gold); font-size: 12px; text-align: center; margin-bottom: 15px;">INSTRUÇÕES</h2>
+            <div style="font-size: 8px; line-height: 1.8; color: #cbd5e1; margin-bottom: 15px;">
+                <strong style="color:var(--gba-gold)">SALVAMENTO:</strong><br>
+                O progresso é salvo ao final de cada estágio. Use "Continuar Jogo Salvo" na tela de heróis.<br><br>
+                <strong style="color:var(--gba-gold)">BATALHA (MATCH-3):</strong><br>
+                - Combine 3 peças para Atacar(⚔️), Defender(🛡️), Curar(❤️), Magia(💧) ou Ouro(🪙).<br>
+                - Pedras(🪨) explodem mas não dão bônus.<br>
+                - Se o movimento não estourar peças, <strong>você perde a vez</strong>.<br>
+                - <strong>MAGIA (⚡):</strong> Combine 4 peças ou um quadrado 2x2 para gerar um Raio. Clique nele (custa 15 MP) para explodir em cruz causando Dano Mágico!
+            </div>
+            <button onclick="hideInstructions()" style="width: 100%; font-size: 10px; padding: 12px;">VOLTAR</button>
         </div>
     </div>
 
@@ -185,7 +204,7 @@
         <div class="splash-logo-area"><img src="assets/img/esp_open.png" class="open-sword" alt="Espada" onerror="this.style.display='none'"></div>
         <div class="splash-text-container">
             <h1 style="font-size: 22px; margin-bottom: 5px;">RPG POCKET</h1>
-            <h2 style="color: var(--gba-gold); font-size: 11px; letter-spacing: 2px; margin-bottom: 25px;">V4.1 MASTER</h2>
+            <h2 style="color: var(--gba-gold); font-size: 11px; letter-spacing: 2px; margin-bottom: 25px;">V4.2 MASTER</h2>
             <div class="blink-text">TOQUE PARA CONTINUAR</div>
         </div>
         <div class="credits-text">Desenvolvido por<br>wgrmoreira, Miguel e Maria</div>
@@ -356,11 +375,11 @@
     let currentBGMTrackName = null;
     let globalMusicVolume = 0.5; // Iniciando 50%
 
+    // Nota: "combat" foi removido a pedido. Mantemos apenas 'splash', 'select' e 'explore'
     const T = {
         'splash': { notes: [523.25, 659.25, 783.99, 1046.50], speed: 180, type: 'square' },
         'select': { notes: [261.63, 0, 329.63, 0, 392.00, 0], speed: 250, type: 'triangle' },
-        'explore': { notes: [220.00, 0, 261.63, 0], speed: 600, type: 'sine' },
-        'combat': { notes: [110.00, 116.54, 110.00, 98.00], speed: 130, type: 'sawtooth' }
+        'explore': { notes: [220.00, 0, 261.63, 0], speed: 600, type: 'sine' }
     };
 
     function initAudioContext() { 
@@ -401,6 +420,7 @@
         }, track.speed);
     }
 
+    // Efeitos Sonoros são intocáveis pelo Vol global (Volume fixo)
     function playMatchAudio(comboSize, isCoin = false) {
         if (!audioCtx) initAudioContext();
         let now = audioCtx.currentTime; let sfxVol = 0.15; // Intocável
@@ -447,8 +467,51 @@
         });
     }
 
+    // Novos SFX Solicitados
+    function playPotionSound() {
+        if (!audioCtx) initAudioContext();
+        let now = audioCtx.currentTime;
+        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(800, now + 0.3);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.linearRampToValueAtTime(0.001, now + 0.3);
+        osc.start(now); osc.stop(now + 0.3);
+    }
+
+    function playBuySound() {
+        if (!audioCtx) initAudioContext();
+        let now = audioCtx.currentTime;
+        let freqs = [1200, 1600];
+        freqs.forEach((f, i) => {
+            let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(f, now + i*0.1);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            gain.gain.setValueAtTime(0.15, now + i*0.1);
+            gain.gain.linearRampToValueAtTime(0.001, now + 0.1 + i*0.1);
+            osc.start(now + i*0.1); osc.stop(now + 0.1 + i*0.1);
+        });
+    }
+
+    function playMagicSound() {
+        if (!audioCtx) initAudioContext();
+        let now = audioCtx.currentTime;
+        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.exponentialRampToValueAtTime(100, now + 0.4);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.linearRampToValueAtTime(0.001, now + 0.4);
+        osc.start(now); osc.stop(now + 0.4);
+    }
+
+
     // ==========================================
-    // SISTEMA DE SALVAMENTO (LOCALSTORAGE)
+    // SISTEMA DE SALVAMENTO E TELAS
     // ==========================================
     function saveGame() {
         const data = { player, stats, turn, shopPrices };
@@ -467,9 +530,16 @@
         }
     }
 
-    // ==========================================
-    // LOGICA DE INTERFACE E JOGO
-    // ==========================================
+    function showInstructions() {
+        initAudioContext();
+        document.getElementById('welcome-modal').style.display = 'none';
+        document.getElementById('instructions-modal').style.display = 'flex';
+    }
+
+    function hideInstructions() {
+        document.getElementById('instructions-modal').style.display = 'none';
+        document.getElementById('welcome-modal').style.display = 'flex';
+    }
 
     function selectClass(className) {
         selectedClassSetup = className;
@@ -520,6 +590,10 @@
         updateCenarioExploracao();
         updateUI();
     }
+
+    // ==========================================
+    // COMBATE E EXPLORAÇÃO
+    // ==========================================
 
     function updateCenarioExploracao() {
         inCombat = false; enemy = null; isMonsterTurn = false;
@@ -595,7 +669,8 @@
 
     function spawnEnemyContainer(categoria, rollValue = 0) {
         inCombat = true;
-        playBGMTrack('combat'); 
+        // BGM de combate removida a pedido! A música de explore continuará tocando suavemente.
+        
         document.getElementById("viewport-hero").style.display = "none";
         document.getElementById("viewport-container").style.backgroundImage = "url('assets/img/duel.png')";
         document.getElementById("hud-enemy").style.display = "block";
@@ -623,7 +698,8 @@
 
     function triggerBossBattle() {
         inCombat = true;
-        playBGMTrack('combat'); 
+        // BGM de combate removida a pedido!
+        
         document.getElementById("viewport-hero").style.display = "none";
         document.getElementById("viewport-container").style.backgroundImage = "url('assets/img/duel.png')";
         document.getElementById("hud-enemy").style.display = "block";
@@ -792,9 +868,10 @@
         if (!isMonsterTurn && player.mp < 15) { spawnFloatingText(idx, "SEM MP", "#94a3b8"); return; }
         if (!isMonsterTurn) player.mp -= 15;
 
+        gridLocked = true; // Tranca a tela durante o cast da magia
         puzzleMoves--;
         spawnFloatingText(idx, "MAGIA!", "#a855f7");
-        playMatchAudio(4);
+        playMagicSound(); 
 
         let magicDmg = Math.ceil((isMonsterTurn ? (2 + Math.floor(turn * 0.3)) : (player.baseAtk / 3)) * 1.1);
         roundAtk += magicDmg;
@@ -832,7 +909,7 @@
             setTimeout(() => {
                 fallingIndices.clear();
                 processBoardCombos(() => {
-                    isProcessingAnimations = false;
+                    isProcessingAnimations = false; gridLocked = false;
                     if (puzzleMoves <= 0) { if (!isMonsterTurn) executeHeroResolutionPhase(); else executeMonsterResolutionPhase(); } 
                     else { renderPuzzleUI(); if (isMonsterTurn) setTimeout(executeMonsterTurnAI_Step, 600); }
                 });
@@ -861,15 +938,16 @@
         
         setTimeout(() => {
             if (!checkMoveValidity()) {
+                gridLocked = true; // Impede interações manuais acidentais
                 swapData(idx1, idx2); renderPuzzleUI(); isProcessingAnimations = false;
                 
                 document.getElementById("scene-description").innerText = "Movimento inválido! Turno passado ao inimigo.";
                 puzzleMoves = 0;
                 
                 if (!isMonsterTurn) {
-                    setTimeout(() => executeHeroResolutionPhase(), 1200);
+                    setTimeout(() => { gridLocked = false; executeHeroResolutionPhase(); }, 1200);
                 } else {
-                    setTimeout(() => executeMonsterTurnAI_Step(), 400); 
+                    setTimeout(() => { gridLocked = false; executeMonsterTurnAI_Step(); }, 400); 
                 }
                 return;
             }
@@ -970,7 +1048,7 @@
                     generateRandomBoard();
                     renderPuzzleUI();
                     setTimeout(() => {
-                        processBoardCombos(onComplete); 
+                        processBoardCombos(onComplete);
                     }, 400);
                 }, 1000);
                 return;
@@ -1047,7 +1125,7 @@
         document.getElementById("viewport-container").style.backgroundImage = "url('assets/img/win.png')";
         document.getElementById("viewport-hero").style.display = "block";
         document.getElementById("scene-description").innerText = `VITÓRIA! Ouro coletado: +${drop}G`;
-        playBGMTrack('explore'); 
+        
         setTimeout(nextTurnProgress, 5000);
     }
 
@@ -1060,8 +1138,12 @@
 
     function usePotion(type) {
         if (inCombat) return; 
-        if (type === 'hp' && player.potHp > 0) { player.hp = Math.min(player.maxHp, player.hp + 20); player.potHp--; }
-        else if (type === 'mp' && player.potMp > 0) { player.mp = Math.min(player.maxMp, player.mp + 8); player.potMp--; }
+        if (type === 'hp' && player.potHp > 0) { 
+            player.hp = Math.min(player.maxHp, player.hp + 20); player.potHp--; playPotionSound();
+        }
+        else if (type === 'mp' && player.potMp > 0) { 
+            player.mp = Math.min(player.maxMp, player.mp + 8); player.potMp--; playPotionSound();
+        }
         updateUI();
     }
 
@@ -1070,15 +1152,18 @@
 
     function buyItem(itemType) {
         let mpPrice = player.class === 'mage' ? 15 : 20;
+        let bought = false;
 
-        if (itemType === 'pot_hp' && player.gold >= 20) { player.gold -= 20; player.potHp++; } 
-        else if (itemType === 'pot_mp' && player.gold >= mpPrice) { player.gold -= mpPrice; player.potMp++; }
+        if (itemType === 'pot_hp' && player.gold >= 20) { player.gold -= 20; player.potHp++; bought = true; } 
+        else if (itemType === 'pot_mp' && player.gold >= mpPrice) { player.gold -= mpPrice; player.potMp++; bought = true; }
         else if (itemType === 'weapon' && player.gold >= shopPrices.weapon) { 
-            player.gold -= shopPrices.weapon; player.baseAtk += 2; shopPrices.weapon = 120;
+            player.gold -= shopPrices.weapon; player.baseAtk += 2; shopPrices.weapon = 120; bought = true;
         }
         else if (itemType === 'armor' && player.gold >= shopPrices.armor) { 
-            player.gold -= shopPrices.armor; player.baseDef += 2; shopPrices.armor = 120;
+            player.gold -= shopPrices.armor; player.baseDef += 2; shopPrices.armor = 120; bought = true;
         }
+        
+        if (bought) playBuySound();
         updateUI();
     }
 
@@ -1130,7 +1215,7 @@
             OURO TOTAL GUARDADO: ${player.gold}G<br><br>
             INIMIGOS DERROTADOS: ${stats.normalKills + stats.bossKills}
         `;
-        playBGMTrack(null);
+        playBGMTrack(null); 
         localStorage.removeItem('rpgPocketSave'); 
     }
 </script>
