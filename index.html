@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RPG Pocket 5.0 - Cinematic Edition</title>
+<title>RPG Pocket 5.0 - Cinematic Edition Final</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rpg-awesome/0.2.0/css/rpg-awesome.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@ body{background:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.5)),url('assets/img
 #d20-modal{background:url('assets/img/d20.png') no-repeat center center;background-size:cover;background-color:rgba(0,0,0,0.95);z-index:150;flex-direction:column;display:none;}
 
 /* ESTILOS DA HISTÓRIA (STORY INTRO FULLSCREEN) */
-#screen-story { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 110; display: none; flex-direction: column; justify-content: flex-end; align-items: center; background-size: cover; background-position: center; padding-bottom: 25px; transition: background-image 1s ease-in-out; }
+#screen-story { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 110; display: none; flex-direction: column; justify-content: flex-end; align-items: center; background-size: cover; background-position: center; padding-bottom: 80px; transition: background-image 1s ease-in-out; }
 .story-text { background: rgba(0, 0, 0, 0.75); border: 2px solid var(--gba-border); color: var(--gba-text-light); font-size: 9px; line-height: 1.8; text-align: center; padding: 15px; margin: 0 15px 20px 15px; border-radius: 8px; text-shadow: 1px 1px 0 #000; min-height: 100px; display: flex; align-items: center; justify-content: center; }
 .btn-story-skip { font-size: 10px; color: var(--gba-gold); background: rgba(0,0,0,0.85); border: 2px solid var(--gba-gold); border-radius: 8px; cursor: pointer; padding: 12px 25px; font-family: 'Press Start 2P', monospace; text-shadow: 1px 1px 0 #000; transition: all 0.2s; }
 .btn-story-skip:active { transform: translateY(3px); }
@@ -91,27 +91,35 @@ input::placeholder{color:#475569;}
 button{background:linear-gradient(180deg,#3b82f6,#1d4ed8);color:#fff;border:3px solid #1e40af;border-radius:8px;padding:14px;cursor:pointer;font-size:8px;text-transform:uppercase;margin:4px 2px;box-shadow:0 4px 0 #1e3a8a;transition:all 0.1s;text-shadow:1px 1px 0 #000;-webkit-tap-highlight-color: transparent;}
 button:active{transform:translateY(3px);box-shadow:0 1px 0 #1e3a8a;}
 button:disabled{background:#475569!important;color:#94a3b8!important;border-color:#334155!important;box-shadow:none;cursor:not-allowed;transform:none;text-shadow:none;}
+
 .explore-actions-row{display:flex;gap:6px;justify-content:space-between;margin-top:10px;width:100%;}
 .explore-actions-row button{margin:0;padding:12px 4px;font-size:7px;flex:1;text-align:center;background:linear-gradient(180deg,#4b5563,#1f2937);border-color:#111827;box-shadow:0 4px 0 #111827;}
+
 .dice-engine-box{display:flex;flex-direction:column;align-items:center;background:#1e293b;border:3px solid var(--gba-border);border-radius:8px;padding:10px;margin-top:5px;}
 .d20-display{font-size:24px;color:var(--gba-gold);text-shadow:2px 2px 0 #000;margin-bottom:8px;font-weight:bold; transition: color 0.3s;}
 .btn-roll-dice{width:100%;background:linear-gradient(180deg,#a855f7,#7c3aed);border-color:#5b21b6;box-shadow:0 4px 0 #4c1d95;margin:0;}
 
 #panel-combat{position:relative;margin-top:0;}
 #turn-banner{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:15px 30px;border-radius:8px;font-size:14px;font-weight:bold;color:#fff;text-shadow:2px 2px 0 #000;z-index:100;box-shadow:0 0 20px rgba(0,0,0,0.8);}
+
 .puzzle-combat-panel{display:flex;flex-direction:column;align-items:center;gap:6px;background:#111827;border:4px solid var(--gba-border);border-radius:12px;padding:8px;margin-top:2px;position:relative;}
 .puzzle-combat-panel.turn-hero{border-color:var(--color-turn-hero)!important;box-shadow:0 0 12px var(--color-turn-hero);}
 .puzzle-combat-panel.turn-monster{border-color:#ef4444!important;}
 .puzzle-combat-panel.turn-monster .puzzle-grid-board { border-color: #ef4444 !important; box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
+
 .puzzle-stats-ticker{width:100%;background:#1f2937;border-radius:6px;padding:6px 8px;font-size:7px;display:flex;justify-content:space-between;align-items:center;color:#fff;border:2px solid #374151;gap:4px;}
 .puzzle-stats-ticker span{white-space:nowrap;}
+
 .puzzle-grid-board{display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(4,1fr);gap:5px;width:100%;height:210px;background:#030712;padding:6px;border-radius:8px;border:3px solid #1f2937;touch-action:none;position:relative;overflow:hidden;transition: border-color 0.3s, box-shadow 0.3s;}
+
 .puzzle-tile-block{border:2px solid #374151;border-radius:6px;display:flex;justify-content:center;align-items:center;font-size:14px;cursor:pointer;transition:transform 0.15s;touch-action:none;}
 .puzzle-tile-block.selected-tile{border-color:var(--gba-gold)!important;box-shadow:0 0 8px var(--gba-gold);transform:scale(1.05);z-index:5;}
 .puzzle-tile-block.tile-matched{background-color:#f59e0b!important;border-color:#fff!important;color:#fff!important;transform:scale(1.15);animation:flashMatch 0.25s infinite alternate;z-index:10;}
 @keyframes flashMatch{0%{filter:brightness(1);}100%{filter:brightness(1.5);}}
+
 .falling{animation:fallDown 0.3s cubic-bezier(0.4,0,0.2,1);}
 @keyframes fallDown{0%{transform:translateY(-40px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
+
 .puzzle-floating-text{position:absolute;font-size:11px;font-weight:bold;color:#fff;text-shadow:2px 2px 0 #000;z-index:50;pointer-events:none;animation:floatUpAndFade 0.8s forwards ease-out;}
 @keyframes floatUpAndFade{0%{transform:translateY(0);opacity:1;}100%{transform:translateY(-40px);opacity:0;}}
 
@@ -119,6 +127,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
 .shop-item-card{display:flex;justify-content:space-between;align-items:center;background:#1f2937;border:2px solid var(--gba-border);border-radius:8px;padding:8px;margin-bottom:6px;}
 .shop-item-info{font-size:8px;line-height:1.5;} .shop-item-info div{color:#94a3b8;font-size:6px;margin-top:2px;}
 .shop-item-card button{margin:0;padding:10px 16px;min-width:75px;background:linear-gradient(180deg,#10b981,#059669);border-color:#047857;box-shadow:0 3px 0 #064e3b;}
+
 #screen-end{background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;}
 #end-stats-box{background:rgba(15,23,42,0.9);border:3px solid var(--gba-gold);border-radius:12px;padding:20px;color:#fff;font-size:10px;line-height:2.2;text-align:center;margin-bottom:30px;box-shadow:0 10px 30px rgba(0,0,0,0.8);text-shadow:1px 1px 0 #000;}
 </style>
@@ -127,13 +136,11 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
 
 <div id="game-layout">
 
-    <!-- MODAL DO D20 ANIMADO -->
     <div id="d20-modal">
         <img id="d20-anim-img" src="assets/img/d20a.png" style="width: 120px; height: 120px; image-rendering: pixelated; margin-bottom: 20px;" onerror="this.style.display='none'">
         <div id="d20-result-text" style="display: none; font-size: 60px; text-shadow: 6px 6px 0 #000; font-weight: bold;"></div>
     </div>
 
-    <!-- TELA 0.1: DE BOAS-VINDAS E AGRADECIMENTOS -->
     <div id="welcome-modal">
         <div class="modal-content-full">
             <div style="text-align: center; margin-top: 10px;">
@@ -141,7 +148,6 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
                 <p style="color: #fff; font-weight: bold; font-size: 17px; text-shadow: 2px 2px 0 #000; margin: 0;">RPG POCKET 2</p>
                 <p style="font-size: 9px; color: #94a3b8; margin-top: 10px;">Salvamento automático ativado</p>
             </div>
-            
             <div class="metatesters-list">
                 <div style="color: var(--gba-gold); font-weight: bold; font-size: 10px; margin-bottom: 5px; text-shadow: 1px 1px 0 #000;">Agradecimentos aos MetaTesters:</div>
                 <div>Grupo Metafofos | Odyssey | Master</div>
@@ -151,48 +157,30 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
                 <div>Drih | Cleber | Amanda</div>
                 <div style="color: var(--gba-gold); font-size: 9px; margin-top: 5px;">e muitos outros que apoiaram!</div>
             </div>
-
             <button class="btn-stone" onclick="nextToInstructions()" style="width: 80%; font-size: 14px; padding: 15px 0;">PRÓXIMO</button>
         </div>
     </div>
 
-    <!-- TELA 0.2: DE INSTRUÇÕES -->
     <div id="instructions-modal" style="display: none;">
         <div class="modal-content-full">
             <h2 style="color: var(--gba-gold); font-size: 16px; text-align: center; text-shadow: 2px 2px 0 #000; margin-top: 5px; width: 100%;">INSTRUÇÕES</h2>
-            
             <div class="instructions-box">
-                <div><span style="color:var(--gba-gold); font-weight: bold; font-size: 9px;">💾 SALVAMENTO:</span><br>
-                Progresso salvo ao final de cada estágio. Use "Continuar Jogo Salvo" na seleção.</div>
-                
-                <div><span style="color:var(--gba-gold); font-weight: bold; font-size: 9px;">⚔️ BATALHA (MATCH-3):</span><br>
-                - Combine 3+ peças para efeitos:<br>
-                &nbsp;• ⚔️ Atacar / 🛡️ Defesa<br>
-                &nbsp;• ❤️ Curar / 💧 Mana (MP)<br>
-                &nbsp;• 🪙 Ouro<br>
-                - 🪨 Pedras explodem sem bônus.<br>
-                - Movimentos sem combos passam o turno.</div>
-                
-                <div><span style="color:var(--gba-gold); font-weight: bold; font-size: 9px;">⚡ MAGIA DE RAIO:</span><br>
-                Combine 4 peças para gerar um Raio. Toque nele (15 MP) para explodir em cruz!</div>
-
-                <div><span style="color:#ef4444; font-weight: bold; font-size: 9px;">🔄 RESET DE BATALHA:</span><br>
-                Ficou preso? Use o botão circular na imagem do inimigo para resetar a grade e o HP do monstro.</div>
+                <div><span style="color:var(--gba-gold); font-weight: bold; font-size: 9px;">💾 SALVAMENTO:</span><br>Progresso salvo ao final de cada estágio. Use "Continuar" no menu.</div>
+                <div><span style="color:var(--gba-gold); font-weight: bold; font-size: 9px;">⚔️ BATALHA (MATCH-3):</span><br>- Combine 3+ peças para efeitos:<br>&nbsp;• ⚔️ Atacar / 🛡️ Defesa<br>&nbsp;• ❤️ Curar / 💧 Mana (MP)<br>&nbsp;• 🪙 Ouro<br>- Movimentos sem combos passam o turno.</div>
+                <div><span style="color:var(--gba-gold); font-weight: bold; font-size: 9px;">⚡ MAGIA DE RAIO:</span><br>Combine 4 peças. Toque no Raio (15 MP) para explodir em cruz!</div>
+                <div><span style="color:#ef4444; font-weight: bold; font-size: 9px;">🔄 RESET DE BATALHA:</span><br>Ficou preso? Use o botão circular na imagem do inimigo para resetar a grade e o HP.</div>
             </div>
-            
             <div style="display: flex; justify-content: center; width: 100%; margin-top: 10px;">
                 <button class="btn-stone" onclick="dismissInstructions()" style="width: 80%; font-size: 14px; padding: 15px 0;">OK</button>
             </div>
         </div>
     </div>
 
-    <!-- TELAS 0.3: STORY INTRO FULLSCREEN (4 Telas) -->
     <div id="screen-story">
         <div id="story-text" class="story-text"></div>
         <button class="btn-story-skip" onclick="skipStoryFrame()">AVANÇAR >></button>
     </div>
 
-    <!-- TELA 0.5: TRANSIÇÃO DE CENÁRIOS -->
     <div id="screen-transition" class="screen" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 50; padding: 12px; background: rgba(0,0,0,0.85);">
         <div class="modal-content-full">
             <div style="flex-grow:1; display:flex; flex-direction:column; justify-content:center; align-items:center; margin-top:20px; max-width: 80%;">
@@ -203,7 +191,6 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         </div>
     </div>
 
-    <!-- TELA 1: SPLASH REPOSICIONADO -->
     <div id="screen-splash" class="screen" onclick="goToClassSelection()">
         <div class="splash-logo-area">
             <img src="assets/img/esp_open.png" class="open-sword" alt="Espada" onerror="this.style.display='none'">
@@ -215,7 +202,6 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         <div class="credits-text">Desenvolvido por<br>wgrmoreira, Miguel e Maria</div>
     </div>
 
-    <!-- TELA 2: SELEÇÃO DE CLASSE -->
     <div id="screen-start" class="screen game-card">
         <div><input type="text" id="player-name-input" placeholder="NOME DO HERÓI" maxlength="12"></div>
         <div class="class-select-container">
@@ -239,7 +225,6 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         </div>
     </div>
 
-    <!-- TELA 3: PRINCIPAL DE JOGO -->
     <div id="screen-main" class="screen game-card">
         <div style="position: relative; text-align: center;">
             <h2 style="margin: 0; line-height: 2;">ESTÁGIO <span id="ui-turn">1</span> / 25</h2>
@@ -285,7 +270,6 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
             
             <button id="btn-reset-combat" class="btn-stone btn-reset-combat" onclick="resetCombat()" style="display:none;"><i class="fa fa-refresh"></i></button>
 
-            <!-- TAUNT DO MONSTRO -->
             <div id="enemy-taunt-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('assets/img/duel.png') no-repeat center center; background-size: cover; z-index: 50; flex-direction: column; align-items: center; justify-content: center; padding: 10px;">
                 <div style="width:100%; height:100%; background:rgba(0,0,0,0.6); position:absolute; top:0; left:0; z-index:-1;"></div>
                 <img id="taunt-monster-img" src="" class="taunt-anim" style="width: 40%; image-rendering: pixelated; margin-bottom: 10px; z-index:2;" onerror="this.style.display='none'">
@@ -297,12 +281,12 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
             <div id="panel-explore">
                 <div class="dice-engine-box">
                     <div class="d20-display" id="txt-d20-result">D20: --</div>
-                    <button class="btn-roll-dice" id="btn-roll" onclick="rollD20Engine()">ROLAR DADO D20</button>
+                    <button class="btn-roll-dice btn-stone" id="btn-roll" onclick="rollD20Engine()" style="padding: 15px 0;">ROLAR DADO D20</button>
                 </div>
                 <div class="explore-actions-row">
-                    <button onclick="usePotion('hp')"><i class="ra ra-health icon-lg" style="color:#22c55e"></i> CURA</button>
-                    <button onclick="usePotion('mp')"><i class="ra ra-potion icon-lg" style="color:#3b82f6"></i> MANA</button>
-                    <button onclick="openShop()" style="background: linear-gradient(180deg, #d97706, #b45309);"><i class="ra ra-pouch icon-lg" style="color:var(--gba-gold)"></i> LOJA</button>
+                    <button class="btn-stone" onclick="usePotion('hp')"><i class="ra ra-health icon-lg" style="color:#22c55e"></i> CURA</button>
+                    <button class="btn-stone" onclick="usePotion('mp')"><i class="ra ra-potion icon-lg" style="color:#3b82f6"></i> MANA</button>
+                    <button class="btn-stone" onclick="openShop()"><i class="ra ra-pouch icon-lg" style="color:var(--gba-gold)"></i> LOJA</button>
                 </div>
             </div>
             
@@ -320,7 +304,6 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         </div>
     </div>
 
-    <!-- TELA DA LOJA -->
     <div id="screen-shop" class="screen game-card">
         <h1>MERCADOR</h1><hr>
         <div class="shop-header-status">
@@ -328,15 +311,14 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
             <div><i class="ra ra-health" style="color:#22c55e"></i> H: <strong id="shop-ui-pothp">0</strong> | <i class="ra ra-potion" style="color:#3b82f6"></i> M: <strong id="shop-ui-potmp">0</strong></div>
         </div>
         <div id="shop-catalog">
-            <div class="shop-item-card"><div class="shop-item-info"><strong>P. DE CURA</strong><div>RESTAURA +15 HP</div></div><button onclick="buyItem('pot_hp')">20G</button></div>
-            <div class="shop-item-card"><div class="shop-item-info"><strong>P. DE MANA</strong><div>RESTAURA +8 MP</div></div><button id="btn-shop-potmp" onclick="buyItem('pot_mp')">20G</button></div>
-            <div class="shop-item-card"><div class="shop-item-info"><strong>ESPADA AÇO</strong><div>+2 ATK</div></div><button id="btn-shop-weapon" onclick="buyItem('weapon')"><span id="txt-price-weapon">90</span>G</button></div>
-            <div class="shop-item-card"><div class="shop-item-info"><strong>ARMADURA</strong><div>+2 DEF</div></div><button id="btn-shop-armor" onclick="buyItem('armor')"><span id="txt-price-armor">90</span>G</button></div>
+            <div class="shop-item-card"><div class="shop-item-info"><strong>P. DE CURA</strong><div>RESTAURA +15 HP</div></div><button class="btn-stone" onclick="buyItem('pot_hp')">20G</button></div>
+            <div class="shop-item-card"><div class="shop-item-info"><strong>P. DE MANA</strong><div>RESTAURA +8 MP</div></div><button class="btn-stone" id="btn-shop-potmp" onclick="buyItem('pot_mp')">20G</button></div>
+            <div class="shop-item-card"><div class="shop-item-info"><strong>ESPADA AÇO</strong><div>+2 ATK</div></div><button class="btn-stone" id="btn-shop-weapon" onclick="buyItem('weapon')"><span id="txt-price-weapon">90</span>G</button></div>
+            <div class="shop-item-card"><div class="shop-item-info"><strong>ARMADURA</strong><div>+2 DEF</div></div><button class="btn-stone" id="btn-shop-armor" onclick="buyItem('armor')"><span id="txt-price-armor">90</span>G</button></div>
         </div>
         <hr><button class="btn-stone" onclick="closeShop()" style="width:100%; padding: 15px 0;">VOLTAR</button>
     </div>
 
-    <!-- TELA FINAL -->
     <div id="screen-end" class="screen game-card">
         <div class="stats-summary" id="end-stats-box"></div>
         <button class="btn-stone" onclick="try{playSelectionSound();}catch(e){} setTimeout(() => location.reload(), 200);" style="width: 100%; max-width: 300px; font-size: 10px; padding: 20px;">JOGAR NOVAMENTE</button>
@@ -348,6 +330,8 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         if (localStorage.getItem('rpgPocketSave')) {
             let btnLoad = document.getElementById('btn-load-game');
             if(btnLoad) btnLoad.style.display = 'block';
+            let container = document.getElementById('btn-load-container');
+            if(container) container.style.display = 'flex';
         }
     });
 
@@ -410,7 +394,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
                     let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
                     osc.type = track.type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
                     osc.connect(gain); gain.connect(audioCtx.destination);
-                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime); // Volume discreto apenas para a melodia
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime); 
                     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (track.speed / 1000));
                     osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + (track.speed / 1000));
                 }
@@ -418,7 +402,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         } catch(e) {}
     }
 
-    // EFEITOS SONOROS MANTIDOS E APERFEIÇOADOS
+    // EFEITOS SONOROS MANTIDOS
     function playSelectionSound() { try { if (!audioCtx) initAudioContext(); let now = audioCtx.currentTime; let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.type = 'triangle'; osc.frequency.setValueAtTime(600, now); osc.frequency.exponentialRampToValueAtTime(300, now + 0.1); osc.connect(gain); gain.connect(audioCtx.destination); gain.gain.setValueAtTime(0.15, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.1); osc.start(now); osc.stop(now + 0.1); } catch(e) {} }
     
     function playD20ResultSound() {
@@ -452,7 +436,6 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
     function playBuySound() { try { if (!audioCtx) initAudioContext(); let now = audioCtx.currentTime; let freqs = [1200, 1600]; freqs.forEach((f, i) => { let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(f, now + i*0.1); osc.connect(gain); gain.connect(audioCtx.destination); gain.gain.setValueAtTime(0.15, now + i*0.1); gain.gain.linearRampToValueAtTime(0.001, now + 0.1 + i*0.1); osc.start(now + i*0.1); osc.stop(now + 0.1 + i*0.1); }); } catch(e) {} }
     function playMagicSound() { try { if (!audioCtx) initAudioContext(); let now = audioCtx.currentTime; let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(800, now); osc.frequency.exponentialRampToValueAtTime(100, now + 0.4); osc.connect(gain); gain.connect(audioCtx.destination); gain.gain.setValueAtTime(0.25, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.4); osc.start(now); osc.stop(now + 0.4); } catch(e) {} }
 
-    // FLUXO INICIAL: Welcome -> Instructions -> Story -> Splash -> Start
     function nextToInstructions() {
         document.getElementById('welcome-modal').style.display = 'none';
         document.getElementById('instructions-modal').style.display = 'flex';
@@ -485,13 +468,13 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         txtEl.innerText = frame.text;
         
         txtEl.classList.remove('fade-in');
-        void txtEl.offsetWidth; // trigger reflow
+        void txtEl.offsetWidth; 
         txtEl.classList.add('fade-in');
         
         clearTimeout(storyTimeout);
         storyTimeout = setTimeout(() => {
             skipStoryFrame(false);
-        }, 6500); // 1.5s fade + 5s tela limpa
+        }, 8500); 
     }
 
     function skipStoryFrame(manual = true) {
@@ -577,7 +560,6 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         document.getElementById("scene-description").className = "scene-exploration"; document.getElementById("viewport-container").style.backgroundImage = `url('${dbData.img}')`; document.getElementById("scene-description").innerText = dbData.explore[Math.floor(Math.random() * dbData.explore.length)];
         document.getElementById("btn-roll").disabled = false; document.getElementById("btn-reset-combat").style.display = "none";
         
-        // Remove borda vermelha do inimigo
         document.getElementById("viewport-container").classList.remove("enemy-turn-border");
         document.getElementById("ui-puzzle-panel").classList.remove("turn-monster");
 
@@ -824,6 +806,13 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
             if (isAdjacent(idx1, idx2) && puzzleBoardData[idx2] !== "⚡") executeTileSwap(idx1, idx2);
             else { selectedTileIndex = index; renderPuzzleUI(); }
         }
+    }
+
+    function checkMoveValidity() {
+        for (let r = 0; r < 4; r++) { for (let c = 0; c < 4; c++) { let i = r * 6 + c; let t = puzzleBoardData[i]; if (t!=="⚡" && t!=null && t === puzzleBoardData[i+1] && t === puzzleBoardData[i+2]) return true; } }
+        for (let r = 0; r < 2; r++) { for (let c = 0; c < 6; c++) { let i = r * 6 + c; let t = puzzleBoardData[i]; if (t!=="⚡" && t!=null && t === puzzleBoardData[i+6] && t === puzzleBoardData[i+12]) return true; } }
+        for (let r = 0; r < 3; r++) { for (let c = 0; c < 5; c++) { let i = r * 6 + c; let t = puzzleBoardData[i]; if (t!=="⚡" && t!=null && t === puzzleBoardData[i+1] && t === puzzleBoardData[i+6] && t === puzzleBoardData[i+7]) return true; } }
+        return false;
     }
 
     function executeTileSwap(idx1, idx2) {
