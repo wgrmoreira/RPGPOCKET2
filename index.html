@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RPG Pocket 5.0 - Final Masterpiece</title>
+<title>RPG Pocket 5.0 - Cinematic Edition</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rpg-awesome/0.2.0/css/rpg-awesome.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -12,8 +12,19 @@
 body{background:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.5)),url('assets/img/open.png') no-repeat center center fixed;background-size:cover;color:var(--gba-text-light);display:flex;justify-content:center;align-items:center;height:100vh;width:100vw;margin:0;padding:10px;overflow:hidden;}
 #game-layout{display:flex;flex-direction:column;width:100%;max-width:450px;height:100%;max-height:850px;position:relative;}
 .game-card{background:var(--gba-bg-dark);border:4px solid var(--gba-border);border-radius:12px;padding:12px;box-shadow:inset -4px -4px 0 rgba(0,0,0,0.4),0 12px 36px rgba(0,0,0,0.8);backdrop-filter:blur(4px);width:100%;height:100%;overflow-y:auto;}
-#welcome-modal,#instructions-modal,#d20-modal{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:100;display:flex;justify-content:center;align-items:center;padding:12px;border-radius:12px;}
+
+/* MODAIS SOBREPOSTOS INICIAIS E D20 */
+#welcome-modal,#instructions-modal,#d20-modal{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:100;display:flex;justify-content:center;align-items:center;padding:12px;border-radius:12px;}
 #d20-modal{background:url('assets/img/d20.png') no-repeat center center;background-size:cover;background-color:rgba(0,0,0,0.95);z-index:150;flex-direction:column;display:none;}
+
+/* ESTILOS DA HISTÓRIA (STORY INTRO FULLSCREEN) */
+#screen-story { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 110; display: none; flex-direction: column; justify-content: flex-end; align-items: center; background-size: cover; background-position: center; padding-bottom: 25px; transition: background-image 1s ease-in-out; }
+.story-text { background: rgba(0, 0, 0, 0.75); border: 2px solid var(--gba-border); color: var(--gba-text-light); font-size: 9px; line-height: 1.8; text-align: center; padding: 15px; margin: 0 15px 20px 15px; border-radius: 8px; text-shadow: 1px 1px 0 #000; min-height: 100px; display: flex; align-items: center; justify-content: center; }
+.btn-story-skip { font-size: 10px; color: var(--gba-gold); background: rgba(0,0,0,0.85); border: 2px solid var(--gba-gold); border-radius: 8px; cursor: pointer; padding: 12px 25px; font-family: 'Press Start 2P', monospace; text-shadow: 1px 1px 0 #000; transition: all 0.2s; }
+.btn-story-skip:active { transform: translateY(3px); }
+.fade-in { animation: fadeIn 1.5s ease-in-out; }
+@keyframes fadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+
 .modal-content-full{background-color:var(--gba-ui-box);background-image:url('assets/img/borda.png');background-size:100% 100%;background-position:center;background-repeat:no-repeat;width:100%;height:100%;border-radius:12px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;box-shadow:0 12px 36px rgba(0,0,0,0.9);padding:40px 25px 30px 25px;}
 .btn-stone{background:linear-gradient(180deg,#78716c,#44403c)!important;color:#e7e5e4!important;border:3px solid #292524!important;border-radius:8px!important;box-shadow:0 4px 0 #1c1917!important;text-shadow:2px 2px 0 #000!important;cursor:pointer;transition:all 0.1s;font-family:'Press Start 2P',monospace;text-transform:uppercase;}
 .btn-stone:active{transform:translateY(3px)!important;box-shadow:0 1px 0 #1c1917!important;}
@@ -21,6 +32,7 @@ body{background:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.5)),url('assets/img
 .instructions-box{text-align:left;font-size:9px;line-height:1.8;justify-content:flex-start;}
 .screen{display:none!important;} .screen.active{display:flex!important;flex-direction:column;}
 #screen-main.active,#screen-shop.active,#screen-transition.active{display:block!important;}
+
 #screen-splash{background:linear-gradient(rgba(0,0,0,0.2),rgba(0,0,0,0.5)),url('assets/img/open.png') no-repeat center center;background-size:cover;cursor:pointer;position:relative;height:100%;width:100%;align-items:center;}
 .splash-logo-area{margin-top:40px;text-align:center;display:flex;justify-content:center;align-items:center;width:100%;position:relative;height:120px;}
 .splash-logo-area img.open-sword{width:85px;height:auto;image-rendering:pixelated;transform-origin:bottom center;animation:swordSwing 2s infinite ease-in-out;position:absolute;z-index:1;top:-10px;}
@@ -30,6 +42,7 @@ body{background:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.5)),url('assets/img
 .blink-text{font-size:9px;color:var(--gba-text-light);text-shadow:2px 2px 0 #000;text-align:center;letter-spacing:1px;animation:pulseFade 1.8s infinite ease-in-out;}
 @keyframes pulseFade{0%{opacity:0.1;}50%{opacity:1;}100%{opacity:0.1;}}
 .credits-text{font-size:6px;color:#cbd5e1;margin-bottom:15px;text-shadow:1px 1px 0 #000;text-align:center;line-height:1.5;}
+
 h2,h3{text-align:center;color:var(--gba-text-light);margin-top:0;font-size:10px;line-height:1.5;}
 hr{border:0;height:4px;background:var(--gba-border);margin:8px 0;box-shadow:0 2px 0 #000;}
 .stats-grid{display:grid;grid-template-columns:1.3fr 0.85fr 0.85fr;background:#1e293b;padding:10px;border:3px solid var(--gba-border);border-radius:8px;gap:6px;align-items:center;}
@@ -39,6 +52,7 @@ hr{border:0;height:4px;background:var(--gba-border);margin:8px 0;box-shadow:0 2p
 .class-tag{font-size:6px;color:#fff;background:#ef4444;padding:4px 6px;display:inline-block;border-radius:3px;font-weight:bold;margin-top:0;}
 .large-stat-text{font-size:8px;color:var(--gba-text-light);}
 .inventory-potions-list{display:flex;flex-direction:column;gap:4px;margin-top:5px;}
+
 #screen-start.game-card{background:linear-gradient(rgba(10,15,30,0.88),rgba(10,15,30,0.88)),url('assets/img/open.png') no-repeat center center;background-size:cover;justify-content:flex-start;gap:5px;padding:12px;}
 .class-select-container{display:flex;flex-direction:column;gap:8px;margin:4px 0;}
 .class-option{display:flex;align-items:center;gap:14px;background:rgba(30,41,59,0.85);border:3px solid var(--gba-border);border-radius:12px;padding:10px;cursor:pointer;transition:all 0.2s ease;}
@@ -47,31 +61,42 @@ hr{border:0;height:4px;background:var(--gba-border);margin:8px 0;box-shadow:0 2p
 .class-avatar-frame img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;}
 .class-details{font-size:8px;line-height:1.7;}
 .class-details strong{font-size:12px;color:var(--gba-gold);text-shadow:1px 1px 0 #000;display:inline-block;margin-bottom:4px;}
+.start-actions-row{display:flex;width:100%;margin-top:4px;gap:6px;}
+
 input[type="text"]{background:#0f172a;color:var(--gba-gold);border:3px solid var(--gba-border);border-radius:8px;padding:16px;font-size:10px;text-align:center;width:100%;text-transform:uppercase;outline:none;margin:10px 0 15px 0;transition:border-color 0.3s;}
 input::placeholder{color:#475569;}
+
 .bar-container{background:#0f172a;border:2px solid var(--gba-border);border-radius:10px;height:12px;width:100%;margin:4px 0 8px 0;overflow:hidden;}
 .bar-fill{height:100%;width:100%;border-radius:10px;transition:width 0.3s cubic-bezier(0.4,0,0.2,1);}
 .bar-hp{background:var(--bg-hp-grad);} .bar-mp{background:var(--bg-mp-grad);} .bar-enemy{background:var(--bg-enemy-grad);}
-#viewport-container{width:100%;height:240px;border:4px solid var(--gba-border);border-radius:12px;position:relative;background-size:cover;background-position:center;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,0.6);margin:10px 0 6px 0;background-color:#020617;}
+
+#viewport-container{width:100%;height:240px;border:4px solid var(--gba-border);border-radius:12px;position:relative;background-size:cover;background-position:center;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,0.6);margin:10px 0 6px 0;background-color:#020617;transition: border-color 0.3s, box-shadow 0.3s;}
+#viewport-container.enemy-turn-border { border-color: #ef4444 !important; box-shadow: 0 0 20px rgba(239, 68, 68, 0.7); }
+
 #viewport-hero{position:absolute;bottom:10px;left:45px;width:32.5%;height:auto;image-rendering:pixelated;z-index:5;}
 #viewport-target{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:35%;height:auto;image-rendering:pixelated;z-index:6;}
 #viewport-gold-pouch{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(15,23,42,0.9);border:2px solid var(--gba-gold);border-radius:8px;padding:10px;text-align:center;width:50%;z-index:7;display:none;box-shadow:0 4px 15px rgba(0,0,0,0.7);}
 .gold-pouch-text{font-size:8px;color:#fff;line-height:1.4;}
+
 .combat-arena-hud{position:absolute;top:8px;left:5%;width:90%;background:rgba(15,23,42,0.85);border:2px solid var(--gba-gold);border-radius:6px;padding:6px 10px;z-index:10;box-shadow:0 4px 10px rgba(0,0,0,0.5);}
 .combat-hud-row{display:flex;justify-content:space-between;align-items:center;font-size:8px;}
 .btn-reset-combat{position:absolute;right:5px;bottom:5px;padding:6px 8px!important;margin:0!important;font-size:10px;border-radius:8px!important;z-index:10;}
+
 #scene-description{position:absolute;left:5%;width:90%;font-size:8px;line-height:1.5;color:var(--gba-gold);text-align:center;margin:0;z-index:20;background:rgba(15,23,42,0.85);border:2px solid var(--gba-border);border-radius:6px;padding:6px;text-shadow:1px 1px 0 #000;transition:top 0.3s ease;}
 #scene-description.scene-exploration{top:8px;} #scene-description.scene-combat{top:48px;}
+
 @keyframes tauntPulse{0%{transform:scale(1);filter:drop-shadow(0 0 5px #ef4444);}100%{transform:scale(1.1);filter:drop-shadow(0 0 25px #ef4444);}}
 .taunt-anim{animation:tauntPulse 0.4s infinite alternate;}
-button{background:linear-gradient(180deg,#3b82f6,#1d4ed8);color:#fff;border:3px solid #1e40af;border-radius:8px;padding:14px;cursor:pointer;font-size:8px;text-transform:uppercase;margin:4px 2px;box-shadow:0 4px 0 #1e3a8a;transition:all 0.1s;text-shadow:1px 1px 0 #000;}
+
+button{background:linear-gradient(180deg,#3b82f6,#1d4ed8);color:#fff;border:3px solid #1e40af;border-radius:8px;padding:14px;cursor:pointer;font-size:8px;text-transform:uppercase;margin:4px 2px;box-shadow:0 4px 0 #1e3a8a;transition:all 0.1s;text-shadow:1px 1px 0 #000;-webkit-tap-highlight-color: transparent;}
 button:active{transform:translateY(3px);box-shadow:0 1px 0 #1e3a8a;}
 button:disabled{background:#475569!important;color:#94a3b8!important;border-color:#334155!important;box-shadow:none;cursor:not-allowed;transform:none;text-shadow:none;}
 .explore-actions-row{display:flex;gap:6px;justify-content:space-between;margin-top:10px;width:100%;}
-.explore-actions-row button{margin:0;padding:12px 4px;font-size:7px;flex:1;text-align:center;}
+.explore-actions-row button{margin:0;padding:12px 4px;font-size:7px;flex:1;text-align:center;background:linear-gradient(180deg,#4b5563,#1f2937);border-color:#111827;box-shadow:0 4px 0 #111827;}
 .dice-engine-box{display:flex;flex-direction:column;align-items:center;background:#1e293b;border:3px solid var(--gba-border);border-radius:8px;padding:10px;margin-top:5px;}
-.d20-display{font-size:24px;color:var(--gba-gold);text-shadow:2px 2px 0 #000;margin-bottom:8px;font-weight:bold;}
+.d20-display{font-size:24px;color:var(--gba-gold);text-shadow:2px 2px 0 #000;margin-bottom:8px;font-weight:bold; transition: color 0.3s;}
 .btn-roll-dice{width:100%;background:linear-gradient(180deg,#a855f7,#7c3aed);border-color:#5b21b6;box-shadow:0 4px 0 #4c1d95;margin:0;}
+
 #panel-combat{position:relative;margin-top:0;}
 #turn-banner{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:15px 30px;border-radius:8px;font-size:14px;font-weight:bold;color:#fff;text-shadow:2px 2px 0 #000;z-index:100;box-shadow:0 0 20px rgba(0,0,0,0.8);}
 .puzzle-combat-panel{display:flex;flex-direction:column;align-items:center;gap:6px;background:#111827;border:4px solid var(--gba-border);border-radius:12px;padding:8px;margin-top:2px;position:relative;}
@@ -89,6 +114,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
 @keyframes fallDown{0%{transform:translateY(-40px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
 .puzzle-floating-text{position:absolute;font-size:11px;font-weight:bold;color:#fff;text-shadow:2px 2px 0 #000;z-index:50;pointer-events:none;animation:floatUpAndFade 0.8s forwards ease-out;}
 @keyframes floatUpAndFade{0%{transform:translateY(0);opacity:1;}100%{transform:translateY(-40px);opacity:0;}}
+
 #screen-shop .shop-header-status{display:flex;justify-content:space-between;font-size:8px;margin-bottom:12px;background:#1e293b;padding:8px;border:2px solid var(--gba-border);border-radius:6px;}
 .shop-item-card{display:flex;justify-content:space-between;align-items:center;background:#1f2937;border:2px solid var(--gba-border);border-radius:8px;padding:8px;margin-bottom:6px;}
 .shop-item-info{font-size:8px;line-height:1.5;} .shop-item-info div{color:#94a3b8;font-size:6px;margin-top:2px;}
@@ -104,7 +130,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
     <!-- MODAL DO D20 ANIMADO -->
     <div id="d20-modal">
         <img id="d20-anim-img" src="assets/img/d20a.png" style="width: 120px; height: 120px; image-rendering: pixelated; margin-bottom: 20px;" onerror="this.style.display='none'">
-        <div id="d20-result-text" style="display: none; color: var(--gba-gold); font-size: 60px; text-shadow: 6px 6px 0 #000; font-weight: bold;"></div>
+        <div id="d20-result-text" style="display: none; font-size: 60px; text-shadow: 6px 6px 0 #000; font-weight: bold;"></div>
     </div>
 
     <!-- TELA 0.1: DE BOAS-VINDAS E AGRADECIMENTOS -->
@@ -115,6 +141,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
                 <p style="color: #fff; font-weight: bold; font-size: 17px; text-shadow: 2px 2px 0 #000; margin: 0;">RPG POCKET 2</p>
                 <p style="font-size: 9px; color: #94a3b8; margin-top: 10px;">Salvamento automático ativado</p>
             </div>
+            
             <div class="metatesters-list">
                 <div style="color: var(--gba-gold); font-weight: bold; font-size: 10px; margin-bottom: 5px; text-shadow: 1px 1px 0 #000;">Agradecimentos aos MetaTesters:</div>
                 <div>Grupo Metafofos | Odyssey | Master</div>
@@ -124,6 +151,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
                 <div>Drih | Cleber | Amanda</div>
                 <div style="color: var(--gba-gold); font-size: 9px; margin-top: 5px;">e muitos outros que apoiaram!</div>
             </div>
+
             <button class="btn-stone" onclick="nextToInstructions()" style="width: 80%; font-size: 14px; padding: 15px 0;">PRÓXIMO</button>
         </div>
     </div>
@@ -132,16 +160,36 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
     <div id="instructions-modal" style="display: none;">
         <div class="modal-content-full">
             <h2 style="color: var(--gba-gold); font-size: 16px; text-align: center; text-shadow: 2px 2px 0 #000; margin-top: 5px; width: 100%;">INSTRUÇÕES</h2>
+            
             <div class="instructions-box">
-                <div><span style="color:var(--gba-gold); font-weight: bold; font-size: 9px;">💾 SALVAMENTO:</span><br>Auto-save ativado. Use "Continuar" no menu.</div>
-                <div><span style="color:var(--gba-gold); font-weight: bold; font-size: 9px;">⚔️ BATALHA (MATCH-3):</span><br>- Combine 3+ peças para efeitos:<br>&nbsp;• ⚔️ Atacar / 🛡️ Defesa<br>&nbsp;• ❤️ Curar / 💧 Mana (MP)<br>&nbsp;• 🪙 Ouro<br>- Movimentos sem combos passam o turno.</div>
-                <div><span style="color:var(--gba-gold); font-weight: bold; font-size: 9px;">⚡ MAGIA DE RAIO:</span><br>Combine 4 peças. Toque no Raio (15 MP) para explodir em cruz!</div>
-                <div><span style="color:#ef4444; font-weight: bold; font-size: 9px;">🔄 RESET DE BATALHA:</span><br>Ficou preso no tabuleiro? Use o botão circular no canto da imagem do inimigo para resetar a grade e o HP do monstro.</div>
+                <div><span style="color:var(--gba-gold); font-weight: bold; font-size: 9px;">💾 SALVAMENTO:</span><br>
+                Progresso salvo ao final de cada estágio. Use "Continuar Jogo Salvo" na seleção.</div>
+                
+                <div><span style="color:var(--gba-gold); font-weight: bold; font-size: 9px;">⚔️ BATALHA (MATCH-3):</span><br>
+                - Combine 3+ peças para efeitos:<br>
+                &nbsp;• ⚔️ Atacar / 🛡️ Defesa<br>
+                &nbsp;• ❤️ Curar / 💧 Mana (MP)<br>
+                &nbsp;• 🪙 Ouro<br>
+                - 🪨 Pedras explodem sem bônus.<br>
+                - Movimentos sem combos passam o turno.</div>
+                
+                <div><span style="color:var(--gba-gold); font-weight: bold; font-size: 9px;">⚡ MAGIA DE RAIO:</span><br>
+                Combine 4 peças para gerar um Raio. Toque nele (15 MP) para explodir em cruz!</div>
+
+                <div><span style="color:#ef4444; font-weight: bold; font-size: 9px;">🔄 RESET DE BATALHA:</span><br>
+                Ficou preso? Use o botão circular na imagem do inimigo para resetar a grade e o HP do monstro.</div>
             </div>
-            <div style="display: flex; gap: 10px; width: 100%; margin-top: 10px;">
-                <button class="btn-stone" onclick="dismissInstructions()" style="width: 100%; font-size: 14px; padding: 15px 0;">OK</button>
+            
+            <div style="display: flex; justify-content: center; width: 100%; margin-top: 10px;">
+                <button class="btn-stone" onclick="dismissInstructions()" style="width: 80%; font-size: 14px; padding: 15px 0;">OK</button>
             </div>
         </div>
+    </div>
+
+    <!-- TELAS 0.3: STORY INTRO FULLSCREEN (4 Telas) -->
+    <div id="screen-story">
+        <div id="story-text" class="story-text"></div>
+        <button class="btn-story-skip" onclick="skipStoryFrame()">AVANÇAR >></button>
     </div>
 
     <!-- TELA 0.5: TRANSIÇÃO DE CENÁRIOS -->
@@ -155,7 +203,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         </div>
     </div>
 
-    <!-- TELA 1: SPLASH -->
+    <!-- TELA 1: SPLASH REPOSICIONADO -->
     <div id="screen-splash" class="screen" onclick="goToClassSelection()">
         <div class="splash-logo-area">
             <img src="assets/img/esp_open.png" class="open-sword" alt="Espada" onerror="this.style.display='none'">
@@ -167,7 +215,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         <div class="credits-text">Desenvolvido por<br>wgrmoreira, Miguel e Maria</div>
     </div>
 
-    <!-- TELA 2: MENU/SELEÇÃO -->
+    <!-- TELA 2: SELEÇÃO DE CLASSE -->
     <div id="screen-start" class="screen game-card">
         <div><input type="text" id="player-name-input" placeholder="NOME DO HERÓI" maxlength="12"></div>
         <div class="class-select-container">
@@ -184,6 +232,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
                 <div class="class-details"><strong>LADRÃO</strong><br>Sortudo.<br><span style="color:#34d399">+8% ouro | Def +1</span></div>
             </div>
         </div>
+        
         <div class="start-actions-row" style="display: flex; gap: 6px; width: 100%; margin-top: 4px;">
             <button class="btn-stone" onclick="startGame()" style="flex: 1; padding: 15px 4px; font-size: 8px;">INICIAR AVENTURA</button>
             <button class="btn-stone" id="btn-load-game" onclick="loadGame()" style="display:none; flex: 1; padding: 15px 4px; font-size: 8px;">CONTINUAR JOGO SALVO</button>
@@ -195,6 +244,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         <div style="position: relative; text-align: center;">
             <h2 style="margin: 0; line-height: 2;">ESTÁGIO <span id="ui-turn">1</span> / 25</h2>
         </div>
+        
         <div class="stats-grid">
             <div class="stat-box">
                 <div class="hero-header-line"><span class="hero-title-area" id="ui-name">HERÓI</span><span class="class-tag" id="ui-class-tag">CLASSE</span></div>
@@ -226,7 +276,9 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
                 </div>
                 <div class="bar-container" style="margin: 4px 0 0 0; height: 8px;"><div id="bar-enemy" class="bar-fill bar-enemy"></div></div>
             </div>
+
             <p id="scene-description" class="scene-exploration">O jogo se inicia.</p>
+
             <img id="viewport-hero" src="" alt="Hero" onerror="this.style.display='none'">
             <img id="viewport-target" src="" alt="Target" style="display:none;" onerror="this.style.display='none'">
             <div id="viewport-gold-pouch"></div>
@@ -323,10 +375,50 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
     let touchStartX = null; let touchStartY = null; let touchStartIdx = null; 
     let d20AnimInterval = null; let enemySwordsCount = 0; let isRollingD20 = false;
 
+    // STORY INTRO VARS
+    const storyFrames = [
+        { img: "assets/img/open1.png", text: "Durante séculos, a gloriosa cidade de Belford Gonçalo prosperou. Seus campos eram férteis e seu povo vivia em paz e abundante fartura." },
+        { img: "assets/img/open2.png", text: "Até que os céus escureceram. O Dragão da Praga despertou de seu sono milenar, trazendo chamas, caos e destruição absoluta." },
+        { img: "assets/img/open3.png", text: "Atraídas pela fúria do dragão, hordas de monstros cruéis invadiram Belford Gonçalo, mergulhando a região em pura escuridão e desespero." },
+        { img: "assets/img/open4.png", text: "Mas antigas lendas afirmam que, no momento mais sombrio, bravos heróis se levantariam para purificar a terra e banir o mal para sempre..." }
+    ];
+    let currentStoryIndex = 0;
+    let storyTimeout = null;
+
     let audioCtx = null;
+    let bgmInterval = null;
+    let currentBGMTrackName = null;
+
+    // A ÚNICA MELODIA DO JOGO (Para a história)
+    const T = {
+        'story': { notes: [220.00, 261.63, 329.63, 440.00, 329.63, 261.63, 196.00, 246.94, 293.66, 392.00, 293.66, 246.94], speed: 400, type: 'sine' }
+    };
 
     function initAudioContext() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if(audioCtx.state === 'suspended') audioCtx.resume(); }
 
+    function playBGMTrack(trackName) {
+        try {
+            if (!audioCtx) initAudioContext();
+            if (currentBGMTrackName === trackName) return;
+            currentBGMTrackName = trackName; clearInterval(bgmInterval);
+            if (!trackName || !T[trackName]) return;
+
+            let track = T[trackName]; let stepCount = 0;
+            bgmInterval = setInterval(() => {
+                let freq = track.notes[stepCount % track.notes.length]; stepCount++;
+                if (freq > 0) {
+                    let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+                    osc.type = track.type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime); // Volume discreto apenas para a melodia
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (track.speed / 1000));
+                    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + (track.speed / 1000));
+                }
+            }, track.speed);
+        } catch(e) {}
+    }
+
+    // EFEITOS SONOROS MANTIDOS E APERFEIÇOADOS
     function playSelectionSound() { try { if (!audioCtx) initAudioContext(); let now = audioCtx.currentTime; let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.type = 'triangle'; osc.frequency.setValueAtTime(600, now); osc.frequency.exponentialRampToValueAtTime(300, now + 0.1); osc.connect(gain); gain.connect(audioCtx.destination); gain.gain.setValueAtTime(0.15, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.1); osc.start(now); osc.stop(now + 0.1); } catch(e) {} }
     
     function playD20ResultSound() {
@@ -360,12 +452,83 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
     function playBuySound() { try { if (!audioCtx) initAudioContext(); let now = audioCtx.currentTime; let freqs = [1200, 1600]; freqs.forEach((f, i) => { let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(f, now + i*0.1); osc.connect(gain); gain.connect(audioCtx.destination); gain.gain.setValueAtTime(0.15, now + i*0.1); gain.gain.linearRampToValueAtTime(0.001, now + 0.1 + i*0.1); osc.start(now + i*0.1); osc.stop(now + 0.1 + i*0.1); }); } catch(e) {} }
     function playMagicSound() { try { if (!audioCtx) initAudioContext(); let now = audioCtx.currentTime; let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(800, now); osc.frequency.exponentialRampToValueAtTime(100, now + 0.4); osc.connect(gain); gain.connect(audioCtx.destination); gain.gain.setValueAtTime(0.25, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.4); osc.start(now); osc.stop(now + 0.4); } catch(e) {} }
 
-    function nextToInstructions() { document.getElementById('welcome-modal').style.display = 'none'; document.getElementById('instructions-modal').style.display = 'flex'; try { initAudioContext(); playSelectionSound(); } catch(e) {} }
-    function dismissInstructions() { document.getElementById('instructions-modal').style.display = 'none'; document.getElementById('screen-splash').classList.add('active'); welcomeDismissed = true; try { playSelectionSound(); } catch(e) {} }
-    function goToClassSelection() { if (welcomeDismissed) { changeScreen("screen-start"); if (localStorage.getItem('rpgPocketSave')) { document.getElementById('btn-load-game').style.display = 'block'; } try { playSelectionSound(); } catch(e) {} } }
-    function changeScreen(screenId) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(screenId).classList.add('active'); }
+    // FLUXO INICIAL: Welcome -> Instructions -> Story -> Splash -> Start
+    function nextToInstructions() {
+        document.getElementById('welcome-modal').style.display = 'none';
+        document.getElementById('instructions-modal').style.display = 'flex';
+        try { initAudioContext(); playSelectionSound(); } catch(e) {}
+    }
 
-    function saveGame() { const data = { player, stats, turn, shopPrices, gamePlan }; localStorage.setItem('rpgPocketSave', JSON.stringify(data)); }
+    function dismissInstructions() {
+        document.getElementById('instructions-modal').style.display = 'none';
+        try { playSelectionSound(); } catch(e) {}
+        startStory(); 
+    }
+
+    function startStory() {
+        document.getElementById('screen-story').style.display = 'flex';
+        currentStoryIndex = 0;
+        playBGMTrack('story');
+        renderStoryFrame();
+    }
+
+    function renderStoryFrame() {
+        if (currentStoryIndex >= storyFrames.length) {
+            endStory();
+            return;
+        }
+        const frame = storyFrames[currentStoryIndex];
+        const screenStory = document.getElementById('screen-story');
+        const txtEl = document.getElementById('story-text');
+        
+        screenStory.style.backgroundImage = `url('${frame.img}')`;
+        txtEl.innerText = frame.text;
+        
+        txtEl.classList.remove('fade-in');
+        void txtEl.offsetWidth; // trigger reflow
+        txtEl.classList.add('fade-in');
+        
+        clearTimeout(storyTimeout);
+        storyTimeout = setTimeout(() => {
+            skipStoryFrame(false);
+        }, 6500); // 1.5s fade + 5s tela limpa
+    }
+
+    function skipStoryFrame(manual = true) {
+        if (manual) { try { playSelectionSound(); } catch(e) {} }
+        clearTimeout(storyTimeout);
+        currentStoryIndex++;
+        renderStoryFrame();
+    }
+
+    function endStory() {
+        playBGMTrack(null);
+        document.getElementById('screen-story').style.display = 'none';
+        document.getElementById('screen-splash').classList.add('active');
+        welcomeDismissed = true; 
+    }
+
+    function goToClassSelection() {
+        if (welcomeDismissed) {
+            changeScreen("screen-start");
+            if (localStorage.getItem('rpgPocketSave')) {
+                document.getElementById('btn-load-container').style.display = 'flex';
+                document.getElementById('btn-load-game').style.display = 'block';
+            }
+            try { playSelectionSound(); } catch(e) {}
+        }
+    }
+
+    function changeScreen(screenId) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(screenId).classList.add('active'); 
+    }
+
+    function saveGame() {
+        const data = { player, stats, turn, shopPrices, gamePlan };
+        localStorage.setItem('rpgPocketSave', JSON.stringify(data));
+    }
+
     function loadGame() {
         try { playSelectionSound(); } catch(e) {}
         const dataStr = localStorage.getItem('rpgPocketSave');
@@ -388,9 +551,11 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         try { playSelectionSound(); } catch(e) {}
         const inputEl = document.getElementById("player-name-input"); const input = inputEl.value.trim();
         if (!input) { inputEl.style.borderColor = "#ef4444"; inputEl.placeholder = "DIGITE UM NOME!"; setTimeout(() => inputEl.style.borderColor = "var(--gba-border)", 1500); return; }
+
         player.name = input.toUpperCase(); player.class = selectedClassSetup;
         player.avatarPath = `assets/img/${player.class === 'knight' ? 'cavaleiro.png' : player.class === 'mage' ? 'maga.png' : 'ladrao.png'}`;
         player.baseAtk = player.class === 'knight' ? 9 : 8; player.baseDef = 1;
+
         generateGamePlan(); turn = 1; goToTransitionScreen();
     }
 
@@ -412,6 +577,10 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         document.getElementById("scene-description").className = "scene-exploration"; document.getElementById("viewport-container").style.backgroundImage = `url('${dbData.img}')`; document.getElementById("scene-description").innerText = dbData.explore[Math.floor(Math.random() * dbData.explore.length)];
         document.getElementById("btn-roll").disabled = false; document.getElementById("btn-reset-combat").style.display = "none";
         
+        // Remove borda vermelha do inimigo
+        document.getElementById("viewport-container").classList.remove("enemy-turn-border");
+        document.getElementById("ui-puzzle-panel").classList.remove("turn-monster");
+
         if (turn === 25) { document.getElementById("btn-roll").disabled = true; setTimeout(() => { triggerBossBattle(); }, 1500); }
     }
 
@@ -421,6 +590,8 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         try { playSelectionSound(); } catch(e) {}
         document.getElementById("btn-roll").disabled = true;
         
+        if (turn === 25) { triggerBossBattle(); return; }
+
         let roll = Math.floor(Math.random() * 20) + 1;
         const modal = document.getElementById("d20-modal"); const imgAnim = document.getElementById("d20-anim-img"); const resText = document.getElementById("d20-result-text");
         modal.style.display = "flex"; imgAnim.style.display = "block"; resText.style.display = "none";
@@ -443,6 +614,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         else if (roll >= 14 && roll <= 18) { handleGoldDrop(roll); }
         else if (roll === 19) { handlePotionDrop('hp'); }
         else if (roll === 20) { handlePotionDrop('mp'); }
+        
         if (!inCombat) updateUI();
     }
 
@@ -533,6 +705,15 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         let banner = document.getElementById("turn-banner"); banner.innerText = isMonster ? "TURNO DO INIMIGO" : "SEU TURNO"; banner.style.backgroundColor = isMonster ? "rgba(220, 38, 38, 0.95)" : "rgba(37, 99, 235, 0.95)"; banner.style.display = "block";
         generateRandomBoard(); renderPuzzleUI();
         let combosFinished = false; let timeUp = false; isProcessingAnimations = true;
+        
+        if(isMonster) {
+            document.getElementById("viewport-container").classList.add("enemy-turn-border");
+            document.getElementById("ui-puzzle-panel").classList.add("turn-monster");
+        } else {
+            document.getElementById("viewport-container").classList.remove("enemy-turn-border");
+            document.getElementById("ui-puzzle-panel").classList.remove("turn-monster");
+        }
+
         processBoardCombos(() => { combosFinished = true; checkUnlock(); }); setTimeout(() => { timeUp = true; checkUnlock(); }, 1200);
         function checkUnlock() { if (combosFinished && timeUp) { banner.style.display = "none"; isProcessingAnimations = false; gridLocked = false; renderPuzzleUI(); if(isMonsterTurn) executeMonsterTurnAI(); } }
     }
@@ -551,7 +732,6 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
     function renderPuzzleUI() {
         const boardElement = document.getElementById("combat-puzzle-board"); 
         const panel = document.getElementById("ui-puzzle-panel");
-        panel.className = isMonsterTurn ? "puzzle-combat-panel turn-monster" : "puzzle-combat-panel turn-hero";
         document.getElementById("puzzle-turn-owner").innerText = isMonsterTurn ? "TURNO: MONSTRO" : "TURNO: SEU"; 
         document.getElementById("puzzle-moves-left").innerText = `MOVS: ${puzzleMoves}`; 
         document.getElementById("puzzle-round-stats").innerText = isMonsterTurn ? `MONSTRO - ATK: ${roundAtk}` : `HERÓI - ATK: ${roundAtk} | DEF: ${roundDef}`;
@@ -644,13 +824,6 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
             if (isAdjacent(idx1, idx2) && puzzleBoardData[idx2] !== "⚡") executeTileSwap(idx1, idx2);
             else { selectedTileIndex = index; renderPuzzleUI(); }
         }
-    }
-
-    function checkMoveValidity() {
-        for (let r = 0; r < 4; r++) { for (let c = 0; c < 4; c++) { let i = r * 6 + c; let t = puzzleBoardData[i]; if (t!=="⚡" && t!=null && t === puzzleBoardData[i+1] && t === puzzleBoardData[i+2]) return true; } }
-        for (let r = 0; r < 2; r++) { for (let c = 0; c < 6; c++) { let i = r * 6 + c; let t = puzzleBoardData[i]; if (t!=="⚡" && t!=null && t === puzzleBoardData[i+6] && t === puzzleBoardData[i+12]) return true; } }
-        for (let r = 0; r < 3; r++) { for (let c = 0; c < 5; c++) { let i = r * 6 + c; let t = puzzleBoardData[i]; if (t!=="⚡" && t!=null && t === puzzleBoardData[i+1] && t === puzzleBoardData[i+6] && t === puzzleBoardData[i+7]) return true; } }
-        return false;
     }
 
     function executeTileSwap(idx1, idx2) {
@@ -748,7 +921,11 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         inCombat = false; if(enemy.type === "lendario") stats.bossKills++; else stats.normalKills++;
         let drop = 10 + Math.floor(turn * 1.2); player.gold += drop;
         document.getElementById("viewport-target").style.display = "none"; document.getElementById("viewport-container").style.backgroundImage = "url('assets/img/win.png')"; document.getElementById("viewport-hero").style.display = "block"; document.getElementById("scene-description").innerText = `VITÓRIA! Ouro coletado: +${drop}G`; document.getElementById("btn-reset-combat").style.display = "none";
+        
         playVictorySound();
+        document.getElementById("viewport-container").classList.remove("enemy-turn-border");
+        document.getElementById("ui-puzzle-panel").classList.remove("turn-monster");
+
         setTimeout(() => { if (turn >= 25) { endGame(true); return; } turn++; document.getElementById("txt-d20-result").innerText = "D20: --"; if ((turn - 1) % 3 === 0) { goToTransitionScreen(); } else { updateCenarioExploracao(); updateUI(); saveGame(); } }, 5000);
     }
 
@@ -760,6 +937,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
 
     function usePotion(type) {
         if (inCombat) return; 
+        try { playSelectionSound(); } catch(e) {}
         if (type === 'hp' && player.potHp > 0) { player.hp = Math.min(player.maxHp, player.hp + 20); player.potHp--; playPotionSound(); }
         else if (type === 'mp' && player.potMp > 0) { player.mp = Math.min(player.maxMp, player.mp + 8); player.potMp--; playPotionSound(); }
         updateUI();
@@ -792,7 +970,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
 
             if (inCombat && enemy) { document.getElementById("panel-explore").style.display = "none"; document.getElementById("panel-combat").style.display = "block"; document.getElementById("enemy-name").innerText = enemy.name; document.getElementById("txt-enemy-hp").innerText = `${enemy.hp}/${enemy.maxHp}`; document.getElementById("bar-enemy").style.width = `${(enemy.hp / enemy.maxHp) * 100}%`; } 
             else { document.getElementById("panel-explore").style.display = "block"; document.getElementById("panel-combat").style.display = "none"; }
-        } catch(e) { console.error("UI Update prevented freeze", e); }
+        } catch(e) {}
     }
 
     function endGame(victory) {
