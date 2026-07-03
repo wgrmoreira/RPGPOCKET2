@@ -17,7 +17,7 @@ body{background:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.5)),url('assets/img
 #welcome-modal,#instructions-modal,#d20-modal{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:100;display:flex;justify-content:center;align-items:center;padding:12px;border-radius:12px;}
 #d20-modal{background:url('assets/img/d20.png') no-repeat center center;background-size:cover;background-color:rgba(0,0,0,0.95);z-index:150;flex-direction:column;display:none;}
 
-/* ESTILOS DA HISTÓRIA (STORY INTRO FULLSCREEN) */
+/* ESTILOS DA HISTÓRIA (STORY INTRO FULLSCREEN) - Sem classe .screen para não sumir */
 #screen-story { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 110; display: none; flex-direction: column; justify-content: flex-end; align-items: center; background-size: cover; background-position: center; padding-bottom: 80px; transition: background-image 1s ease-in-out; }
 .story-text { background: rgba(0, 0, 0, 0.75); border: 2px solid var(--gba-border); color: var(--gba-text-light); font-size: 9px; line-height: 1.8; text-align: center; padding: 15px; margin: 0 15px 20px 15px; border-radius: 8px; text-shadow: 1px 1px 0 #000; min-height: 100px; display: flex; align-items: center; justify-content: center; }
 .btn-story-skip { font-size: 10px; color: var(--gba-gold); background: rgba(0,0,0,0.85); border: 2px solid var(--gba-gold); border-radius: 8px; cursor: pointer; padding: 12px 25px; font-family: 'Press Start 2P', monospace; text-shadow: 1px 1px 0 #000; transition: all 0.2s; }
@@ -30,13 +30,14 @@ body{background:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.5)),url('assets/img
 .btn-stone:active{transform:translateY(3px)!important;box-shadow:0 1px 0 #1c1917!important;}
 .metatesters-list,.instructions-box{font-size:8px;line-height:2;color:#cbd5e1;margin:10px 0;background:rgba(0,0,0,0.4);padding:15px;border-radius:8px;border:1px solid var(--gba-border);width:100%;text-align:center;flex-grow:1;display:flex;flex-direction:column;justify-content:center;gap:8px;box-shadow:inset 0 0 10px rgba(0,0,0,0.5);overflow-y:auto;}
 .instructions-box{text-align:left;font-size:9px;line-height:1.8;justify-content:flex-start;}
+
 .screen{display:none!important;} .screen.active{display:flex!important;flex-direction:column;}
 #screen-main.active,#screen-shop.active,#screen-transition.active{display:block!important;}
 
 #screen-splash{background:linear-gradient(rgba(0,0,0,0.2),rgba(0,0,0,0.5)),url('assets/img/open.png') no-repeat center center;background-size:cover;cursor:pointer;position:relative;height:100%;width:100%;align-items:center;}
-.splash-logo-area{margin-top:40px;text-align:center;display:flex;justify-content:center;align-items:center;width:100%;position:relative;height:120px;}
+.splash-logo-area{margin-top:40px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;position:relative;height:auto;min-height:120px;}
 .splash-logo-area img.open-sword{width:85px;height:auto;image-rendering:pixelated;transform-origin:bottom center;animation:swordSwing 2s infinite ease-in-out;position:absolute;z-index:1;top:-10px;}
-.splash-logo-area h1{position:relative;z-index:2;font-size:24px;color:var(--gba-gold);text-shadow:3px 3px 0 #000;margin:0;line-height:1.3;}
+.splash-logo-area h1{position:relative;z-index:2;font-size:24px;color:var(--gba-gold);text-shadow:3px 3px 0 #000;margin:100px 0 0 0;line-height:1.3;}
 @keyframes swordSwing{0%{transform:rotate(-12deg);}50%{transform:rotate(12deg);}100%{transform:rotate(-12deg);}}
 .splash-text-container{flex-grow:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:60px;}
 .blink-text{font-size:9px;color:var(--gba-text-light);text-shadow:2px 2px 0 #000;text-align:center;letter-spacing:1px;animation:pulseFade 1.8s infinite ease-in-out;}
@@ -130,17 +131,21 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
 
 #screen-end{background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;}
 #end-stats-box{background:rgba(15,23,42,0.9);border:3px solid var(--gba-gold);border-radius:12px;padding:20px;color:#fff;font-size:10px;line-height:2.2;text-align:center;margin-bottom:30px;box-shadow:0 10px 30px rgba(0,0,0,0.8);text-shadow:1px 1px 0 #000;}
+
+#highscores-board { margin-top: 25px; font-size: 7px; text-align: center; text-shadow: 1px 1px 0 #000; line-height: 1.8; z-index: 2; width: 100%; }
 </style>
 </head>
 <body onclick="initAudioContext()">
 
 <div id="game-layout">
 
+    <!-- MODAL DO D20 ANIMADO -->
     <div id="d20-modal">
         <img id="d20-anim-img" src="assets/img/d20a.png" style="width: 120px; height: 120px; image-rendering: pixelated; margin-bottom: 20px;" onerror="this.style.display='none'">
         <div id="d20-result-text" style="display: none; font-size: 60px; text-shadow: 6px 6px 0 #000; font-weight: bold;"></div>
     </div>
 
+    <!-- TELA 0.1: DE BOAS-VINDAS -->
     <div id="welcome-modal">
         <div class="modal-content-full">
             <div style="text-align: center; margin-top: 10px;">
@@ -161,6 +166,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         </div>
     </div>
 
+    <!-- TELA 0.2: DE INSTRUÇÕES -->
     <div id="instructions-modal" style="display: none;">
         <div class="modal-content-full">
             <h2 style="color: var(--gba-gold); font-size: 16px; text-align: center; text-shadow: 2px 2px 0 #000; margin-top: 5px; width: 100%;">INSTRUÇÕES</h2>
@@ -168,7 +174,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
                 <div><span style="color:var(--gba-gold); font-weight: bold; font-size: 9px;">💾 SALVAMENTO:</span><br>Progresso salvo ao final de cada estágio. Use "Continuar" no menu.</div>
                 <div><span style="color:var(--gba-gold); font-weight: bold; font-size: 9px;">⚔️ BATALHA (MATCH-3):</span><br>- Combine 3+ peças para efeitos:<br>&nbsp;• ⚔️ Atacar / 🛡️ Defesa<br>&nbsp;• ❤️ Curar / 💧 Mana (MP)<br>&nbsp;• 🪙 Ouro<br>- Movimentos sem combos passam o turno.</div>
                 <div><span style="color:var(--gba-gold); font-weight: bold; font-size: 9px;">⚡ MAGIA DE RAIO:</span><br>Combine 4 peças. Toque no Raio (15 MP) para explodir em cruz!</div>
-                <div><span style="color:#ef4444; font-weight: bold; font-size: 9px;">🔄 RESET DE BATALHA:</span><br>Ficou preso? Use o botão circular na imagem do inimigo para resetar a grade e o HP.</div>
+                <div><span style="color:#ef4444; font-weight: bold; font-size: 9px;">🔄 RESET DE BATALHA:</span><br>Ficou preso? Use o botão circular na imagem do inimigo para resetar a grade e o HP do monstro.</div>
             </div>
             <div style="display: flex; justify-content: center; width: 100%; margin-top: 10px;">
                 <button class="btn-stone" onclick="dismissInstructions()" style="width: 80%; font-size: 14px; padding: 15px 0;">OK</button>
@@ -176,11 +182,14 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         </div>
     </div>
 
+    <!-- TELAS 0.3: STORY INTRO FULLSCREEN (4 Telas) -->
+    <!-- Sem a classe screen, e usando um div dedicado -->
     <div id="screen-story">
         <div id="story-text" class="story-text"></div>
         <button class="btn-story-skip" onclick="skipStoryFrame()">AVANÇAR >></button>
     </div>
 
+    <!-- TELA 0.5: TRANSIÇÃO DE CENÁRIOS -->
     <div id="screen-transition" class="screen" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 50; padding: 12px; background: rgba(0,0,0,0.85);">
         <div class="modal-content-full">
             <div style="flex-grow:1; display:flex; flex-direction:column; justify-content:center; align-items:center; margin-top:20px; max-width: 80%;">
@@ -191,10 +200,12 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         </div>
     </div>
 
+    <!-- TELA 1: SPLASH REPOSICIONADO COM LEADERBOARD -->
     <div id="screen-splash" class="screen" onclick="goToClassSelection()">
         <div class="splash-logo-area">
             <img src="assets/img/esp_open.png" class="open-sword" alt="Espada" onerror="this.style.display='none'">
             <h1>RPG POCKET 2</h1>
+            <div id="highscores-board"></div>
         </div>
         <div class="splash-text-container">
             <div class="blink-text">TOQUE PARA CONTINUAR</div>
@@ -202,29 +213,30 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         <div class="credits-text">Desenvolvido por<br>wgrmoreira, Miguel e Maria</div>
     </div>
 
+    <!-- TELA 2: SELEÇÃO DE CLASSE -->
     <div id="screen-start" class="screen game-card">
         <div><input type="text" id="player-name-input" placeholder="NOME DO HERÓI" maxlength="12"></div>
         <div class="class-select-container">
             <div class="class-option selected" id="opt-knight" onclick="selectClass('knight')">
                 <div class="class-avatar-frame"><img src="assets/img/cavaleiro.png" alt="Cavaleiro" onerror="this.style.display='none'"></div>
-                <div class="class-details"><strong>CAVALEIRO</strong><br>Força bruta.<br><span style="color:#34d399">Atk +1 | Def +1</span></div>
+                <div class="class-details"><strong>CAVALEIRO</strong><br>Força bruta.<br><span style="color:#34d399">Atk +2 | Def +2</span></div>
             </div>
             <div class="class-option" id="opt-mage" onclick="selectClass('mage')">
                 <div class="class-avatar-frame"><img src="assets/img/maga.png" alt="Maga" onerror="this.style.display='none'"></div>
-                <div class="class-details"><strong>MAGA</strong><br>Alquimista.<br><span style="color:#34d399">Mana por 15g | Def +1</span></div>
+                <div class="class-details"><strong>MAGA</strong><br>Alquimista.<br><span style="color:#34d399">Mana por 15g | Def +2</span></div>
             </div>
             <div class="class-option" id="opt-thief" onclick="selectClass('thief')">
                 <div class="class-avatar-frame"><img src="assets/img/ladrao.png" alt="Ladrão" onerror="this.style.display='none'"></div>
-                <div class="class-details"><strong>LADRÃO</strong><br>Sortudo.<br><span style="color:#34d399">+8% ouro | Def +1</span></div>
+                <div class="class-details"><strong>LADRÃO</strong><br>Sortudo.<br><span style="color:#34d399">+10% ouro | Def +2</span></div>
             </div>
         </div>
-        
         <div class="start-actions-row" style="display: flex; gap: 6px; width: 100%; margin-top: 4px;">
             <button class="btn-stone" onclick="startGame()" style="flex: 1; padding: 15px 4px; font-size: 8px;">INICIAR AVENTURA</button>
             <button class="btn-stone" id="btn-load-game" onclick="loadGame()" style="display:none; flex: 1; padding: 15px 4px; font-size: 8px;">CONTINUAR JOGO SALVO</button>
         </div>
     </div>
 
+    <!-- TELA 3: PRINCIPAL DE JOGO -->
     <div id="screen-main" class="screen game-card">
         <div style="position: relative; text-align: center;">
             <h2 style="margin: 0; line-height: 2;">ESTÁGIO <span id="ui-turn">1</span> / 25</h2>
@@ -270,6 +282,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
             
             <button id="btn-reset-combat" class="btn-stone btn-reset-combat" onclick="resetCombat()" style="display:none;"><i class="fa fa-refresh"></i></button>
 
+            <!-- TAUNT DO MONSTRO -->
             <div id="enemy-taunt-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('assets/img/duel.png') no-repeat center center; background-size: cover; z-index: 50; flex-direction: column; align-items: center; justify-content: center; padding: 10px;">
                 <div style="width:100%; height:100%; background:rgba(0,0,0,0.6); position:absolute; top:0; left:0; z-index:-1;"></div>
                 <img id="taunt-monster-img" src="" class="taunt-anim" style="width: 40%; image-rendering: pixelated; margin-bottom: 10px; z-index:2;" onerror="this.style.display='none'">
@@ -304,6 +317,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         </div>
     </div>
 
+    <!-- TELA DA LOJA -->
     <div id="screen-shop" class="screen game-card">
         <h1>MERCADOR</h1><hr>
         <div class="shop-header-status">
@@ -311,14 +325,15 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
             <div><i class="ra ra-health" style="color:#22c55e"></i> H: <strong id="shop-ui-pothp">0</strong> | <i class="ra ra-potion" style="color:#3b82f6"></i> M: <strong id="shop-ui-potmp">0</strong></div>
         </div>
         <div id="shop-catalog">
-            <div class="shop-item-card"><div class="shop-item-info"><strong>P. DE CURA</strong><div>RESTAURA +15 HP</div></div><button class="btn-stone" onclick="buyItem('pot_hp')">20G</button></div>
-            <div class="shop-item-card"><div class="shop-item-info"><strong>P. DE MANA</strong><div>RESTAURA +8 MP</div></div><button class="btn-stone" id="btn-shop-potmp" onclick="buyItem('pot_mp')">20G</button></div>
-            <div class="shop-item-card"><div class="shop-item-info"><strong>ESPADA AÇO</strong><div>+2 ATK</div></div><button class="btn-stone" id="btn-shop-weapon" onclick="buyItem('weapon')"><span id="txt-price-weapon">90</span>G</button></div>
-            <div class="shop-item-card"><div class="shop-item-info"><strong>ARMADURA</strong><div>+2 DEF</div></div><button class="btn-stone" id="btn-shop-armor" onclick="buyItem('armor')"><span id="txt-price-armor">90</span>G</button></div>
+            <div class="shop-item-card"><div class="shop-item-info"><strong>P. DE CURA</strong><div>RESTAURA +25 HP</div></div><button class="btn-stone" onclick="buyItem('pot_hp')">20G</button></div>
+            <div class="shop-item-card"><div class="shop-item-info"><strong>P. DE MANA</strong><div>RESTAURA +10 MP</div></div><button class="btn-stone" id="btn-shop-potmp" onclick="buyItem('pot_mp')">20G</button></div>
+            <div class="shop-item-card"><div class="shop-item-info"><strong>ESPADA AÇO</strong><div>+3 ATK</div></div><button class="btn-stone" id="btn-shop-weapon" onclick="buyItem('weapon')"><span id="txt-price-weapon">90</span>G</button></div>
+            <div class="shop-item-card"><div class="shop-item-info"><strong>ARMADURA</strong><div>+3 DEF</div></div><button class="btn-stone" id="btn-shop-armor" onclick="buyItem('armor')"><span id="txt-price-armor">90</span>G</button></div>
         </div>
         <hr><button class="btn-stone" onclick="closeShop()" style="width:100%; padding: 15px 0;">VOLTAR</button>
     </div>
 
+    <!-- TELA FINAL -->
     <div id="screen-end" class="screen game-card">
         <div class="stats-summary" id="end-stats-box"></div>
         <button class="btn-stone" onclick="try{playSelectionSound();}catch(e){} setTimeout(() => location.reload(), 200);" style="width: 100%; max-width: 300px; font-size: 10px; padding: 20px;">JOGAR NOVAMENTE</button>
@@ -326,6 +341,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
 </div>
 
 <script>
+    // Inicialização e Highscores
     document.addEventListener("DOMContentLoaded", () => {
         if (localStorage.getItem('rpgPocketSave')) {
             let btnLoad = document.getElementById('btn-load-game');
@@ -333,7 +349,25 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
             let container = document.getElementById('btn-load-container');
             if(container) container.style.display = 'flex';
         }
+        loadHighScores();
     });
+
+    function loadHighScores() {
+        let highScores = JSON.parse(localStorage.getItem('rpgPocketHighScores')) || [];
+        let board = document.getElementById('highscores-board');
+        if(board) {
+            if (highScores.length === 0) {
+                board.innerHTML = "";
+            } else {
+                let html = "<div style='margin-bottom:4px;'>🏆 MAIORES HERÓIS 🏆</div>";
+                highScores.forEach((entry, i) => {
+                    let colors = ["#fbbf24", "#e2e8f0", "#d97706"];
+                    html += `<div style="color:${colors[i]}; margin-top:3px;">${i+1}º ${entry.name} - ${entry.score} PTS</div>`;
+                });
+                board.innerHTML = html;
+            }
+        }
+    }
 
     const cenariosDb = {
         "cen_pantano1": { img: "assets/img/cen_pantano1.png", trans: "O cheiro de decomposição domina o ar. O perigo espreita a cada passo.", explore: ["A lama borbulha misteriosamente.", "Uma criatura espreita sob as águas.", "O cheiro de pântano enche seus pulmões."] },
@@ -350,7 +384,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
 
     const tilePool = ["⚔️","⚔️","⚔️","⚔️","⚔️","⚔️","⚔️","⚔️", "🛡️","🛡️","🛡️","🛡️","🛡️","🛡️","🛡️","🛡️", "❤️","❤️","❤️","❤️","❤️", "🪙","🪙","🪙","🪙","🪙", "💧","💧", "🪨","🪨"]; 
 
-    let player = { name: "", class: "knight", hp: 100, maxHp: 100, mp: 60, maxMp: 60, gold: 40, baseAtk: 8, baseDef: 1, potHp: 1, potMp: 1, avatarPath: "" };
+    let player = { name: "", class: "knight", hp: 100, maxHp: 100, mp: 60, maxMp: 60, gold: 40, baseAtk: 10, baseDef: 2, potHp: 1, potMp: 1, avatarPath: "" };
     let shopPrices = { weapon: 90, armor: 90 }; let stats = { normalKills: 0, bossKills: 0 };
     let enemy = null; let turn = 1; let inCombat = false; let selectedClassSetup = "knight"; let welcomeDismissed = false; let gamePlan = [];
 
@@ -436,6 +470,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
     function playBuySound() { try { if (!audioCtx) initAudioContext(); let now = audioCtx.currentTime; let freqs = [1200, 1600]; freqs.forEach((f, i) => { let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(f, now + i*0.1); osc.connect(gain); gain.connect(audioCtx.destination); gain.gain.setValueAtTime(0.15, now + i*0.1); gain.gain.linearRampToValueAtTime(0.001, now + 0.1 + i*0.1); osc.start(now + i*0.1); osc.stop(now + 0.1 + i*0.1); }); } catch(e) {} }
     function playMagicSound() { try { if (!audioCtx) initAudioContext(); let now = audioCtx.currentTime; let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(800, now); osc.frequency.exponentialRampToValueAtTime(100, now + 0.4); osc.connect(gain); gain.connect(audioCtx.destination); gain.gain.setValueAtTime(0.25, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.4); osc.start(now); osc.stop(now + 0.4); } catch(e) {} }
 
+    // FLUXO INICIAL: Welcome -> Instructions -> Story -> Splash -> Start
     function nextToInstructions() {
         document.getElementById('welcome-modal').style.display = 'none';
         document.getElementById('instructions-modal').style.display = 'flex';
@@ -487,7 +522,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
     function endStory() {
         playBGMTrack(null);
         document.getElementById('screen-story').style.display = 'none';
-        document.getElementById('screen-splash').classList.add('active');
+        changeScreen('screen-splash');
         welcomeDismissed = true; 
     }
 
@@ -518,11 +553,14 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         if (dataStr) {
             const data = JSON.parse(dataStr);
             player = data.player; stats = data.stats; turn = data.turn; shopPrices = data.shopPrices; gamePlan = data.gamePlan;
-            changeScreen("screen-main"); updateCenarioExploracao(); updateUI();
+            updateUI(); 
+            changeScreen("screen-main"); 
+            updateCenarioExploracao(); 
         }
     }
 
     function generateGamePlan() {
+        let maxTries = 100; // Evita loop infinito
         const normalScenarios = ['cen_pantano1', 'cen_pantano2', 'cen_ponte1', 'cen_caverna', 'cen_gelo', 'cen_estrada1', 'cen_floresta_sombria', 'cen_floresta1', 'cen_floresta2'];
         for (let i = normalScenarios.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [normalScenarios[i], normalScenarios[j]] = [normalScenarios[j], normalScenarios[i]]; }
         gamePlan = normalScenarios.slice(0, 8); gamePlan.push('cen_dragao');
@@ -537,8 +575,11 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
 
         player.name = input.toUpperCase(); player.class = selectedClassSetup;
         player.avatarPath = `assets/img/${player.class === 'knight' ? 'cavaleiro.png' : player.class === 'mage' ? 'maga.png' : 'ladrao.png'}`;
-        player.baseAtk = player.class === 'knight' ? 9 : 8; player.baseDef = 1;
-
+        
+        // Base Status Buff
+        player.baseAtk = player.class === 'knight' ? 10 : 8; 
+        player.baseDef = 2; // Todos os herois agora iniciam com 2
+        
         generateGamePlan(); turn = 1; goToTransitionScreen();
     }
 
@@ -549,7 +590,10 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
     }
 
     function startNextStage() {
-        changeScreen('screen-main'); updateCenarioExploracao(); updateUI(); saveGame();
+        updateUI(); // Revelar elementos ANTES da tela de jogo iniciar
+        changeScreen('screen-main'); 
+        updateCenarioExploracao(); 
+        saveGame();
         try { playSelectionSound(); } catch(e) {}
     }
 
@@ -560,6 +604,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         document.getElementById("scene-description").className = "scene-exploration"; document.getElementById("viewport-container").style.backgroundImage = `url('${dbData.img}')`; document.getElementById("scene-description").innerText = dbData.explore[Math.floor(Math.random() * dbData.explore.length)];
         document.getElementById("btn-roll").disabled = false; document.getElementById("btn-reset-combat").style.display = "none";
         
+        // Remove borda vermelha do inimigo
         document.getElementById("viewport-container").classList.remove("enemy-turn-border");
         document.getElementById("ui-puzzle-panel").classList.remove("turn-monster");
 
@@ -602,7 +647,7 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
 
     function handleGoldDrop(roll) {
         document.getElementById("viewport-hero").style.display = "none"; document.getElementById("viewport-container").style.backgroundImage = "url('assets/img/ouro.png')";
-        let baseGold = Math.floor((roll - 13) * 10 + (turn * 0.5)); if(player.class === 'thief') baseGold = Math.ceil(baseGold * 1.08); player.gold += baseGold;
+        let baseGold = Math.floor((roll - 13) * 10 + (turn * 0.5)); if(player.class === 'thief') baseGold = Math.ceil(baseGold * 1.10); player.gold += baseGold;
         document.getElementById("scene-description").className = "scene-exploration"; document.getElementById("scene-description").innerText = `Você encontrou +${baseGold}G!`;
         const pouch = document.getElementById("viewport-gold-pouch"); pouch.innerHTML = `<i class="ra ra-treasure-chest" style="font-size: 32px; color: var(--gba-gold); display: block; margin-bottom: 5px;"></i><div class="gold-pouch-text">TESOURO!<br><span style="color:#fbbf24;">+${baseGold}G</span></div>`; pouch.style.display = "block";
         playTreasureSound(); updateUI(); setTimeout(nextTurnProgress, 2500);
@@ -636,21 +681,27 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         targetImg.src = `assets/img/${enemy.img}`; 
         document.getElementById("scene-description").className = "scene-combat"; document.getElementById("scene-description").innerText = `Duelo Iniciado contra ${enemy.name}!`;
         
-        try { initPuzzleCombatEngine(); } catch(e) {}
-        updateUI();
+        // Chamada Segura:
+        updateUI(); 
+        initPuzzleCombatEngine();
     }
 
     function triggerBossBattle() {
         inCombat = true; document.getElementById("viewport-hero").style.display = "none"; document.getElementById("viewport-container").style.backgroundImage = "url('assets/img/duel.png')"; document.getElementById("hud-enemy").style.display = "block"; document.getElementById("viewport-target").style.display = "block"; document.getElementById("btn-reset-combat").style.display = "flex";
         enemy = { name: "Dragão Da Praga", hp: 99, maxHp: 99, type: "lendario" };
         document.getElementById("scene-description").className = "scene-combat"; document.getElementById("scene-description").innerText = `Chefe Lendário Final! Defenda-se!`;
-        try { initPuzzleCombatEngine(); } catch(e) {}
+        
+        // Chamada Segura:
         updateUI();
+        initPuzzleCombatEngine();
     }
 
     function resetCombat() {
         if(!inCombat || !enemy || isProcessingAnimations) return; 
-        enemy.hp = enemy.maxHp; initPuzzleCombatEngine(); updateUI(); document.getElementById("scene-description").innerText = "Combate reiniciado pelo jogador!"; try { playSelectionSound(); } catch(e) {}
+        enemy.hp = enemy.maxHp;
+        updateUI();
+        initPuzzleCombatEngine();
+        document.getElementById("scene-description").innerText = "Combate reiniciado pelo jogador!"; try { playSelectionSound(); } catch(e) {}
     }
 
     function isAdjacent(idx1, idx2) { let r1 = Math.floor(idx1 / 6), c1 = idx1 % 6; let r2 = Math.floor(idx2 / 6), c2 = idx2 % 6; return (Math.abs(r1 - r2) + Math.abs(c1 - c2)) === 1; }
@@ -703,7 +754,12 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
     function initPuzzleCombatEngine() { roundDef = 0; startTurnFlow(false); }
 
     function generateRandomBoard() {
-        do { puzzleBoardData = []; for (let i = 0; i < 24; i++) puzzleBoardData.push(tilePool[Math.floor(Math.random() * tilePool.length)]); } while(getValidMoves().length === 0); 
+        let attempts = 100; // Evita loop infinito
+        do { 
+            puzzleBoardData = []; 
+            for (let i = 0; i < 24; i++) puzzleBoardData.push(tilePool[Math.floor(Math.random() * tilePool.length)]); 
+            attempts--;
+        } while(getValidMoves().length === 0 && attempts > 0); 
     }
 
     function spawnFloatingText(tileIndex, textValue, colorHex) {
@@ -719,12 +775,13 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         document.getElementById("puzzle-round-stats").innerText = isMonsterTurn ? `MONSTRO - ATK: ${roundAtk}` : `HERÓI - ATK: ${roundAtk} | DEF: ${roundDef}`;
 
         let newHTML = "";
-        puzzleBoardData.forEach((tile, index) => {
+        for (let i = 0; i < 24; i++) {
+            let tile = puzzleBoardData[i] || "";
             let bg = "#334155";
             if(tile === "❤️") bg = "#7f1d1d"; else if(tile === "🛡️") bg = "#4c1d95"; else if(tile === "💧") bg = "#1e3a8a"; else if(tile === "🪙") bg = "#14532d"; else if(tile === "🪨") bg = "#78350f"; else if(tile === "⚡") bg = "#000000"; 
-            let classes = "puzzle-tile-block"; if (index === selectedTileIndex) classes += " selected-tile"; if (fallingIndices.has(index)) classes += " falling";
-            newHTML += `<div class="${classes}" id="tile-${index}" style="background-color: ${bg}; touch-action: none;">${tile}</div>`;
-        });
+            let classes = "puzzle-tile-block"; if (i === selectedTileIndex) classes += " selected-tile"; if (fallingIndices && fallingIndices.has(i)) classes += " falling";
+            newHTML += `<div class="${classes}" id="tile-${i}" style="background-color: ${bg}; touch-action: none;">${tile}</div>`;
+        }
         boardElement.innerHTML = newHTML;
     }
 
@@ -897,11 +954,16 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
     }
 
     function applyMonsterDamage() {
-        let baseScale = Math.floor(turn * 1.8) + 8; let rawMonsterAtk = roundAtk + baseScale; 
-        if (enemy.type === "raro") rawMonsterAtk = Math.floor(rawMonsterAtk * 1.3);
-        if (enemy.type === "lendario") rawMonsterAtk = Math.floor(rawMonsterAtk * 1.8);
-        rawMonsterAtk = Math.ceil(rawMonsterAtk * 1.40); 
-        let totalPlayerDef = player.baseDef + roundDef; let monsterDmg = Math.max(3 + Math.floor(turn * 0.3), rawMonsterAtk - totalPlayerDef);
+        // Dano mais progressivo para balanceamento justo
+        let baseScale = Math.floor(turn * 0.8) + 4; 
+        let rawMonsterAtk = roundAtk + baseScale; 
+        if (enemy.type === "raro") rawMonsterAtk = Math.floor(rawMonsterAtk * 1.15);
+        if (enemy.type === "lendario") rawMonsterAtk = Math.floor(rawMonsterAtk * 1.30);
+        rawMonsterAtk = Math.ceil(rawMonsterAtk * 1.10); 
+
+        let totalPlayerDef = player.baseDef + roundDef; 
+        let monsterDmg = Math.max(1 + Math.floor(turn * 0.1), rawMonsterAtk - totalPlayerDef);
+        
         player.hp -= monsterDmg; document.getElementById("scene-description").innerText = `O ${enemy.name} atacou e causou -${monsterDmg} de HP!`; updateUI();
         if (player.hp <= 0) { player.hp = 0; endGame(false); } else { setTimeout(() => { startTurnFlow(false); }, 1500); }
     }
@@ -927,8 +989,8 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
     function usePotion(type) {
         if (inCombat) return; 
         try { playSelectionSound(); } catch(e) {}
-        if (type === 'hp' && player.potHp > 0) { player.hp = Math.min(player.maxHp, player.hp + 20); player.potHp--; playPotionSound(); }
-        else if (type === 'mp' && player.potMp > 0) { player.mp = Math.min(player.maxMp, player.mp + 8); player.potMp--; playPotionSound(); }
+        if (type === 'hp' && player.potHp > 0) { player.hp = Math.min(player.maxHp, player.hp + 25); player.potHp--; playPotionSound(); }
+        else if (type === 'mp' && player.potMp > 0) { player.mp = Math.min(player.maxMp, player.mp + 10); player.potMp--; playPotionSound(); }
         updateUI();
     }
 
@@ -939,8 +1001,8 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
         let mpPrice = player.class === 'mage' ? 15 : 20; let bought = false;
         if (itemType === 'pot_hp' && player.gold >= 20) { player.gold -= 20; player.potHp++; bought = true; } 
         else if (itemType === 'pot_mp' && player.gold >= mpPrice) { player.gold -= mpPrice; player.potMp++; bought = true; }
-        else if (itemType === 'weapon' && player.gold >= shopPrices.weapon) { player.gold -= shopPrices.weapon; player.baseAtk += 2; shopPrices.weapon = 120; bought = true; }
-        else if (itemType === 'armor' && player.gold >= shopPrices.armor) { player.gold -= shopPrices.armor; player.baseDef += 2; shopPrices.armor = 120; bought = true; }
+        else if (itemType === 'weapon' && player.gold >= shopPrices.weapon) { player.gold -= shopPrices.weapon; player.baseAtk += 3; shopPrices.weapon = 120; bought = true; }
+        else if (itemType === 'armor' && player.gold >= shopPrices.armor) { player.gold -= shopPrices.armor; player.baseDef += 3; shopPrices.armor = 120; bought = true; }
         if (bought) playBuySound(); else try{playSelectionSound();}catch(e){} updateUI();
     }
 
@@ -959,14 +1021,32 @@ button:disabled{background:#475569!important;color:#94a3b8!important;border-colo
 
             if (inCombat && enemy) { document.getElementById("panel-explore").style.display = "none"; document.getElementById("panel-combat").style.display = "block"; document.getElementById("enemy-name").innerText = enemy.name; document.getElementById("txt-enemy-hp").innerText = `${enemy.hp}/${enemy.maxHp}`; document.getElementById("bar-enemy").style.width = `${(enemy.hp / enemy.maxHp) * 100}%`; } 
             else { document.getElementById("panel-explore").style.display = "block"; document.getElementById("panel-combat").style.display = "none"; }
-        } catch(e) {}
+        } catch(e) { console.error("UI Update prevented freeze", e); }
     }
 
     function endGame(victory) {
         changeScreen("screen-end");
         if(victory) document.getElementById("screen-end").style.backgroundImage = "url('assets/img/fim1.png')"; else document.getElementById("screen-end").style.backgroundImage = "url('assets/img/fim2.png')";
-        document.getElementById("end-stats-box").innerHTML = `ESTÁGIO ALCANÇADO: ${turn} / 25<br><br>OURO TOTAL GUARDADO: ${player.gold}G<br><br>INIMIGOS DERROTADOS: ${stats.normalKills + stats.bossKills}`;
+        
+        // PONTUAÇÃO (Score): Fase tem peso absurdo, Monstros peso médio, Ouro peso baixo
+        let totalKills = stats.normalKills + stats.bossKills;
+        let finalScore = (turn * 500) + (totalKills * 200) + (player.gold * 10);
+        
+        let highScores = JSON.parse(localStorage.getItem('rpgPocketHighScores')) || [];
+        highScores.push({ name: player.name, score: finalScore });
+        highScores.sort((a, b) => b.score - a.score);
+        highScores = highScores.slice(0, 3);
+        localStorage.setItem('rpgPocketHighScores', JSON.stringify(highScores));
+        
+        document.getElementById("end-stats-box").innerHTML = `
+            ESTÁGIO ALCANÇADO: ${turn} / 25<br><br>
+            INIMIGOS DERROTADOS: ${totalKills}<br><br>
+            OURO OBTIDO: ${player.gold}G<br><br>
+            <strong style="color:var(--gba-gold); font-size: 14px; text-shadow: 2px 2px 0 #000;">SCORE: ${finalScore}</strong>
+        `;
+        
         localStorage.removeItem('rpgPocketSave'); 
+        loadHighScores(); 
     }
 </script>
 </body>
